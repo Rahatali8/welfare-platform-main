@@ -1,7 +1,8 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,7 +12,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Eye, EyeOff, Heart, CheckCircle } from "lucide-react"
 import Link from "next/link"
-import { useAuth } from "@/components/providers/auth-provider" // ✅ added
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -25,7 +25,6 @@ export default function SignupPage() {
     confirmPassword: "",
     role: "user",
   })
-
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -33,19 +32,12 @@ export default function SignupPage() {
   const [isSuccess, setIsSuccess] = useState(false)
   const router = useRouter()
 
-  const { user } = useAuth() // ✅ get user from auth
-
-  useEffect(() => {
-    if (user) {
-      router.push("/") // ✅ redirect if already logged in
-    }
-  }, [user])
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError("")
 
+    // Validation
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match")
       setIsLoading(false)
@@ -84,13 +76,19 @@ export default function SignupPage() {
   const formatCNIC = (value: string) => {
     const cleaned = value.replace(/\D/g, "")
     const match = cleaned.match(/^(\d{0,5})(\d{0,7})(\d{0,1})$/)
-    return match ? [match[1], match[2], match[3]].filter(Boolean).join("-") : cleaned
+    if (match) {
+      return [match[1], match[2], match[3]].filter(Boolean).join("-")
+    }
+    return cleaned
   }
 
   const formatPhone = (value: string) => {
     const cleaned = value.replace(/\D/g, "")
     const match = cleaned.match(/^(\d{0,4})(\d{0,7})$/)
-    return match ? [match[1], match[2]].filter(Boolean).join("-") : cleaned
+    if (match) {
+      return [match[1], match[2]].filter(Boolean).join("-")
+    }
+    return cleaned
   }
 
   const handleInputChange = (field: string, value: string) => {
@@ -151,8 +149,153 @@ export default function SignupPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* --- form fields same as before --- */}
-              {/* Keep your input fields, password fields, dropdown etc. as you had them */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Full Name *</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    autoComplete="off"
+                    placeholder="Enter your full name"
+                    value={formData.name}
+                    onChange={(e) => handleInputChange("name", e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="cnic">CNIC Number *</Label>
+                  <Input
+                    id="cnic"
+                    type="text"
+                    autoComplete="off"
+                    placeholder="12345-1234567-1"
+                    value={formData.cnic}
+                    onChange={(e) => handleInputChange("cnic", e.target.value)}
+                    required
+                    className="text-center tracking-wider"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone Number *</Label>
+                  <Input
+                    id="phone"
+                    type="text"
+                    autoComplete="off"
+                    placeholder="0300-1234567"
+                    value={formData.phone}
+                    onChange={(e) => handleInputChange("phone", e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email Address</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    autoComplete="off"
+                    placeholder="your.email@example.com"
+                    value={formData.email}
+                    onChange={(e) => handleInputChange("email", e.target.value)}
+                    required // ✅ ADD THIS
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="city">City *</Label>
+                  <Input
+                    id="city"
+                    type="text"
+                    autoComplete="off"
+                    placeholder="Enter your city"
+                    value={formData.city}
+                    onChange={(e) => handleInputChange("city", e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="role">Account Type *</Label>
+                  <Select value={formData.role} onValueChange={(value) => handleInputChange("role", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select account type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="user">Beneficiary (Apply for assistance)</SelectItem>
+                      <SelectItem value="donor">Donor (Make donations)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="address">Complete Address *</Label>
+                <Input
+                  id="address"
+                  type="text"
+                  autoComplete="off"
+                  placeholder="Enter your complete address"
+                  value={formData.address}
+                  onChange={(e) => handleInputChange("address", e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password *</Label>
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Create a password"
+                      value={formData.password}
+                      onChange={(e) => handleInputChange("password", e.target.value)}
+                      required
+                      className="pr-10"
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4 text-gray-400" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-gray-400" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword">Confirm Password *</Label>
+                  <div className="relative">
+                    <Input
+                      id="confirmPassword"
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder="Confirm your password"
+                      value={formData.confirmPassword}
+                      onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
+                      required
+                      className="pr-10"
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff className="h-4 w-4 text-gray-400" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-gray-400" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
 
               {error && (
                 <Alert className="border-red-200 bg-red-50">
