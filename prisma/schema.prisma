@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  name       String?
+  email      String   @unique
+  cnic       String?  @unique
+  phone      String?
+  address    String?
+  city       String?
+  password   String
+  role       Role     @default(user)
+  created_at DateTime @default(now())
+
+  donors         Donor[]
+  requests       Request[]
+  passwordResets PasswordReset[]
+  donations      Donation[]
+
+  @@map("users")
+}
+
+model Donor {
+  id                Int     @id @default(autoincrement())
+  user_id           Int
+  organization_name String?
+  contact_number    String?
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("donors")
+}
+
+model Request {
+  id          Int           @id @default(autoincrement())
+  user_id     Int
+  type        RequestType
+  description String?
+  status      RequestStatus @default(pending)
+  created_at  DateTime      @default(now())
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("requests")
+}
+
+model PasswordReset {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  token      String
+  expires_at DateTime
+  created_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("password_resets")
+}
+
+model Donation {
+  id     Int      @id @default(autoincrement())
+  userId Int
+  amount Float
+  date   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("donations")
+}
+
+enum Role {
+  user
+  donor
+  admin
+}
+
+enum RequestType {
+  aid
+  loan
+  microfinance
+}
+
+enum RequestStatus {
+  pending
+  approved
+  rejected
+}
