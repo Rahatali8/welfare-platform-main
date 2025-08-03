@@ -155,6 +155,7 @@ export default function SignupPage() {
                   <Input
                     id="name"
                     type="text"
+                    autoComplete="off"
                     placeholder="Enter your full name"
                     value={formData.name}
                     onChange={(e) => handleInputChange("name", e.target.value)}
@@ -167,6 +168,7 @@ export default function SignupPage() {
                   <Input
                     id="cnic"
                     type="text"
+                    autoComplete="off"
                     placeholder="12345-1234567-1"
                     value={formData.cnic}
                     onChange={(e) => handleInputChange("cnic", e.target.value)}
@@ -180,6 +182,7 @@ export default function SignupPage() {
                   <Input
                     id="phone"
                     type="text"
+                    autoComplete="off"
                     placeholder="0300-1234567"
                     value={formData.phone}
                     onChange={(e) => handleInputChange("phone", e.target.value)}
@@ -192,6 +195,7 @@ export default function SignupPage() {
                   <Input
                     id="email"
                     type="email"
+                    autoComplete="off"
                     placeholder="your.email@example.com"
                     value={formData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
@@ -204,6 +208,7 @@ export default function SignupPage() {
                   <Input
                     id="city"
                     type="text"
+                    autoComplete="off"
                     placeholder="Enter your city"
                     value={formData.city}
                     onChange={(e) => handleInputChange("city", e.target.value)}
@@ -230,6 +235,7 @@ export default function SignupPage() {
                 <Input
                   id="address"
                   type="text"
+                  autoComplete="off"
                   placeholder="Enter your complete address"
                   value={formData.address}
                   onChange={(e) => handleInputChange("address", e.target.value)}

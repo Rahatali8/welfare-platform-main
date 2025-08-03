@@ -136,7 +136,6 @@ export default function HelpPage() {
       <section className="bg-gradient-to-r from-blue-900 to-blue-700 py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <Badge className="mb-4 bg-blue-100 text-blue-800 hover:bg-blue-100">Help Center</Badge>
             <h1 className="text-4xl lg:text-5xl font-bold text-white mb-6">How Can We Help You?</h1>
             <p className="text-xl text-blue-100 max-w-3xl mx-auto mb-8">
               Find answers to your questions, learn how to use our platform, and get the support you need.
@@ -356,8 +355,6 @@ export default function HelpPage() {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   )
 }

@@ -4,27 +4,11 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import {
-  Users,
-  Heart,
-  TrendingUp,
-  ArrowRight,
-  Play,
-  Shield,
-  Award,
-  Globe,
-  DollarSign,
-  BookOpen,
-  Home,
-  Stethoscope,
-  GraduationCap,
-  Utensils,
-  Phone,
-  MapPin,
-  Clock,
-  Target,
+import ImageCarousel from "@/components/image-currosal"
+import {Users,Heart,TrendingUp,ArrowRight,Play,Shield,Award,Globe,DollarSign,BookOpen,Home,Stethoscope,GraduationCap,Utensils,Phone,MapPin,Clock,Target,
 } from "lucide-react"
 import Link from "next/link"
+import CallToAction from "@/components/CTA-section"
 import { Footer } from "@/components/layout/footer"
 
 export default function HomePage() {
@@ -51,6 +35,7 @@ export default function HomePage() {
     return () => clearInterval(interval)
   }, [])
 
+  
   const services = [
     {
       icon: DollarSign,
@@ -181,7 +166,7 @@ export default function HomePage() {
               <div className="relative group">
                 <div className="relative overflow-hidden rounded-3xl shadow-2xl transform group-hover:scale-105 transition-all duration-500">
                   <img
-                    src="/placeholder.svg?height=300&width=400&text=Welfare+Work+in+Action"
+                    src="/welfare-work.png"
                     alt="Welfare Work in Action"
                     className="w-full h-[400px] object-cover"
                   />
@@ -209,11 +194,16 @@ export default function HomePage() {
         </div>
       </section>
 
+
+      {/*image-currosal-section*/}
+      <ImageCarousel/>
+
+
       {/* Services Section */}
       <section className="py-20 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-blue-900 mb-4">Comprehensive Welfare Programs</h2>
+            <h2 className="text-3xl lg:text-5xl font-bold text-blue-900 mb-4">Comprehensive Welfare Programs</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               We provide holistic support across multiple sectors to ensure sustainable development and empowerment of
               communities.
@@ -249,50 +239,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Impact Statistics */}
-      <section className="py-20 bg-gradient-to-r from-blue-900 to-blue-700">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">Our Impact in Numbers</h2>
-            <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-              Real results that demonstrate our commitment to transforming lives across Pakistan.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="text-4xl lg:text-5xl font-bold text-white mb-2">
-                {stats.familiesSupported.toLocaleString()}
-              </div>
-              <div className="text-blue-100">Families Supported</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl lg:text-5xl font-bold text-white mb-2">
-                {stats.scholarshipsGiven.toLocaleString()}
-              </div>
-              <div className="text-blue-100">Scholarships Given</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl lg:text-5xl font-bold text-white mb-2">
-                {stats.medicalCases.toLocaleString()}
-              </div>
-              <div className="text-blue-100">Medical Cases</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl lg:text-5xl font-bold text-white mb-2">
-                {stats.emergencyRelief.toLocaleString()}
-              </div>
-              <div className="text-blue-100">Emergency Relief</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Why Choose Us */}
       <section className="py-20 bg-gray-50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-blue-900 mb-4">Trusted Excellence in Welfare</h2>
+            <h2 className="text-3xl lg:text-5xl font-bold text-blue-900 mb-4">Trusted Excellence in Welfare</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Our commitment to transparency, efficiency, and impact has made us Pakistan's most trusted welfare
               platform.
@@ -363,8 +314,7 @@ export default function HomePage() {
       <section className="py-20 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <Badge className="mb-4 bg-purple-100 text-purple-800 hover:bg-purple-100">Process</Badge>
-            <h2 className="text-3xl lg:text-4xl font-bold text-blue-900 mb-4">How We Help You</h2>
+            <h2 className="text-3xl lg:text-5xl font-bold text-blue-900 mb-4">How We Help You</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Our streamlined process ensures quick and efficient assistance to those who need it most.
             </p>
@@ -410,41 +360,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-900 via-blue-800 to-cyan-700">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">Ready to Make a Difference?</h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Whether you need assistance or want to contribute to our cause, join our community of compassionate
-            individuals making Pakistan better.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              asChild
-              size="lg"
-              className="bg-white text-blue-900 hover:bg-gray-100 px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-            >
-              <Link href="/signup">
-                <Users className="h-5 w-5 mr-2" />
-                Join Our Community
-              </Link>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="border-2 border-white text-white hover:bg-white hover:text-blue-900 px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 bg-transparent"
-            >
-              <Link href="/contact">
-                <Phone className="h-5 w-5 mr-2" />
-                Contact Us Today
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      <Footer />
+      <CallToAction />
     </div>
   )
 }

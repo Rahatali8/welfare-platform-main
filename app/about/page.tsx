@@ -71,7 +71,6 @@ export default function AboutPage() {
       <section className="py-20 px-4 bg-gradient-to-br from-blue-50 to-white">
         <div className="container mx-auto">
           <div className="max-w-4xl mx-auto text-center">
-            <Badge className="mb-6 bg-blue-100 text-blue-800">About Idara Al-Khair</Badge>
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">Empowering Communities Since 2010</h1>
             <p className="text-xl text-gray-600 mb-8 leading-relaxed">
               For over a decade, Idara Al-Khair has been at the forefront of social welfare in Pakistan, transforming
@@ -91,11 +90,11 @@ export default function AboutPage() {
       </section>
 
       {/* Mission & Vision */}
-      <section className="py-16 px-4">
+      <section className="py-16 px-4 m-5">
         <div className="container mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">Our Mission</h2>
+              <h2 className="text-4xl font-bold text-gray-900 mb-6">Our Core Mission</h2>
               <p className="text-lg text-gray-600 mb-6 leading-relaxed">
                 To provide comprehensive welfare services that empower individuals and families to achieve
                 self-sufficiency, dignity, and prosperity. We believe in creating sustainable solutions that address
@@ -126,12 +125,12 @@ export default function AboutPage() {
               <img
                 src="/placeholder.svg?height=400&width=500&text=Mission"
                 alt="Our Mission"
-                className="rounded-2xl shadow-lg w-full"
+                className="rounded-2xl shadow-lg w-full h-96 object-cover"
               />
               <div className="absolute -bottom-6 -right-6 bg-white p-4 rounded-lg shadow-lg">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">50,000+</div>
-                  <div className="text-sm text-gray-600">Lives Transformed</div>
+                  <div className="text-2xl font-bold text-blue-600">500+</div>
+                  <div className="text-sm text-gray-600">GOT HELPED</div>
                 </div>
               </div>
             </div>
@@ -140,7 +139,7 @@ export default function AboutPage() {
       </section>
 
       {/* Values */}
-      <section className="py-16 px-4 bg-gray-50">
+      <section className="py-16 px-4 bg-gray-50 m-5">
         <div className="container mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Core Values</h2>
@@ -192,10 +191,10 @@ export default function AboutPage() {
       </section>
 
       {/* Team */}
-      <section className="py-16 px-4 bg-gray-50">
+      <section className="py-16 px-4 bg-gray-50 m-5">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Meet Our Team</h2>
+            <h2 className="text-5xl font-bold text-gray-900 mb-4">Meet Our Team</h2>
             <p className="text-xl text-gray-600">Dedicated professionals working to make a difference</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -220,7 +219,7 @@ export default function AboutPage() {
       </section>
 
       {/* Stats */}
-      <section className="py-16 px-4">
+      <section className="py-16 px-4 m-5">
         <div className="container mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Impact in Numbers</h2>
@@ -228,8 +227,8 @@ export default function AboutPage() {
           </div>
           <div className="grid md:grid-cols-4 gap-8 text-center">
             <div className="bg-white p-8 rounded-2xl shadow-lg">
-              <div className="text-4xl font-bold text-blue-600 mb-2">50,000+</div>
-              <p className="text-gray-600 font-medium">Families Helped</p>
+              <div className="text-4xl font-bold text-blue-600 mb-2">500+</div>
+              <p className="text-gray-600 font-medium">Families Helped By Us</p>
             </div>
             <div className="bg-white p-8 rounded-2xl shadow-lg">
               <div className="text-4xl font-bold text-green-600 mb-2">PKR 500M+</div>

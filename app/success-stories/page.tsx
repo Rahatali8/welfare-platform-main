@@ -145,10 +145,6 @@ export default function SuccessStoriesPage() {
       {/* Hero Section */}
       <section className="py-20 px-4 bg-gradient-to-br from-green-50 to-blue-50">
         <div className="container mx-auto text-center">
-          <div className="inline-flex items-center space-x-2 bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium mb-6">
-            <CheckCircle className="h-4 w-4" />
-            <span>Real Stories, Real Impact</span>
-          </div>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
             Success Stories from Our <span className="text-green-600">Community</span>
           </h1>

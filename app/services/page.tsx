@@ -238,7 +238,6 @@ export default function ServicesPage() {
       <section className="py-20 px-4 bg-gradient-to-br from-blue-50 to-white">
         <div className="container mx-auto">
           <div className="max-w-4xl mx-auto text-center">
-            <Badge className="mb-6 bg-blue-100 text-blue-800">Our Services</Badge>
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">Comprehensive Welfare Programs</h1>
             <p className="text-xl text-gray-600 mb-8 leading-relaxed">
               From emergency assistance to long-term empowerment, our 12 specialized programs address every aspect of

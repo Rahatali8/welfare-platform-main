@@ -123,7 +123,6 @@ export default function HowItWorksPage() {
       <section className="py-20 px-4 bg-gradient-to-br from-blue-50 to-white">
         <div className="container mx-auto">
           <div className="max-w-4xl mx-auto text-center">
-            <Badge className="mb-6 bg-blue-100 text-blue-800">How It Works</Badge>
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">Simple 4-Step Process</h1>
             <p className="text-xl text-gray-600 mb-8 leading-relaxed">
               Getting assistance has never been easier. Our streamlined process ensures quick, fair, and transparent
@@ -145,18 +144,13 @@ export default function HowItWorksPage() {
       <section className="py-16 px-4">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Application Process</h2>
+            <h2 className="text-5xl font-bold text-blue-900 mb-4">Application Process</h2>
             <p className="text-xl text-gray-600">Follow these simple steps to apply for assistance</p>
           </div>
 
-          <div className="space-y-12">
+          <div className="space-y-12 m-5">
             {steps.map((step, index) => (
               <div key={index} className="relative">
-                {/* Connector Line */}
-                {index < steps.length - 1 && (
-                  <div className="absolute left-8 top-20 w-0.5 h-24 bg-gray-200 hidden md:block"></div>
-                )}
-
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                   <div className={`${index % 2 === 0 ? "md:order-1" : "md:order-2"}`}>
                     <div className="flex items-center space-x-4 mb-6">
@@ -206,7 +200,7 @@ export default function HowItWorksPage() {
       <section className="py-16 px-4 bg-gray-50">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Required Documents</h2>
+            <h2 className="text-5xl font-bold text-gray-900 mb-4">Required Documents</h2>
             <p className="text-xl text-gray-600">Prepare these documents before starting your application</p>
           </div>
 
@@ -236,7 +230,7 @@ export default function HowItWorksPage() {
       <section className="py-16 px-4">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Eligibility Criteria</h2>
+            <h2 className="text-5xl font-bold text-gray-900 mb-4">Eligibility Criteria</h2>
             <p className="text-xl text-gray-600">Basic requirements to qualify for assistance</p>
           </div>
 
@@ -262,7 +256,7 @@ export default function HowItWorksPage() {
       <section className="py-16 px-4 bg-gray-50">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+            <h2 className="text-5xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
             <p className="text-xl text-gray-600">Common questions about our application process</p>
           </div>
 
@@ -322,7 +316,7 @@ export default function HowItWorksPage() {
       <section className="py-16 px-4">
         <div className="container mx-auto">
           <div className="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-3xl p-12 text-white text-center">
-            <h2 className="text-3xl font-bold mb-4">Need Help with Your Application?</h2>
+            <h2 className="text-5xl font-bold mb-4">Need Help with Your Application?</h2>
             <p className="text-xl mb-8 max-w-2xl mx-auto">
               Our support team is here to help you through every step of the process.
             </p>

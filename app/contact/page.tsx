@@ -109,7 +109,6 @@ export default function ContactPage() {
       <section className="bg-gradient-to-r from-blue-900 to-blue-700 py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <Badge className="mb-4 bg-blue-100 text-blue-800 hover:bg-blue-100">Contact Us</Badge>
             <h1 className="text-4xl lg:text-5xl font-bold text-white mb-6">We're Here to Help</h1>
             <p className="text-xl text-blue-100 max-w-3xl mx-auto">
               Have questions about our services? Need assistance with your application? Our dedicated support team is
@@ -313,8 +312,6 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   )
 }

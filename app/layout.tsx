@@ -5,6 +5,7 @@ import "./globals.css"
 import { Toaster } from "@/components/ui/toaster"
 import { AuthProvider } from "@/components/providers/auth-provider"
 import { Header } from "@/components/layout/header"
+import { Footer } from "@/components/layout/footer" // 👈 import Footer
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
   description:
     "A comprehensive platform for financial assistance and welfare programs. Empowering communities through loans, microfinance, and emergency support.",
   keywords: "welfare, financial assistance, loans, microfinance, emergency support, Pakistan",
-    generator: 'v0.dev'
+  generator: "v0.dev",
 }
 
 export default function RootLayout({
@@ -28,6 +29,7 @@ export default function RootLayout({
           <div className="min-h-screen flex flex-col">
             <Header />
             <main className="flex-1">{children}</main>
+            <Footer /> {/* 👈 Footer added here globally */}
           </div>
           <Toaster />
         </AuthProvider>

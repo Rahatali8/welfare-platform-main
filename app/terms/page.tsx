@@ -72,7 +72,6 @@ export default function TermsPage() {
       <section className="bg-gradient-to-r from-blue-900 to-blue-700 py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <Badge className="mb-4 bg-blue-100 text-blue-800 hover:bg-blue-100">Terms of Service</Badge>
             <h1 className="text-4xl lg:text-5xl font-bold text-white mb-6">Terms of Service</h1>
             <p className="text-xl text-blue-100 max-w-3xl mx-auto mb-4">
               Please read these terms carefully before using our welfare platform services. These terms govern your use
@@ -263,8 +262,6 @@ export default function TermsPage() {
           </Card>
         </div>
       </section>
-
-      <Footer />
     </div>
   )
 }
