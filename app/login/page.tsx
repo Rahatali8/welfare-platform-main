@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Eye, EyeOff, Heart } from "lucide-react"
 import Link from "next/link"
+import { useAuth } from "@/components/providers/auth-provider" // ✅ import useAuth
 
 export default function LoginPage() {
   const [cnic, setCnic] = useState("")
@@ -18,6 +19,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const router = useRouter()
+  const { login } = useAuth() // ✅ context se login function lo
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -31,7 +33,7 @@ export default function LoginPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          cnic: cnic.replace(/\D/g, ""), // ✅ Remove all non-digit characters
+          cnic: cnic.replace(/\D/g, ""),
           password,
         }),
       })
@@ -39,6 +41,9 @@ export default function LoginPage() {
       const data = await response.json()
 
       if (response.ok) {
+        login(data.user) // ✅ context ko update karo
+
+        // ✅ redirect user based on role
         if (data.user.role === "admin") {
           router.push("/dashboard/admin")
         } else if (data.user.role === "donor") {
@@ -47,7 +52,7 @@ export default function LoginPage() {
           router.push("/dashboard/user")
         }
       } else {
-        setError(data.error || "Login failed. Please try again.")
+        setError(data.message || "Login failed. Please try again.")
       }
     } catch (error) {
       setError("Network error. Please check your connection and try again.")

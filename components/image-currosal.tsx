@@ -6,31 +6,31 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 
 const carouselImages = [
   {
-    src: "/quality-education.jpg?height=600&width=1200",
+    src: "/welfare-work.png",
     alt: "Students in classroom learning",
     title: "Quality Education",
     description: "Providing world-class education to underserved communities",
   },
   {
-    src: "/food-security.jpg?height=600&width=1200",
+    src: "/welfare-work.png",
     alt: "Food distribution to families",
     title: "Food Security",
     description: "Ensuring no family goes hungry in our communities",
   },
   {
-    src: "/health-care.jpg?height=600&width=1200",
+    src: "/welfare-work.png",
     alt: "Medical camp providing healthcare",
     title: "Healthcare Access",
     description: "Bringing essential medical services to remote areas",
   },
   {
-    src: "/environment.jpg?height=600&width=1200",
+    src: "/welfare-work.png",
     alt: "Tree planting environmental initiative",
     title: "Environmental Care",
     description: "Creating a sustainable future through environmental initiatives",
   },
   {
-    src: "/skill-devp.jpg?height=600&width=1200",
+    src: "/welfare-work.png",
     alt: "Technical training center",
     title: "Skills Development",
     description: "Empowering youth with technical and vocational skills",
