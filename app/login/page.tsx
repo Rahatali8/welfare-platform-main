@@ -44,12 +44,10 @@ export default function LoginPage() {
         login(data.user) // ✅ context ko update karo
 
         // ✅ redirect user based on role
-        if (data.user.role === "admin") {
-          router.push("/dashboard/admin")
-        } else if (data.user.role === "donor") {
-          router.push("/dashboard/donor")
+        if (data.message === "Login successfu") {
+          router.push("/")
         } else {
-          router.push("/dashboard/user")
+          router.push("/")
         }
       } else {
         setError(data.message || "Login failed. Please try again.")

@@ -127,9 +127,9 @@ export default function HomePage() {
                   size="lg"
                   className="bg-gradient-to-r from-blue-900 to-blue-700 hover:from-blue-800 hover:to-blue-600 text-white px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                 >
-                  <Link href="/apply">
+                  <Link href="/signup">
                     <Heart className="h-5 w-5 mr-2" />
-                    Apply for Assistance
+                    Get Assistance
                     <ArrowRight className="h-5 w-5 ml-2" />
                   </Link>
                 </Button>
@@ -139,9 +139,9 @@ export default function HomePage() {
                   size="lg"
                   className="border-2 border-blue-900 text-blue-900 hover:bg-blue-50 px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 bg-white"
                 >
-                  <Link href="/services">
+                  <Link href="/dashboard-preview">
                     <Play className="h-5 w-5 mr-2" />
-                    Explore Services
+                    What We Have Served
                   </Link>
                 </Button>
               </div>
