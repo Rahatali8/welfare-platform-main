@@ -39,7 +39,7 @@ export function Header() {
           {user && (
             <>
               <Link href="/apply" className="text-gray-700 hover:text-blue-600 transition-colors">Apply</Link>
-              <Link href="/dashboard/preview" className="text-gray-700 hover:text-blue-600 transition-colors">Review</Link>
+              <Link href="/dashboard-preview" className="text-gray-700 hover:text-blue-600 transition-colors">Dashboard Review</Link>
 
               {/* Support Dropdown */}
               <div className="relative group">

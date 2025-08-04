@@ -102,6 +102,7 @@ export default function LoginPage() {
                 <Input
                   id="cnic"
                   type="text"
+                  autoComplete="off"
                   placeholder="12345-1234567-1"
                   value={cnic}
                   onChange={handleCnicChange}
