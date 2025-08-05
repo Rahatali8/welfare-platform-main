@@ -31,12 +31,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "Invalid credentials" }, { status: 401 })
     }
 
+    // ✅ Create JWT Token with userId, cnic, and role
     const token = jwt.sign(
-      { userId: user.id, cnic: user.cnic, role: user.role },
+      {
+        userId: user.id,
+        cnic: user.cnic,
+        role: user.role,
+      },
       JWT_SECRET,
       { expiresIn: "7d" }
     )
 
+    // ✅ Send token in cookie named 'auth-token'
     const response = NextResponse.json({
       message: "Login successful",
       user: {
@@ -48,7 +54,7 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    response.cookies.set("token", token, {
+    response.cookies.set("auth-token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",

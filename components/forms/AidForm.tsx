@@ -4,123 +4,106 @@ import axios from 'axios';
 
 export default function AidForm() {
   const [formData, setFormData] = useState({
-    fullName: '',
-    cnic: '',
-    phone: '',
-    reason: '',
-    amount: '',
-    address: '',
+    full_name: '',
+    father_name: '',
+    cnic_number: '',
+    marital_status: '',
+    family_count: '',
+    adult_member: '',
+    matric_member: '',
+    home_rent: '',
+    fridge: '',
+    monthly_income: '',
+    type: 'AID', // This sets the request type
   });
 
-  const [image, setImage] = useState<File | null>(null);
+  const [cnicFront, setCnicFront] = useState<File | null>(null);
+  const [cnicBack, setCnicBack] = useState<File | null>(null);
+  const [document, setDocument] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setImage(e.target.files[0]);
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
     try {
       const form = new FormData();
-      form.append('type', 'aid');
-      form.append('fullName', formData.fullName);
-      form.append('cnic', formData.cnic);
-      form.append('phone', formData.phone);
-      form.append('reason', formData.reason);
-      form.append('amount', formData.amount);
-      form.append('address', formData.address);
-      if (image) form.append('document', image);
+      Object.entries(formData).forEach(([key, value]) => {
+        form.append(key, value.toString());
+      });
+
+      if (cnicFront) form.append('cnic_front', cnicFront);
+      if (cnicBack) form.append('cnic_back', cnicBack);
+      if (document) form.append('document', document);
 
       const res = await axios.post('/api/requests/submit', form);
-      if (res.status === 200) {
-        setSubmitted(true);
-        setFormData({
-          fullName: '',
-          cnic: '',
-          phone: '',
-          reason: '',
-          amount: '',
-          address: '',
-        });
-        setImage(null);
-      }
+      alert('Form submitted successfully!');
     } catch (err) {
-      console.error('Submission failed:', err);
+      console.error(err);
+      alert('Submission failed');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-8 border w-full max-w-3xl mx-auto">
-      <h2 className="text-2xl font-semibold mb-6 border-b pb-2">Aid Request Form</h2>
-
-      {submitted && (
-        <div className="bg-green-100 text-green-700 px-4 py-2 mb-4 rounded">
-          Request submitted successfully!
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div>
+        <h2 className="text-lg font-semibold border-b pb-2 mb-4">Personal Information</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input type="text" name="full_name" value={formData.full_name} onChange={handleChange} className="input" placeholder="Full Name" required />
+          <input type="text" name="father_name" value={formData.father_name} onChange={handleChange} className="input" placeholder="Father Name" required />
+          <input type="text" name="cnic_number" value={formData.cnic_number} onChange={handleChange} className="input" placeholder="CNIC Number" required />
+          <select name="marital_status" value={formData.marital_status} onChange={handleChange} className="input" required>
+            <option value="">Marital Status</option>
+            <option value="Single">Single</option>
+            <option value="Married">Married</option>
+          </select>
         </div>
-      )}
+      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div>
-          <label className="block mb-1 font-medium">Full Name</label>
-          <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} required
-            className="w-full border px-4 py-2 rounded" />
+      <div>
+        <h2 className="text-lg font-semibold border-b pb-2 mb-4">Household Info</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input type="number" name="family_count" value={formData.family_count} onChange={handleChange} className="input" placeholder="Family Member Count" required />
+          <input type="number" name="adult_member" value={formData.adult_member} onChange={handleChange} className="input" placeholder="Members 18+" required />
+          <input type="number" name="matric_member" value={formData.matric_member} onChange={handleChange} className="input" placeholder="Matric-Passed Members" required />
+          <select name="home_rent" value={formData.home_rent} onChange={handleChange} className="input" required>
+            <option value="">Paying Rent?</option>
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+          </select>
+          <select name="fridge" value={formData.fridge} onChange={handleChange} className="input" required>
+            <option value="">Has Fridge?</option>
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+          </select>
+          <input type="number" name="monthly_income" value={formData.monthly_income} onChange={handleChange} className="input" placeholder="Monthly Income" required />
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div>
-            <label className="block mb-1 font-medium">CNIC</label>
-            <input type="text" name="cnic" value={formData.cnic} onChange={handleChange} required
-              className="w-full border px-4 py-2 rounded" />
-          </div>
-
-          <div>
-            <label className="block mb-1 font-medium">Phone Number</label>
-            <input type="text" name="phone" value={formData.phone} onChange={handleChange} required
-              className="w-full border px-4 py-2 rounded" />
-          </div>
+      <div>
+        <h2 className="text-lg font-semibold border-b pb-2 mb-4">Upload Documents</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <input type="file" accept="image/*" onChange={(e) => setCnicFront(e.target.files?.[0] || null)} className="input" required />
+          <input type="file" accept="image/*" onChange={(e) => setCnicBack(e.target.files?.[0] || null)} className="input" required />
+          <input type="file" accept=".pdf,.doc,.docx,image/*" onChange={(e) => setDocument(e.target.files?.[0] || null)} className="input" />
         </div>
+      </div>
 
-        <div>
-          <label className="block mb-1 font-medium">Address</label>
-          <input type="text" name="address" value={formData.address} onChange={handleChange} required
-            className="w-full border px-4 py-2 rounded" />
-        </div>
-
-        <div>
-          <label className="block mb-1 font-medium">Reason for Aid</label>
-          <textarea name="reason" value={formData.reason} onChange={handleChange} required
-            className="w-full border px-4 py-2 rounded h-24 resize-none" />
-        </div>
-
-        <div>
-          <label className="block mb-1 font-medium">Requested Amount</label>
-          <input type="number" name="amount" value={formData.amount} onChange={handleChange} required
-            className="w-full border px-4 py-2 rounded" />
-        </div>
-
-        <div>
-          <label className="block mb-1 font-medium">Upload Applier Image(optional)</label>
-          <input type="file" accept="image/*,application/pdf" onChange={handleFileChange}
-            className="w-full border px-4 py-2 rounded" />
-        </div>
-
-        <button type="submit"
-          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-          disabled={loading}>
-          {loading ? 'Submitting...' : 'Submit Request'}
+      <div className="text-center pt-4">
+        <button
+          type="submit"
+          className={`bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          disabled={loading}
+        >
+          {loading ? 'Submitting...' : 'Submit Application'}
         </button>
-      </form>
-    </div>
+      </div>
+    </form>
   );
 }

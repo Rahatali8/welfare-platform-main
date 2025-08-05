@@ -1,87 +1,145 @@
 'use client';
+
 import { useState } from 'react';
 import axios from 'axios';
 
 export default function MarriageSupportForm() {
-  const [formData, setFormData] = useState({
-    applicantName: '',
-    cnic: '',
-    phone: '',
-    brideName: '',
-    relation: '',
-    amount: '',
-    address: '',
+  const [form, setForm] = useState({
+    full_name: '',
+    father_name: '',
+    cnic_number: '',
+    marital_status: '',
+    family_count: '',
+    adult_member: '',
+    matric_member: '',
+    home_rent: '',
+    fridge: '',
+    monthly_income: '',
+    type: 'Marriage Support',
+    description: '',
   });
+
+  const [cnicFront, setCnicFront] = useState<File | null>(null);
+  const [cnicBack, setCnicBack] = useState<File | null>(null);
   const [document, setDocument] = useState<File | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    e.target.files?.length && setDocument(e.target.files[0]);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: string) => {
+    const file = e.target.files?.[0] || null;
+    if (type === 'cnicFront') setCnicFront(file);
+    if (type === 'cnicBack') setCnicBack(file);
+    if (type === 'document') setDocument(file);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    try {
-      const form = new FormData();
-      form.append('type', 'marriage');
-      Object.entries(formData).forEach(([key, value]) => form.append(key, value));
-      if (document) form.append('document', document);
+    setSubmitting(true);
+    const formData = new FormData();
 
-      const res = await axios.post('/api/requests/submit', form);
-      if (res.status === 200) {
-        setSubmitted(true);
-        setFormData({
-          applicantName: '',
-          cnic: '',
-          phone: '',
-          brideName: '',
-          relation: '',
-          amount: '',
-          address: '',
-        });
-        setDocument(null);
-      }
-    } catch (err) {
-      console.error('Submit failed', err);
+    Object.entries(form).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
+    if (cnicFront) formData.append('cnic_front', cnicFront);
+    if (cnicBack) formData.append('cnic_back', cnicBack);
+    if (document) formData.append('document', document);
+
+    try {
+      const res = await axios.post('/api/requests/submit', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        withCredentials: true,
+      });
+
+      alert('Request submitted successfully!');
+      setForm({
+        full_name: '',
+        father_name: '',
+        cnic_number: '',
+        marital_status: '',
+        family_count: '',
+        adult_member: '',
+        matric_member: '',
+        home_rent: '',
+        fridge: '',
+        monthly_income: '',
+        type: 'Marriage Support',
+        description: '',
+      });
+      setCnicFront(null);
+      setCnicBack(null);
+      setDocument(null);
+    } catch (error) {
+      console.error(error);
+      alert('Submission failed!');
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-3xl mx-auto">
-      <h2 className="text-2xl font-semibold mb-6 border-b pb-2">Marriage Support Form</h2>
-      {submitted && <div className="bg-green-100 text-green-700 p-3 mb-4 rounded">Request submitted successfully!</div>}
-      <form onSubmit={handleSubmit} className="space-y-5">
-        {Object.entries(formData).map(([name, value]) => (
-          <div key={name}>
-            <label className="block mb-1 font-medium capitalize">{name.replace(/([A-Z])/g, ' $1')}</label>
-            <input
-              type={name === 'amount' ? 'number' : 'text'}
-              name={name}
-              value={value}
-              onChange={handleChange}
-              required
-              className="w-full border px-4 py-2 rounded"
-            />
-          </div>
-        ))}
-        <div>
-          <label className="block mb-1 font-medium">Upload applier Image</label>
-          <input type="file" accept="image/*,application/pdf" onChange={handleFileChange} className="w-full" />
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-        >
-          {loading ? 'Submitting...' : 'Submit'}
-        </button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded shadow">
+      <h2 className="text-xl font-bold">Marriage Support Form</h2>
+
+      <input name="full_name" placeholder="Full Name" value={form.full_name} onChange={handleChange} required className="w-full p-2 border rounded" />
+      <input name="father_name" placeholder="Father Name" value={form.father_name} onChange={handleChange} required className="w-full p-2 border rounded" />
+      <input name="cnic_number" placeholder="CNIC Number" value={form.cnic_number} onChange={handleChange} required className="w-full p-2 border rounded" />
+
+      <select name="marital_status" value={form.marital_status} onChange={handleChange} required className="w-full p-2 border rounded">
+        <option value="">Select Marital Status</option>
+        <option value="Single">Single</option>
+        <option value="Married">Married</option>
+        <option value="Widowed">Widowed</option>
+      </select>
+
+      <input name="family_count" placeholder="Family Member Count" value={form.family_count} onChange={handleChange} type="number" required className="w-full p-2 border rounded" />
+      <select name="adult_member" value={form.adult_member} onChange={handleChange} required className="w-full p-2 border rounded">
+        <option value="">Any member 18+?</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+
+      <input name="matric_member" placeholder="Matric-Passed Members" value={form.matric_member} onChange={handleChange} type="number" required className="w-full p-2 border rounded" />
+
+      <select name="home_rent" value={form.home_rent} onChange={handleChange} required className="w-full p-2 border rounded">
+        <option value="">Do you pay rent?</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+
+      <select name="fridge" value={form.fridge} onChange={handleChange} required className="w-full p-2 border rounded">
+        <option value="">Do you own a fridge?</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+
+      <input name="monthly_income" placeholder="Monthly Income" value={form.monthly_income} onChange={handleChange} type="number" required className="w-full p-2 border rounded" />
+
+      <textarea name="description" placeholder="Why you need marriage support?" value={form.description} onChange={handleChange} required className="w-full p-2 border rounded" />
+
+      <div>
+        <label>CNIC Front:</label>
+        <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'cnicFront')} required />
+      </div>
+
+      <div>
+        <label>CNIC Back:</label>
+        <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'cnicBack')} required />
+      </div>
+
+      <div>
+        <label>Supporting Document:</label>
+        <input type="file" onChange={(e) => handleFileChange(e, 'document')} />
+      </div>
+
+      <button type="submit" disabled={submitting} className="bg-blue-600 text-white px-4 py-2 rounded">
+        {submitting ? 'Submitting...' : 'Submit Request'}
+      </button>
+    </form>
   );
 }

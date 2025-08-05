@@ -39,17 +39,36 @@ model Donor {
 }
 
 model Request {
-  id          Int           @id @default(autoincrement())
-  user_id     Int
-  type        RequestType
-  description String?
-  status      RequestStatus @default(pending)
-  created_at  DateTime      @default(now())
+  id             Int           @id @default(autoincrement())
+  user_id        Int
+  type           String
+  description    String?
+  status         String        @default("pending")
+  created_at     DateTime      @default(now())
 
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  full_name      String?
+  father_name    String?
+  cnic_number    String?
+  material_status String?
+  family_count   Int?
+  adult_member   Int?
+  matric_member  Int?
+  home_rent      Boolean?
+  fridge         Boolean?
+  monthly_income Int?
+
+  cnic_front     String?
+  cnic_back      String?
+  document       String?
+
+  reason         String?
+  repayment_time String?
+
+  user           User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("requests")
 }
+
 
 model PasswordReset {
   id         Int      @id @default(autoincrement())
@@ -84,6 +103,9 @@ enum RequestType {
   aid
   loan
   microfinance
+  medical
+  marriage
+  education
 }
 
 enum RequestStatus {
