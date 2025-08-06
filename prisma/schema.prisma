@@ -49,7 +49,7 @@ model Request {
   full_name      String?
   father_name    String?
   cnic_number    String?
-  material_status String?
+  marital_status String?
   family_count   Int?
   adult_member   Int?
   matric_member  Int?

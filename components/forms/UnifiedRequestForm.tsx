@@ -5,17 +5,17 @@ import axios from 'axios';
 
 export default function UnifiedRequestForm() {
     const [formData, setFormData] = useState({
-        fullName: '',
-        fatherName: '',
-        cnicNumber: '',
-        phoneNumber: '', // ✅ updated
-        maritalStatus: '',
-        familyCount: '',
-        adultMember: '',
-        matricMember: '',
-        homeRent: '',
+        full_name: '',
+        father_name: '',
+        cnic_number: '',
+        phone_number: '',
+        marital_status: '',
+        family_count: '',
+        adult_member: '',
+        matric_member: '',
+        home_rent: '',
         fridge: '',
-        monthlyIncome: '',
+        monthly_income: '',
         type: '',
         description: '',
         reason: '',
@@ -26,15 +26,11 @@ export default function UnifiedRequestForm() {
     const [cnicBack, setCnicBack] = useState<File | null>(null);
     const [document, setDocument] = useState<File | null>(null);
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-    ) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleFileChange = (setter: React.Dispatch<React.SetStateAction<File | null>>) => (
-        e: React.ChangeEvent<HTMLInputElement>
-    ) => {
+    const handleFileChange = (setter: React.Dispatch<React.SetStateAction<File | null>>) => (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files?.[0]) {
             setter(e.target.files[0]);
         }
@@ -44,7 +40,6 @@ export default function UnifiedRequestForm() {
         e.preventDefault();
 
         const form = new FormData();
-
         Object.entries(formData).forEach(([key, value]) => {
             form.append(key, value);
         });
@@ -54,38 +49,34 @@ export default function UnifiedRequestForm() {
         if (document) form.append('document', document);
 
         try {
-            const res = await axios.post('/api/requests/submit', form, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-
-            alert('Request submitted successfully');
-        } catch (err) {
-            console.error('Error submitting form:', err);
-            alert('Failed to submit request');
+            await axios.post('/api/requests/submit', form);
+            alert('Request submitted successfully!');
+        } catch (error) {
+            console.error('Submission error:', error);
+            alert('Something went wrong.');
         }
     };
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4 p-4 border rounded-md shadow">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input name="fullName" placeholder="Full Name" value={formData.fullName} onChange={handleChange} required className="input" />
-                <input name="fatherName" placeholder="Father Name" value={formData.fatherName} onChange={handleChange} required className="input" />
-                <input name="cnicNumber" placeholder="CNIC Number" value={formData.cnicNumber} onChange={handleChange} required className="input" />
-                <input name="phoneNumber"placeholder="Phone Number"value={formData.phoneNumber} onChange={handleChange} required className="input"/>        <select name="maritalStatus" value={formData.maritalStatus} onChange={handleChange} required className="input">
+                <input name="full_name" placeholder="Full Name" value={formData.full_name} onChange={handleChange} required className="input" />
+                <input name="father_name" placeholder="Father Name" value={formData.father_name} onChange={handleChange} required className="input" />
+                <input name="cnic_number" placeholder="CNIC Number" value={formData.cnic_number} onChange={handleChange} required className="input" />
+                <input name="phone_number" placeholder="Phone Number" value={formData.phone_number} onChange={handleChange} required className="input" />
+                <select name="marital_status" value={formData.marital_status} onChange={handleChange} required className="input">
                     <option value="">Marital Status</option>
                     <option value="Single">Single</option>
                     <option value="Married">Married</option>
                 </select>
-                <input name="familyCount" placeholder="Family Member Count" value={formData.familyCount} onChange={handleChange} required className="input" />
-                <select name="adultMember" value={formData.adultMember} onChange={handleChange} required className="input">
+                <input name="family_count" placeholder="Family Count" value={formData.family_count} onChange={handleChange} required className="input" />
+                <select name="adult_member" value={formData.adult_member} onChange={handleChange} required className="input">
                     <option value="">18+ Members?</option>
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
                 </select>
-                <input name="matricMember" placeholder="Matric Passed Members" value={formData.matricMember} onChange={handleChange} required className="input" />
-                <select name="homeRent" value={formData.homeRent} onChange={handleChange} required className="input">
+                <input name="matric_member" placeholder="Matric Members" value={formData.matric_member} onChange={handleChange} required className="input" />
+                <select name="home_rent" value={formData.home_rent} onChange={handleChange} required className="input">
                     <option value="">Home on Rent?</option>
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
@@ -95,9 +86,9 @@ export default function UnifiedRequestForm() {
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
                 </select>
-                <input name="monthlyIncome" placeholder="Monthly Income" value={formData.monthlyIncome} onChange={handleChange} required className="input" />
+                <input name="monthly_income" placeholder="Monthly Income" value={formData.monthly_income} onChange={handleChange} required className="input" />
                 <select name="type" value={formData.type} onChange={handleChange} required className="input">
-                    <option value="">Select Request Type</option>
+                    <option value="">Type</option>
                     <option value="Loan">Loan</option>
                     <option value="Aid">Aid</option>
                     <option value="Microfinance">Microfinance</option>
@@ -107,38 +98,31 @@ export default function UnifiedRequestForm() {
                 </select>
             </div>
 
-            <textarea
-                name="description"
-                placeholder="Description / Situation"
-                value={formData.description}
-                onChange={handleChange}
-                className="input w-full"
-                required
-            />
+            <textarea name="description" placeholder="Description" value={formData.description} onChange={handleChange} required className="input w-full" />
 
             {formData.type === 'Loan' && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input name="reason" placeholder="Reason for Loan" value={formData.reason} onChange={handleChange} required className="input" />
-                    <input name="repayment_time" placeholder="Loan Repayment Time" value={formData.repayment_time} onChange={handleChange} required className="input" />
+                    <input name="reason" placeholder="Loan Reason" value={formData.reason} onChange={handleChange} required className="input" />
+                    <input name="repayment_time" placeholder="Repayment Time" value={formData.repayment_time} onChange={handleChange} required className="input" />
                 </div>
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label className="block mb-1">CNIC Front Image</label>
-                    <input type="file" accept="image/*" onChange={handleFileChange(setCnicFront)} required className="input" />
+                    <label>CNIC Front</label>
+                    <input type="file" name="cnic_front" accept="image/*" onChange={handleFileChange(setCnicFront)} required />
                 </div>
                 <div>
-                    <label className="block mb-1">CNIC Back Image</label>
-                    <input type="file" accept="image/*" onChange={handleFileChange(setCnicBack)} required className="input" />
+                    <label>CNIC Back</label>
+                    <input type="file" name="cnic_back" accept="image/*" onChange={handleFileChange(setCnicBack)} required />
                 </div>
                 <div>
-                    <label className="block mb-1">Supporting Document</label>
-                    <input type="file" onChange={handleFileChange(setDocument)} required className="input" />
+                    <label>Supporting Document</label>
+                    <input type="file" name="document" onChange={handleFileChange(setDocument)} required />
                 </div>
             </div>
 
-            <button type="submit" className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
                 Submit Request
             </button>
         </form>

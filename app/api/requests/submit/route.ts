@@ -1,81 +1,92 @@
+// app/api/requests/submit/route.ts
+
 import { NextRequest, NextResponse } from 'next/server';
-import { parseForm } from '@/lib/parseForm';
-import { db } from '@/lib/db'; // ✅ Tumhara mysql2 connection
-import jwt from 'jsonwebtoken';
-import { IncomingMessage } from 'http';
+// import { parseForm } from '@/lib/parseForm';
+import { db } from '@/lib/db';
+import { writeFile } from 'fs/promises';
+import path from 'path';
+import { verifyJWT } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {
-    // ✅ Token check
     const token = req.cookies.get('auth-token')?.value;
-    if (!token)
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const decoded = verifyJWT(token);
 
-    const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-    const userId = decoded?.user?.id;
-    if (!userId)
-      return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
+    if (!decoded || !decoded.id) {
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+    }
 
-    // ✅ Form parse karo using formidable
-    const parsedRequest = req as unknown as { body: IncomingMessage };
-    const { fields, files } = await parseForm(parsedRequest.body);
+    // const { fields, files } = await parseForm(req);
+    const formData = await req.formData();
 
-    // ✅ Saare fields
-    const {
-      fullName,
-      fatherName,
-      cnicNumber,
-      maritalStatus,
-      familyCount,
-      adultMember,
-      matricMember,
-      homeRent,
-      fridge,
-      monthlyIncome,
-      phone_number, // ✅ New field
-      type,
-      description,
-      reason,
-      repayment_time,
-    } = fields;
+    const fullName = formData.get('fullName') as string;
+    const fatherName = formData.get('fatherName') as string;
+    const cnicNumber = formData.get('cnicNumber') as string;
+    const maritalStatus = formData.get('maritalStatus') as string;
+    const familyCount = formData.get('familyCount') as string;
+    const adultMember = formData.get('adultMember') as string;
+    const matricMember = formData.get('matricMember') as string;
+    const homeRent = formData.get('homeRent') as string;
+    const fridge = formData.get('fridge') as string;
+    const monthlyIncome = formData.get('monthlyIncome') as string;
+    const type = formData.get('type') as string;
+    const description = formData.get('description') as string;
+    const reason = formData.get('reason') as string | null;
+    const repayment_time = formData.get('repayment_time') as string | null;
+    const cnicFront = formData.get('cnic_front') as File;
+    const cnicBack = formData.get('cnic_back') as File | null;
+    const document = formData.get('document') as File | null;
 
-    const cnicFront = files.cnic_front?.[0]?.newFilename || '';
-    const cnicBack = files.cnic_back?.[0]?.newFilename || '';
-    const document = files.document?.[0]?.newFilename || '';
+    const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
 
-    // ✅ Query
-    await db.execute(
-      `INSERT INTO requests 
-        (user_id, full_name, father_name, cnic_number, marital_status, family_count, adult_member, matric_member, home_rent, fridge, monthly_income, phone_number, type, description, reason, repayment_time, cnic_front, cnic_back, document, status, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', NOW())`,
-      [
-        userId,
-        fullName,
-        fatherName,
-        cnicNumber,
-        maritalStatus,
-        familyCount,
-        adultMember,
-        matricMember,
-        homeRent,
-        fridge,
-        monthlyIncome,
-        phone_number,
+    const saveFile = async (file: File | null) => {
+      if (!file) return null;
+      const data = await file.arrayBuffer();
+      const buffer = Buffer.from(data);
+      const fileName = `${Date.now()}-${file.name}`;
+      const filePath = path.join(uploadsDir, fileName);
+      await writeFile(filePath, buffer);
+      return `/uploads/${fileName}`;
+    };
+
+    const cnicFrontPath = await saveFile(cnicFront);
+    const cnicBackPath = await saveFile(cnicBack);
+    const documentPath = await saveFile(document);
+
+
+    
+    const request = await db.request.create({
+    data: {
+        user_id: decoded.id, // ✅ fixed here
+        full_name: fullName,
+        father_name: fatherName,
+        cnic_number: cnicNumber,
+        marital_status: maritalStatus,
+        family_count: parseInt(familyCount),
+        adult_member: parseInt(adultMember || '0'),
+        matric_member: parseInt(matricMember || '0'),
+        home_rent: homeRent === 'yes',
+        fridge: fridge === 'yes',
+        monthly_income: parseFloat(monthlyIncome),
         type,
         description,
-        reason || '',
-        repayment_time || '',
-        cnicFront,
-        cnicBack,
-        document,
-      ]
-    );
+        reason: reason || null,
+        repayment_time: repayment_time || null,
+        cnic_front: cnicFrontPath,
+        cnic_back: cnicBackPath,
+        document: documentPath,
+        status: 'PENDING',
+      },
+    });
 
-    return NextResponse.json({ message: 'Request submitted successfully' });
+    return NextResponse.json({ success: true, request });
   } catch (error) {
-    console.error('❌ Error:', error);
-    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
+    console.error('Error submitting request:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
