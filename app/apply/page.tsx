@@ -1,12 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import LoanForm from '@/components/forms/LoanForm';
-import AidForm from '@/components/forms/AidForm';
-import MicrofinanceForm from '@/components/forms/MicrofinanceForm';
-import EducationSupportForm from '@/components/forms/EducationSupportForm';
-import MedicalHelpForm from '@/components/forms/MedicalHelpForm';
-import MarriageSupportForm from '@/components/forms/MarriageSupportForm';
-// import other form components as needed
+import UnifiedRequestForm from '@/components/forms/UnifiedRequestForm';
 // import other forms as needed
 
 const FORM_TYPES = [
@@ -43,12 +37,7 @@ export default function ApplyFormPage() {
       </div>
 
       <div className="bg-white shadow-md rounded-md p-6">
-        {activeForm === 'loan' && <LoanForm />}
-        {activeForm === 'aid' && <AidForm />}
-        {activeForm === 'microfinance' && <MicrofinanceForm />}
-        {activeForm === 'education' && <EducationSupportForm />}
-        {activeForm === 'medical' && <MedicalHelpForm />}
-        {activeForm === 'marriage' && <MarriageSupportForm />}
+        {activeForm === 'loan' && <UnifiedRequestForm />}
         {/* Add other form components here similarly */}
       </div>
     </div>

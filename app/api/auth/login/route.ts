@@ -1,69 +1,55 @@
-import { type NextRequest, NextResponse } from "next/server"
-import bcrypt from "bcryptjs"
-import jwt from "jsonwebtoken"
-import { db } from "@/lib/db"
+import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"
+const prisma = new PrismaClient();
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
-export async function POST(request: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const { cnic, password } = await request.json()
+    const body = await req.json();
+    const { cnic, password } = body;
 
-    if (!cnic || !password) {
-      return NextResponse.json({ message: "CNIC and password are required" }, { status: 400 })
+    // Find user by CNIC
+    const user = await prisma.user.findUnique({
+      where: { cnic },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: 'Invalid CNIC or password' }, { status: 401 });
     }
 
-    const rawCnic = cnic.replace(/\D/g, "")
-
-    const [users] = await db.execute(
-      "SELECT id, cnic, name AS full_name, address, password, role FROM users WHERE cnic = ?",
-      [rawCnic]
-    )
-
-    if (!Array.isArray(users) || users.length === 0) {
-      return NextResponse.json({ message: "Invalid credentials" }, { status: 401 })
+    // Compare passwords
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return NextResponse.json({ error: 'Invalid CNIC or password' }, { status: 401 });
     }
 
-    const user = users[0] as any
-
-    const isPasswordValid = await bcrypt.compare(password, user.password)
-    if (!isPasswordValid) {
-      return NextResponse.json({ message: "Invalid credentials" }, { status: 401 })
-    }
-
-    // ✅ Create JWT Token with userId, cnic, and role
+    // Sign JWT token
     const token = jwt.sign(
       {
-        userId: user.id,
+        id: user.id,
         cnic: user.cnic,
         role: user.role,
       },
       JWT_SECRET,
-      { expiresIn: "7d" }
-    )
+      { expiresIn: '7d' }
+    );
 
-    // ✅ Send token in cookie named 'auth-token'
-    const response = NextResponse.json({
-      message: "Login successful",
-      user: {
-        id: user.id,
-        cnic: user.cnic,
-        fullName: user.full_name,
-        address: user.address,
-        role: user.role,
-      },
-    })
-
-    response.cookies.set("auth-token", token, {
+    // Store in cookie
+    cookies().set('auth-token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60, // 7 days
-    })
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+      path: '/',
+    });
 
-    return response
+    return NextResponse.json({ message: 'Login successful', user }, { status: 200 });
   } catch (error) {
-    console.error("Login error:", error)
-    return NextResponse.json({ message: "Internal server error" }, { status: 500 })
+    console.error('Login error:', error);
+    return NextResponse.json({ error: 'Login failed' }, { status: 500 });
   }
 }

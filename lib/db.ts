@@ -1,23 +1,8 @@
-import mysql from "mysql2/promise";
+import mysql from 'mysql2/promise';
 
-// ✅ Create MySQL connection pool
 export const db = mysql.createPool({
-  host: "127.0.0.1",            // or "localhost"
-  user: "root",
-  password: "rahat12@#",
-  database: "welfare_platform",
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
 });
-
-// ✅ Optional: Ping DB to test connection at startup (dev only)
-(async () => {
-  try {
-    const connection = await db.getConnection();
-    console.log("✅ Connected to MySQL (welfare_platform)");
-    connection.release();
-  } catch (error) {
-    console.error("❌ MySQL Connection Failed:", error);
-  }
-})();
