@@ -56,6 +56,7 @@ export default function UnifiedRequestForm() {
             alert('Something went wrong.');
         }
     };
+    
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4 p-4 border rounded-md shadow">
@@ -70,21 +71,42 @@ export default function UnifiedRequestForm() {
                     <option value="Married">Married</option>
                 </select>
                 <input name="family_count" placeholder="Family Count" value={formData.family_count} onChange={handleChange} required className="input" />
-                <select name="adult_member" value={formData.adult_member} onChange={handleChange} required className="input">
-                    <option value="">18+ Members?</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
+                <select
+                    name="adult_member"
+                    value={formData.adult_member}
+                    onChange={handleChange}
+                    required
+                    className="input"
+                >
+                    <option value="">Select 18+ Members</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4+</option>
                 </select>
                 <input name="matric_member" placeholder="Matric Members" value={formData.matric_member} onChange={handleChange} required className="input" />
-                <select name="home_rent" value={formData.home_rent} onChange={handleChange} required className="input">
-                    <option value="">Home on Rent?</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
+                <select
+                    name="home_rent"
+                    value={formData.home_rent}
+                    onChange={handleChange}
+                    required
+                    className="input"
+                >
+                    <option value="">Is your home on rent?</option>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
                 </select>
-                <select name="fridge" value={formData.fridge} onChange={handleChange} required className="input">
-                    <option value="">Have Fridge?</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
+                <select
+                    name="fridge"
+                    value={formData.fridge}
+                    onChange={handleChange}
+                    required
+                    className="input"
+                >
+                    <option value="">Do you have a fridge?</option>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
                 </select>
                 <input name="monthly_income" placeholder="Monthly Income" value={formData.monthly_income} onChange={handleChange} required className="input" />
                 <select name="type" value={formData.type} onChange={handleChange} required className="input">

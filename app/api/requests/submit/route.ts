@@ -24,20 +24,21 @@ export async function POST(req: NextRequest) {
     // const { fields, files } = await parseForm(req);
     const formData = await req.formData();
 
-    const fullName = formData.get('fullName') as string;
-    const fatherName = formData.get('fatherName') as string;
-    const cnicNumber = formData.get('cnicNumber') as string;
-    const maritalStatus = formData.get('maritalStatus') as string;
-    const familyCount = formData.get('familyCount') as string;
-    const adultMember = formData.get('adultMember') as string;
-    const matricMember = formData.get('matricMember') as string;
-    const homeRent = formData.get('homeRent') as string;
+    const fullName = formData.get('full_name') as string;
+    const fatherName = formData.get('father_name') as string;
+    const cnicNumber = formData.get('cnic_number') as string;
+    const maritalStatus = formData.get('marital_status') as string;
+    const familyCount = formData.get('family_count') as string;
+    const adultMember = formData.get('adult_member') as string;
+    const matricMember = formData.get('matric_member') as string;
+    const homeRent = formData.get('home_rent') as string;
     const fridge = formData.get('fridge') as string;
-    const monthlyIncome = formData.get('monthlyIncome') as string;
+    const monthlyIncome = formData.get('monthly_income') as string;
     const type = formData.get('type') as string;
     const description = formData.get('description') as string;
     const reason = formData.get('reason') as string | null;
     const repayment_time = formData.get('repayment_time') as string | null;
+
     const cnicFront = formData.get('cnic_front') as File;
     const cnicBack = formData.get('cnic_back') as File | null;
     const document = formData.get('document') as File | null;
@@ -59,19 +60,19 @@ export async function POST(req: NextRequest) {
     const documentPath = await saveFile(document);
 
 
-    
+
     const request = await db.request.create({
-    data: {
+      data: {
         user_id: decoded.id, // ✅ fixed here
         full_name: fullName,
         father_name: fatherName,
         cnic_number: cnicNumber,
         marital_status: maritalStatus,
         family_count: parseInt(familyCount),
-        adult_member: parseInt(adultMember || '0'),
+         adult_member: parseInt(adultMember as string),
         matric_member: parseInt(matricMember || '0'),
-        home_rent: homeRent === 'yes',
-        fridge: fridge === 'yes',
+        home_rent: homeRent === 'Yes' ? true : false,   // ✅ string -> boolean
+        fridge: fridge === 'Yes' ? true : false,
         monthly_income: parseFloat(monthlyIncome),
         type,
         description,
