@@ -53,8 +53,8 @@ model Request {
   family_count   Int?
   adult_member   Int?
   matric_member  Int?
-  home_rent      Boolean?
-  fridge         Boolean?
+  home_rent      String?
+  fridge         String?
   monthly_income Int?
 
   cnic_front     String?

@@ -35,24 +35,13 @@ export function Header() {
           <Link href="/services" className="text-gray-700 hover:text-blue-600 transition-colors">Services</Link>
           <Link href="/how-it-works" className="text-gray-700 hover:text-blue-600 transition-colors">How It Works</Link>
           <Link href="/success-stories" className="text-gray-700 hover:text-blue-600 transition-colors">Success Stories</Link>
+          <Link href="/dashboard-preview" className="text-gray-700 hover:text-blue-600 transition-colors">Dashboard Review</Link>
 
           {user && (
             <>
               <Link href="/apply" className="text-gray-700 hover:text-blue-600 transition-colors">Apply</Link>
-              <Link href="/dashboard-preview" className="text-gray-700 hover:text-blue-600 transition-colors">Dashboard Review</Link>
 
-              {/* Support Dropdown */}
-              <div className="relative group">
-                <button className="text-gray-700 hover:text-blue-600 transition-colors flex items-center gap-1">
-                  Support <ChevronDown className="w-4 h-4" />
-                </button>
-                <div className="absolute hidden group-hover:block bg-white shadow-md rounded-md mt-2 w-48 z-50">
-                  <Link href="/help" className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100">Help Center</Link>
-                  <Link href="/contact" className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100">Contact Us</Link>
-                  <Link href="/privacy-policy" className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100">Privacy Policy</Link>
-                  <Link href="/terms" className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100">Terms of Service</Link>
-                </div>
-              </div>
+              
 
               {/* Dashboard Dropdown */}
               <div className="relative group">

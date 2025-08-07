@@ -24,6 +24,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/head-logo.png" />
+      </head>
       <body className={inter.className}>
         <AuthProvider>
           <div className="min-h-screen flex flex-col">

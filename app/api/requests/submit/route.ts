@@ -71,8 +71,8 @@ export async function POST(req: NextRequest) {
         family_count: parseInt(familyCount),
          adult_member: parseInt(adultMember as string),
         matric_member: parseInt(matricMember || '0'),
-        home_rent: homeRent === 'Yes' ? true : false,   // ✅ string -> boolean
-        fridge: fridge === 'Yes' ? true : false,
+        home_rent: homeRent,   // ✅ string -> boolean
+        fridge: fridge,
         monthly_income: parseFloat(monthlyIncome),
         type,
         description,
