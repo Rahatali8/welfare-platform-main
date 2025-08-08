@@ -212,7 +212,7 @@ export default function DonorSignupPage() {
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-600">
                   Already have an account?{" "}
-                  <Link href="/login" className="text-[#1e3a8a] hover:text-[#1e40af] font-medium">
+                  <Link href="/donor/login" className="text-[#1e3a8a] hover:text-[#1e40af] font-medium">
                     Sign in here
                   </Link>
                 </p>

@@ -47,7 +47,7 @@ export function Header() {
                   Dashboard <ChevronDown className="w-4 h-4" />
                 </button>
                 <div className="absolute hidden group-hover:block bg-white shadow-md rounded-md mt-2 w-48 z-50">
-                  <Link href="/user/dashboard" className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-100">
+                  <Link href="/dashboard/user" className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-100">
                     User Dashboard
                   </Link>
                   <button onClick={() => handleDashboardClick("donor")} className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-100">
@@ -99,7 +99,7 @@ export function Header() {
                   <summary className="px-4 py-2 text-gray-700 cursor-pointer">Dashboard</summary>
                   <div className="pl-4 pb-2 flex flex-col space-y-1">
                     <Link
-                      href="/user/dashboard"
+                      href="/dashboard/user"
                       className="text-left text-sm text-gray-700 hover:text-blue-600"
                       onClick={() => setIsMenuOpen(false)}
                     >
