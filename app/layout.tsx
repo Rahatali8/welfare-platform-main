@@ -31,6 +31,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthProvider>
           <div className="min-h-screen flex flex-col">
+
             <Header />
             <main className="flex-1">{children}</main>
             <Footer /> {/* 👈 Footer added here globally */}

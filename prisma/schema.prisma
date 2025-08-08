@@ -19,7 +19,6 @@ model User {
   role       Role     @default(user)
   created_at DateTime @default(now())
 
-  donors         Donor[]
   requests       Request[]
   passwordResets PasswordReset[]
   donations      Donation[]
@@ -27,16 +26,21 @@ model User {
   @@map("users")
 }
 
-model Donor {
-  id                Int     @id @default(autoincrement())
-  user_id           Int
+model Donors {
+  id                Int          @id @default(autoincrement())
+  name              String
   organization_name String?
   contact_number    String?
-
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  email             String       @unique
+  cnic              String       @unique
+  password          String
+  status            DonorStatus  @default(PENDING)
+  created_at        DateTime     @default(now())
+  updated_at        DateTime     @updatedAt
 
   @@map("donors")
 }
+
 
 model Request {
   id             Int           @id @default(autoincrement())
@@ -113,3 +117,10 @@ enum RequestStatus {
   approved
   rejected
 }
+
+enum DonorStatus {
+  PENDING
+  ACTIVE
+  REJECTED
+}
+

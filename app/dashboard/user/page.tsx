@@ -233,7 +233,7 @@ export default function UserDashboard() {
                   <div className="text-center py-8">
                     <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-600">No requests submitted yet</p>
-                    <Button className="mt-4" onClick={() => document.querySelector('[value="apply"]')?.click()}>
+                    <Button className="mt-4" onClick={() => document.getElementById("myButton")?.click()}>
                       Submit Your First Request
                     </Button>
                   </div>

@@ -1,24 +1,26 @@
-"use client"
+// 📁 app/components/Header.tsx ya jahan bhi tumhara Header component hai
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Heart, Menu, X, ChevronDown } from "lucide-react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useAuth } from "@/components/providers/auth-provider"
+"use client";
+
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { ChevronDown, Menu, X } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/components/providers/auth-provider";
 
 export function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const router = useRouter()
-  const { user, logout } = useAuth()
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const router = useRouter();
+  const { user, logout } = useAuth();
 
   const handleDashboardClick = (type: string) => {
     if (!user) {
-      router.push("/signup")
+      router.push("/signup");
     } else {
-      router.push(`/${type}-dashboard`)
+      router.push(`/${type}/dashboard`);
     }
-  }
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
@@ -30,18 +32,14 @@ export function Header() {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
-          <Link href="/" className="text-gray-700 hover:text-blue-600 transition-colors">Home</Link>
           <Link href="/about" className="text-gray-700 hover:text-blue-600 transition-colors">About</Link>
           <Link href="/services" className="text-gray-700 hover:text-blue-600 transition-colors">Services</Link>
-          <Link href="/how-it-works" className="text-gray-700 hover:text-blue-600 transition-colors">How It Works</Link>
           <Link href="/success-stories" className="text-gray-700 hover:text-blue-600 transition-colors">Success Stories</Link>
-          <Link href="/dashboard-preview" className="text-gray-700 hover:text-blue-600 transition-colors">Dashboard Review</Link>
+          <Link href="/how-it-works" className="text-gray-700 hover:text-blue-600 transition-colors">How It Works</Link>
 
           {user && (
             <>
               <Link href="/apply" className="text-gray-700 hover:text-blue-600 transition-colors">Apply</Link>
-
-              
 
               {/* Dashboard Dropdown */}
               <div className="relative group">
@@ -49,11 +47,18 @@ export function Header() {
                   Dashboard <ChevronDown className="w-4 h-4" />
                 </button>
                 <div className="absolute hidden group-hover:block bg-white shadow-md rounded-md mt-2 w-48 z-50">
-                  <button onClick={() => handleDashboardClick("user")} className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-100">User Dashboard</button>
-                  <button onClick={() => handleDashboardClick("admin")} className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-100">Admin Dashboard</button>
-                  <button onClick={() => handleDashboardClick("donor")} className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-100">Donor Dashboard</button>
+                  <Link href="/user/dashboard" className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-100">
+                    User Dashboard
+                  </Link>
+                  <button onClick={() => handleDashboardClick("donor")} className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-100">
+                    Donor Dashboard
+                  </button>
                 </div>
               </div>
+
+              {/* Donor Signup - ✅ Show only when logged in */}
+              <Link href="/donor/signup" className="text-white hover:text-gray-200 bg-green-600 p-2 rounded-md transition-colors">Donor Signup</Link>
+
             </>
           )}
         </nav>
@@ -80,41 +85,43 @@ export function Header() {
       {isMenuOpen && (
         <div className="md:hidden border-t bg-white">
           <div className="container mx-auto px-4 py-4 space-y-4">
-            <Link href="/" className="block text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Home</Link>
             <Link href="/about" className="block text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>About</Link>
             <Link href="/services" className="block text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Services</Link>
-            <Link href="/how-it-works" className="block text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>How It Works</Link>
             <Link href="/success-stories" className="block text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Success Stories</Link>
+            <Link href="/how-it-works" className="block text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>How It Works</Link>
 
             {user && (
               <>
                 <Link href="/apply" className="block text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Apply</Link>
-                <Link href="/dashboard/preview" className="block text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Review</Link>
 
-                <details className="border rounded-md">
-                  <summary className="px-4 py-2 text-gray-700 cursor-pointer">Support</summary>
-                  <div className="pl-4 pb-2 flex flex-col space-y-1">
-                    <Link href="/help" className="text-sm text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Help Center</Link>
-                    <Link href="/contact" className="text-sm text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Contact Us</Link>
-                    <Link href="/privacy-policy" className="text-sm text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Privacy Policy</Link>
-                    <Link href="/terms" className="text-sm text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Terms of Service</Link>
-                  </div>
-                </details>
 
                 <details className="border rounded-md">
                   <summary className="px-4 py-2 text-gray-700 cursor-pointer">Dashboard</summary>
                   <div className="pl-4 pb-2 flex flex-col space-y-1">
-                    <button onClick={() => { handleDashboardClick("user"); setIsMenuOpen(false) }} className="text-left text-sm text-gray-700 hover:text-blue-600">User Dashboard</button>
-                    <button onClick={() => { handleDashboardClick("admin"); setIsMenuOpen(false) }} className="text-left text-sm text-gray-700 hover:text-blue-600">Admin Dashboard</button>
-                    <button onClick={() => { handleDashboardClick("donor"); setIsMenuOpen(false) }} className="text-left text-sm text-gray-700 hover:text-blue-600">Donor Dashboard</button>
+                    <Link
+                      href="/user/dashboard"
+                      className="text-left text-sm text-gray-700 hover:text-blue-600"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      User Dashboard
+                    </Link>
+                    <button
+                      onClick={() => { handleDashboardClick("donor"); setIsMenuOpen(false); }}
+                      className="text-left text-sm text-gray-700 hover:text-blue-600"
+                    >
+                      Donor Dashboard
+                    </button>
                   </div>
+                  {/* ✅ Donor Signup in Mobile view */}
+                  <Link href="/donor/signup" className="block text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Donor Signup</Link>
+
                 </details>
               </>
             )}
 
             <div className="border-t pt-4 space-y-2">
               {user ? (
-                <Button variant="ghost" onClick={() => { logout(); setIsMenuOpen(false) }} className="w-full justify-start">Logout</Button>
+                <Button variant="ghost" onClick={() => { logout(); setIsMenuOpen(false); }} className="w-full justify-start">Logout</Button>
               ) : (
                 <>
                   <Button variant="ghost" asChild className="w-full"><Link href="/login" onClick={() => setIsMenuOpen(false)}>Login</Link></Button>
@@ -126,5 +133,5 @@ export function Header() {
         </div>
       )}
     </header>
-  )
+  );
 }
