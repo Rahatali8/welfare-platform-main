@@ -3,11 +3,16 @@ import type { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
 import { hasSubmittedApplication } from "./lib/helpers";
 
-
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
-// Simulated DB call (Replace this with actual DB check later)
 export async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+
+  // ✅ Public pages that don't require login
+  if (pathname.startsWith("/apply-form")) {
+    return NextResponse.next();
+  }
+
   const token = request.cookies.get("auth-token")?.value;
 
   if (!token) {
@@ -17,11 +22,11 @@ export async function middleware(request: NextRequest) {
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as any;
     const { role, cnic } = decoded;
-    const pathname = request.nextUrl.pathname;
 
     // 🟠 USER Dashboard Access Control
     if (pathname.startsWith("/dashboard/user")) {
-      const hasApp = await hasSubmittedApplication(cnic);
+      const cleanCnic = cnic.replace(/-/g, ""); // remove dashes
+      const hasApp = await hasSubmittedApplication(cleanCnic);
 
       if (!hasApp) {
         return NextResponse.redirect(new URL("/apply-form", request.url));
@@ -47,6 +52,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/dashboard/:path*",      // All dashboard routes
+    "/dashboard/:path*",
+    "/apply-form",
   ],
 };

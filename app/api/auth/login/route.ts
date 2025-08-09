@@ -12,9 +12,12 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { cnic, password } = body;
 
+    // ✅ Clean input CNIC for query
+    const cleanInputCnic = (cnic ?? "").replace(/-/g, "");
+
     // Find user by CNIC
     const user = await prisma.user.findUnique({
-      where: { cnic },
+      where: { cnic: cleanInputCnic },
     });
 
     if (!user) {
@@ -27,18 +30,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid CNIC or password' }, { status: 401 });
     }
 
+    // ✅ Clean CNIC for JWT
+    const cleanCnic = (user.cnic ?? "").replace(/-/g, "");
+
     // Sign JWT token
     const token = jwt.sign(
-      {
-        id: user.id,
-        cnic: user.cnic,
-        role: user.role,
-      },
+      { id: user.id, role: user.role, cnic: cleanCnic },
       JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: "7d" }
     );
 
-    // Store in cookie
+    // ✅ Store token in cookie with same name everywhere
     cookies().set('auth-token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -47,7 +49,9 @@ export async function POST(req: Request) {
       path: '/',
     });
 
-    return NextResponse.json({ message: 'Login successful', user }, { status: 200 });
+    // ✅ Return user in `{ user: ... }` format (suggestion 1)
+    return NextResponse.json({ user }, { status: 200 });
+
   } catch (error) {
     console.error('Login error:', error);
     return NextResponse.json({ error: 'Login failed' }, { status: 500 });
