@@ -139,7 +139,7 @@ export default function HomePage() {
                   size="lg"
                   className="border-2 border-blue-900 text-blue-900 hover:bg-blue-50 px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 bg-white"
                 >
-                  <Link href="/dashboard-preview">
+                  <Link href="/stats-sec">
                     <Play className="h-5 w-5 mr-2" />
                     What We Have Served
                   </Link>

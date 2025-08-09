@@ -76,7 +76,7 @@ export default function DonorSignupPage() {
                 Welcome to Khair Welfare! Your donor account has been created successfully.
               </p>
               <Button className="w-full bg-[#1e3a8a] hover:bg-[#1e40af]" asChild>
-                <Link href="/login">Login Now</Link>
+                <Link href="/donor/login">Login Now</Link>
               </Button>
             </CardContent>
           </Card>
@@ -200,10 +200,24 @@ export default function DonorSignupPage() {
               </div>
 
               {error && (
+
                 <Alert className="border-red-200 bg-red-50">
                   <AlertDescription className="text-red-800">{error}</AlertDescription>
                 </Alert>
               )}
+
+              {/* Commitment Checkbox (UI only, not sent to backend) */}
+              <div className="flex items-center gap-2 mt-2 mb-4 p-3 bg-blue-50 rounded border border-blue-200">
+                <input
+                  type="checkbox"
+                  id="donor-commitment"
+                  className="accent-blue-600 w-4 h-4"
+                  required
+                />
+                <label htmlFor="donor-commitment" className="text-sm text-gray-700 select-none">
+                  I understand and agree that by signing up, I am committing to serve as a donor for Khair Welfare for as long as I am able. <span className="text-gray-500">(This is a deterrent only, not legally binding.)</span>
+                </label>
+              </div>
 
               <Button type="submit" className="w-full bg-[#1e3a8a] hover:bg-[#1e40af]" disabled={loading}>
                 {loading ? "Signing up..." : "Signup"}

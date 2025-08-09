@@ -10,6 +10,7 @@ interface User {
   fullName: string
   address: string
   role: string
+  city?: string;
 }
 
 interface AuthContextType {
@@ -37,10 +38,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const checkAuth = async () => {
     try {
-      const response = await fetch("/api/user/profile")
+      const response = await fetch("/api/user/profile", { credentials: "include" })
       if (response.ok) {
         const data = await response.json()
-        setUser(data.user)
+        // Map backend user to frontend structure
+        setUser({
+          id: data.user.id,
+          cnic: data.user.cnic,
+          fullName: data.user.name, // backend 'name' -> frontend 'fullName'
+          address: data.user.address,
+          role: data.user.role,
+        })
       }
     } catch (error) {
       console.error("Auth check error:", error)
