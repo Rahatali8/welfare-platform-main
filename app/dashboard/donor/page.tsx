@@ -1,219 +1,100 @@
-"use client"
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useToast } from "@/hooks/use-toast"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import {
-  Heart,
-  DollarSign,
-  CreditCard,
-  Search,
-  Eye,
-  HandHeart,
-  TrendingUp,
-  FileText,
-  LogOut,
-  Users,
-} from "lucide-react"
-import { useRouter } from "next/navigation"
+"use client";
 
-interface Request {
-  id: number
-  userId: number
-  type: string
-  reason: string
-  amount?: number
-  status: "pending" | "approved" | "rejected"
-  submittedAt: string
-  currentAddress: string
-  cnicImage?: string
-  additionalData: any
-  user: {
-    fullName: string
-    cnic: string
-    address: string
-  }
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Heart } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+
+type RequestUser = {
+  id: string;
+  fullName: string;
+  cnic: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+};
+
+type RequestType = {
+  id: string;
+  user: RequestUser;
+  type: string;
+  status: string;
+  reason?: string;
+  description?: string;
+  amount?: number;
+  createdAt?: string;
+  updatedAt?: string;
+  [key: string]: any;
+};
+
+
+// Placeholder helpers (replace with real logic as needed)
+function getTypeIcon(type: string) {
+  return <Heart className="h-5 w-5 text-red-500" />;
+}
+function getTypeColor(type: string) {
+  return "bg-blue-100 text-blue-800";
+}
+function formatCNIC(cnic: string) {
+  return cnic;
 }
 
-interface DonorAnalytics {
-  totalRequests: number
-  approvedRequests: number
-  totalAmount: number
-  myDonations: number
-  myDonationAmount: number
-}
-
-export default function DonorDashboard() {
-  const [requests, setRequests] = useState<Request[]>([])
-  const [filteredRequests, setFilteredRequests] = useState<Request[]>([])
-  const [analytics, setAnalytics] = useState<DonorAnalytics | null>(null)
-  const [selectedRequest, setSelectedRequest] = useState<Request | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [typeFilter, setTypeFilter] = useState("all")
-  const [donationAmount, setDonationAmount] = useState("")
-  const { toast } = useToast()
-  const router = useRouter()
+export default function DonorDashboardPage() {
+  const [groupedRequests, setGroupedRequests] = useState<{ [type: string]: RequestType[] }>({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchRequests()
-    fetchAnalytics()
-  }, [])
+    async function fetchRequests() {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch("/api/donor/requests");
+        if (!res.ok) throw new Error("Failed to fetch requests");
+        const data = await res.json();
+  setGroupedRequests(data.requests || {});
+      } catch (err: any) {
+        setError(err.message || "Unknown error");
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchRequests();
+  }, []);
 
+  function handleAccept(id: string) {
+    // TODO: Implement accept logic
+    alert(`Accepted request ${id}`);
+  }
+  function handleForward(id: string) {
+    // TODO: Implement forward logic
+    alert(`Forwarded request ${id}`);
+  }
+
+
+  const [donor, setDonor] = useState<any>(null);
+  const [profileLoading, setProfileLoading] = useState(true);
   useEffect(() => {
-    filterRequests()
-  }, [requests, searchTerm, typeFilter])
-
-  const fetchRequests = async () => {
-    try {
-      const response = await fetch("/api/donor/requests")
-      if (response.ok) {
-        const data = await response.json()
-        setRequests(data.requests)
-      } else if (response.status === 401) {
-        router.push("/login")
+    async function fetchProfile() {
+      setProfileLoading(true);
+      try {
+        const res = await fetch("/api/donor/profile");
+        const data = await res.json();
+        setDonor(data.donor);
+      } catch (e) {
+        setDonor(null);
+      } finally {
+        setProfileLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching requests:", error)
-    } finally {
-      setIsLoading(false)
     }
-  }
-
-  const fetchAnalytics = async () => {
-    try {
-      const response = await fetch("/api/donor/analytics")
-      if (response.ok) {
-        const data = await response.json()
-        setAnalytics(data.analytics)
-      }
-    } catch (error) {
-      console.error("Error fetching analytics:", error)
-    }
-  }
-
-  const filterRequests = () => {
-    let filtered = requests.filter((request) => request.status === "approved") // Only show approved requests
-
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (request) =>
-          request.user.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          request.user.cnic.includes(searchTerm) ||
-          request.reason.toLowerCase().includes(searchTerm.toLowerCase()),
-      )
-    }
-
-    if (typeFilter !== "all") {
-      filtered = filtered.filter((request) => request.type === typeFilter)
-    }
-
-    setFilteredRequests(filtered)
-  }
-
-  const makeDonation = async (requestId: number, amount: number) => {
-    try {
-      const response = await fetch("/api/donor/donate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ requestId, amount }),
-      })
-
-      if (response.ok) {
-        toast({
-          title: "Donation Successful!",
-          description: `Thank you for donating PKR ${amount.toLocaleString()}`,
-        })
-        fetchAnalytics()
-        setDonationAmount("")
-      } else {
-        toast({
-          title: "Donation Failed",
-          description: "Failed to process donation",
-          variant: "destructive",
-        })
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to process donation",
-        variant: "destructive",
-      })
-    }
-  }
-
-  const handleLogout = async () => {
-    try {
-      await fetch("/api/auth/logout", { method: "POST" })
-      router.push("/")
-    } catch (error) {
-      console.error("Logout error:", error)
-    }
-  }
-
-  const formatCNIC = (cnic: string) => {
-    if (cnic.length === 13) {
-      return `${cnic.slice(0, 5)}-${cnic.slice(5, 12)}-${cnic.slice(12)}`
-    }
-    return cnic
-  }
-
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case "loan":
-        return <DollarSign className="h-4 w-4" />
-      case "microfinance":
-        return <Heart className="h-4 w-4" />
-      case "general":
-        return <CreditCard className="h-4 w-4" />
-      default:
-        return <FileText className="h-4 w-4" />
-    }
-  }
-
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case "loan":
-        return "bg-blue-100 text-blue-800"
-      case "microfinance":
-        return "bg-red-100 text-red-800"
-      case "general":
-        return "bg-green-100 text-green-800"
-      default:
-        return "bg-gray-100 text-gray-800"
-    }
-  }
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading donor dashboard...</p>
-        </div>
-      </div>
-    )
-  }
+    fetchProfile();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
@@ -224,535 +105,184 @@ export default function DonorDashboard() {
                 <p className="text-sm text-gray-600">Help those in need through your generous donations</p>
               </div>
             </div>
-            <Button variant="outline" onClick={handleLogout}>
-              <LogOut className="h-4 w-4 mr-2" />
-              Logout
-            </Button>
           </div>
         </div>
       </header>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Analytics Cards */}
-        {analytics && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Available Requests</CardTitle>
-                <FileText className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{analytics.totalRequests}</div>
-                <p className="text-xs text-muted-foreground">Approved applications</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Need</CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">PKR {analytics.totalAmount.toLocaleString()}</div>
-                <p className="text-xs text-muted-foreground">Total requested amount</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">My Donations</CardTitle>
-                <HandHeart className="h-4 w-4 text-green-600" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-green-600">{analytics.myDonations}</div>
-                <p className="text-xs text-muted-foreground">People helped</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">My Contribution</CardTitle>
-                <DollarSign className="h-4 w-4 text-green-600" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-green-600">
-                  PKR {analytics.myDonationAmount.toLocaleString()}
-                </div>
-                <p className="text-xs text-muted-foreground">Total donated</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Impact</CardTitle>
-                <Users className="h-4 w-4 text-purple-600" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-purple-600">
-                  {analytics.myDonations > 0
-                    ? Math.round((analytics.myDonationAmount / analytics.totalAmount) * 100)
-                    : 0}
-                  %
-                </div>
-                <p className="text-xs text-muted-foreground">Of total need met</p>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        <Tabs defaultValue="available-requests" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="available-requests">Available Requests</TabsTrigger>
-            <TabsTrigger value="loans">Loans</TabsTrigger>
-            <TabsTrigger value="microfinance">Microfinance</TabsTrigger>
-            <TabsTrigger value="general">General Help</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="available-requests">
-            <Card>
-              <CardHeader>
-                <CardTitle>Available Requests for Donation</CardTitle>
-                <CardDescription>Help approved applicants by making donations</CardDescription>
-
-                {/* Filters */}
-                <div className="flex flex-wrap gap-4 mt-4">
-                  <div className="flex-1 min-w-[200px]">
-                    <Label htmlFor="search">Search</Label>
-                    <div className="relative">
-                      <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="search"
-                        placeholder="Search by name, CNIC, or reason..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-8"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="type-filter">Type</Label>
-                    <Select value={typeFilter} onValueChange={setTypeFilter}>
-                      <SelectTrigger className="w-[150px]">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Types</SelectItem>
-                        <SelectItem value="loan">Loan</SelectItem>
-                        <SelectItem value="microfinance">Microfinance</SelectItem>
-                        <SelectItem value="general">General</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                {filteredRequests.length === 0 ? (
-                  <div className="text-center py-8">
-                    <Heart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-600">No approved requests available for donation</p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {filteredRequests.map((request) => (
-                      <div key={request.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                        <div className="flex justify-between items-start mb-2">
-                          <div className="flex-1">
-                            <div className="flex items-center space-x-2 mb-1">
-                              <h3 className="font-semibold text-lg">{request.user.fullName}</h3>
-                              <Badge variant="outline">{formatCNIC(request.user.cnic)}</Badge>
-                            </div>
-                            <div className="flex items-center space-x-2 mb-2">
-                              <Badge className={getTypeColor(request.type)}>
-                                <div className="flex items-center space-x-1">
-                                  {getTypeIcon(request.type)}
-                                  <span className="capitalize">{request.type}</span>
+        <div className="flex flex-col md:flex-row gap-8">
+          {/* Main dashboard content */}
+          <div className="flex-1">
+            {loading ? (
+              <div className="text-center py-10 text-gray-500">Loading requests...</div>
+            ) : error ? (
+              <div className="text-center py-10 text-red-500">{error}</div>
+            ) : Object.keys(groupedRequests).length === 0 ? (
+              <div className="text-gray-500">No requests found.</div>
+            ) : (
+              <Tabs defaultValue={Object.keys(groupedRequests)[0]} className="w-full">
+                <TabsList className="mb-6 flex flex-wrap gap-2">
+                  {Object.keys(groupedRequests).map((type) => (
+                    <TabsTrigger key={type} value={type} className="capitalize">
+                      {getTypeIcon(type)} {type}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+                {Object.entries(groupedRequests).map(([type, requests]) => (
+                  <TabsContent key={type} value={type} className="space-y-4">
+                    {requests.length === 0 ? (
+                      <div className="text-gray-500">No requests for this type.</div>
+                    ) : requests.map((request) => (
+                      <Card key={request.id}>
+                        <CardContent className="p-6">
+                          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                            <div>
+                              <div className="flex items-center gap-2 mb-2">
+                                <span className="font-semibold text-lg">{request.user?.fullName || "-"}</span>
+                                <div className="flex gap-1">
+                                  <Badge variant="outline">{formatCNIC(request.user?.cnic || "")}</Badge>
+                                  <Badge className={getTypeColor(request.type)}>{request.type}</Badge>
+                                  <Badge className={
+                                    request.status === "pending"
+                                      ? "bg-yellow-100 text-yellow-800"
+                                      : request.status === "approved"
+                                      ? "bg-green-100 text-green-800"
+                                      : "bg-red-100 text-red-800"
+                                  }>{request.status}</Badge>
                                 </div>
-                              </Badge>
-                              <Badge className="bg-green-100 text-green-800">Approved</Badge>
+                              </div>
+                              <div className="mb-2 text-gray-700">{request.reason || request.description}</div>
+                              {request.amount && (
+                                <div className="font-semibold text-blue-700">Need: PKR {request.amount.toLocaleString()}</div>
+                              )}
+                              {/* Show all available details */}
+                              <div className="text-xs text-gray-500 mt-2">
+                                <div><b>Request ID:</b> {request.id}</div>
+                                <div><b>Status:</b> {request.status}</div>
+                                <div><b>Type:</b> {request.type}</div>
+                                <div><b>User Email:</b> {request.user?.email || '-'}</div>
+                                <div><b>User Phone:</b> {request.user?.phone || '-'}</div>
+                                <div><b>User Address:</b> {request.user?.address || '-'}</div>
+                              </div>
                             </div>
-                            <p className="text-sm text-gray-500 mb-2">{request.reason}</p>
-                            {request.amount && (
-                              <p className="text-lg font-semibold text-blue-600">
-                                Need: PKR {request.amount.toLocaleString()}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="flex justify-between items-center mt-4">
-                          <div className="text-sm text-gray-500">
-                            <p>Approved: {new Date(request.submittedAt).toLocaleDateString()}</p>
-                            <p>Location: {request.currentAddress}</p>
-                          </div>
-
-                          <div className="flex space-x-2">
-                            <Dialog>
-                              <DialogTrigger asChild>
-                                <Button variant="outline" size="sm" onClick={() => setSelectedRequest(request)}>
-                                  <Eye className="h-4 w-4 mr-1" />
-                                  View Details
-                                </Button>
-                              </DialogTrigger>
-                              <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                                <DialogHeader>
-                                  <DialogTitle>Request Details</DialogTitle>
-                                  <DialogDescription>
-                                    Help {selectedRequest?.user.fullName} with their approved request
-                                  </DialogDescription>
-                                </DialogHeader>
-                                {selectedRequest && (
-                                  <div className="space-y-4">
-                                    <div className="grid grid-cols-2 gap-4">
-                                      <div>
-                                        <Label className="font-medium">Applicant Name</Label>
-                                        <p>{selectedRequest.user.fullName}</p>
-                                      </div>
-                                      <div>
-                                        <Label className="font-medium">CNIC</Label>
-                                        <p>{formatCNIC(selectedRequest.user.cnic)}</p>
-                                      </div>
-                                      <div>
-                                        <Label className="font-medium">Request Type</Label>
-                                        <p className="capitalize">{selectedRequest.type}</p>
-                                      </div>
-                                      <div>
-                                        <Label className="font-medium">Status</Label>
-                                        <Badge className="bg-green-100 text-green-800">Approved</Badge>
-                                      </div>
-                                      {selectedRequest.amount && (
-                                        <div>
-                                          <Label className="font-medium">Amount Needed</Label>
-                                          <p className="text-lg font-semibold text-blue-600">
-                                            PKR {selectedRequest.amount.toLocaleString()}
-                                          </p>
-                                        </div>
-                                      )}
-                                      <div>
-                                        <Label className="font-medium">Approved Date</Label>
-                                        <p>{new Date(selectedRequest.submittedAt).toLocaleDateString()}</p>
-                                      </div>
-                                    </div>
-
-                                    <div>
-                                      <Label className="font-medium">Current Address</Label>
-                                      <p>{selectedRequest.currentAddress}</p>
-                                    </div>
-
-                                    <div>
-                                      <Label className="font-medium">Reason for Help</Label>
-                                      <p>{selectedRequest.reason}</p>
-                                    </div>
-
-                                    {selectedRequest.additionalData && (
-                                      <div>
-                                        <Label className="font-medium">Additional Information</Label>
-                                        <div className="bg-gray-50 p-3 rounded-md">
-                                          {selectedRequest.type === "loan" &&
-                                            selectedRequest.additionalData.loanPurpose && (
-                                              <div className="space-y-2">
-                                                <p>
-                                                  <strong>Loan Purpose:</strong>{" "}
-                                                  {selectedRequest.additionalData.loanPurpose}
-                                                </p>
-                                                <p>
-                                                  <strong>Monthly Income:</strong> PKR{" "}
-                                                  {selectedRequest.additionalData.monthlyIncome}
-                                                </p>
-                                                <p>
-                                                  <strong>Occupation:</strong>{" "}
-                                                  {selectedRequest.additionalData.occupation}
-                                                </p>
-                                                <p>
-                                                  <strong>Duration:</strong>{" "}
-                                                  {selectedRequest.additionalData.loanDuration}
-                                                </p>
-                                              </div>
-                                            )}
-                                          {selectedRequest.type === "microfinance" &&
-                                            selectedRequest.additionalData.helpType && (
-                                              <div className="space-y-2">
-                                                <p>
-                                                  <strong>Help Type:</strong> {selectedRequest.additionalData.helpType}
-                                                </p>
-                                                <p>
-                                                  <strong>Urgency:</strong>{" "}
-                                                  {selectedRequest.additionalData.urgencyLevel}
-                                                </p>
-                                                <p>
-                                                  <strong>Dependents:</strong>{" "}
-                                                  {selectedRequest.additionalData.dependents}
-                                                </p>
-                                              </div>
-                                            )}
-                                          {selectedRequest.type === "general" &&
-                                            selectedRequest.additionalData.helpCategory && (
-                                              <div className="space-y-2">
-                                                <p>
-                                                  <strong>Category:</strong>{" "}
-                                                  {selectedRequest.additionalData.helpCategory}
-                                                </p>
-                                                <p>
-                                                  <strong>Urgency:</strong> {selectedRequest.additionalData.urgency}
-                                                </p>
-                                              </div>
-                                            )}
-                                        </div>
-                                      </div>
-                                    )}
-
-                                    {selectedRequest.cnicImage && (
-                                      <div>
-                                        <Label className="font-medium">CNIC Image</Label>
-                                        <img
-                                          src={selectedRequest.cnicImage || "/placeholder.svg"}
-                                          alt="CNIC"
-                                          className="max-w-full h-auto border rounded-md"
-                                        />
-                                      </div>
-                                    )}
-
-                                    <div className="border-t pt-4">
-                                      <Label className="font-medium">Make a Donation</Label>
-                                      <div className="flex space-x-2 mt-2">
-                                        <Input
-                                          type="number"
-                                          placeholder="Enter amount"
-                                          value={donationAmount}
-                                          onChange={(e) => setDonationAmount(e.target.value)}
-                                          className="flex-1"
-                                        />
-                                        <Button
-                                          onClick={() => {
-                                            const amount = Number.parseFloat(donationAmount)
-                                            if (amount > 0) {
-                                              makeDonation(selectedRequest.id, amount)
-                                            }
-                                          }}
-                                          disabled={!donationAmount || Number.parseFloat(donationAmount) <= 0}
-                                        >
-                                          <HandHeart className="h-4 w-4 mr-2" />
-                                          Donate
-                                        </Button>
-                                      </div>
-                                      {selectedRequest.amount && (
-                                        <div className="flex space-x-2 mt-2">
-                                          <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() =>
-                                              setDonationAmount((selectedRequest.amount! * 0.25).toString())
-                                            }
-                                          >
-                                            25%
-                                          </Button>
-                                          <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() =>
-                                              setDonationAmount((selectedRequest.amount! * 0.5).toString())
-                                            }
-                                          >
-                                            50%
-                                          </Button>
-                                          <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => setDonationAmount(selectedRequest.amount!.toString())}
-                                          >
-                                            Full Amount
-                                          </Button>
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div>
-                                )}
-                              </DialogContent>
-                            </Dialog>
-
-                            <Dialog>
-                              <DialogTrigger asChild>
-                                <Button size="sm" className="bg-green-600 hover:bg-green-700">
-                                  <HandHeart className="h-4 w-4 mr-1" />
-                                  Donate
-                                </Button>
-                              </DialogTrigger>
-                              <DialogContent>
-                                <DialogHeader>
-                                  <DialogTitle>Make a Donation</DialogTitle>
-                                  <DialogDescription>
-                                    Help {request.user.fullName} with their {request.type} request
-                                  </DialogDescription>
-                                </DialogHeader>
-                                <div className="space-y-4">
-                                  <div>
-                                    <Label htmlFor="donation-amount">Donation Amount (PKR)</Label>
-                                    <Input
-                                      id="donation-amount"
-                                      type="number"
-                                      placeholder="Enter amount"
-                                      value={donationAmount}
-                                      onChange={(e) => setDonationAmount(e.target.value)}
-                                    />
-                                  </div>
-                                  {request.amount && (
-                                    <div className="flex space-x-2">
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => setDonationAmount((request.amount! * 0.25).toString())}
-                                      >
-                                        25% (PKR {(request.amount * 0.25).toLocaleString()})
-                                      </Button>
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => setDonationAmount((request.amount! * 0.5).toString())}
-                                      >
-                                        50% (PKR {(request.amount * 0.5).toLocaleString()})
-                                      </Button>
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => setDonationAmount(request.amount!.toString())}
-                                      >
-                                        Full Amount
-                                      </Button>
+                            <div className="flex flex-col gap-2 min-w-[180px] items-end">
+                              {/* Show user-submitted images: request image, cnic front, cnic back, with labels */}
+                              {request.image && (
+                                <div className="mb-2 w-full flex flex-col items-end">
+                                  <span className="text-xs text-gray-500 mb-1">Request Image</span>
+                                  <img
+                                    src={request.image.startsWith("/uploads/") ? request.image : `/uploads/${request.image.replace(/^.*[\\/]/, '')}`}
+                                    alt="Request Image"
+                                    className="rounded-md max-h-24 border object-contain"
+                                    onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                                  />
+                                </div>
+                              )}
+                              {(request.cnic_front || request.cnic_back) && (
+                                <div className="mb-2 w-full flex flex-row gap-2 items-end justify-end">
+                                  {request.cnic_front && (
+                                    <div className="flex flex-col items-center">
+                                      <span className="text-xs text-gray-500 mb-1">CNIC Front</span>
+                                      <img
+                                        src={request.cnic_front.startsWith("/uploads/") ? request.cnic_front : `/uploads/${request.cnic_front.replace(/^.*[\\/]/, '')}`}
+                                        alt="CNIC Front"
+                                        className="rounded-md max-h-24 border object-contain"
+                                        onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                                      />
                                     </div>
                                   )}
-                                  <Button
-                                    onClick={() => {
-                                      const amount = Number.parseFloat(donationAmount)
-                                      if (amount > 0) {
-                                        makeDonation(request.id, amount)
-                                      }
-                                    }}
-                                    disabled={!donationAmount || Number.parseFloat(donationAmount) <= 0}
-                                    className="w-full"
-                                  >
-                                    <HandHeart className="h-4 w-4 mr-2" />
-                                    Confirm Donation
-                                  </Button>
+                                  {request.cnic_back && (
+                                    <div className="flex flex-col items-center">
+                                      <span className="text-xs text-gray-500 mb-1">CNIC Back</span>
+                                      <img
+                                        src={request.cnic_back.startsWith("/uploads/") ? request.cnic_back : `/uploads/${request.cnic_back.replace(/^.*[\\/]/, '')}`}
+                                        alt="CNIC Back"
+                                        className="rounded-md max-h-24 border object-contain"
+                                        onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                                      />
+                                    </div>
+                                  )}
                                 </div>
-                              </DialogContent>
-                            </Dialog>
+                              )}
+                              {request.document && (
+                                <div className="mb-2 w-full flex flex-col items-end">
+                                  <span className="text-xs text-gray-500 mb-1">Supporting Document</span>
+                                  <img
+                                    src={request.document.startsWith("/uploads/") ? request.document : `/uploads/${request.document.replace(/^.*[\\/]/, '')}`}
+                                    alt="Supporting Document"
+                                    className="rounded-md max-h-24 border object-contain"
+                                    onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                                  />
+                                </div>
+                              )}
+                              {request.status === "pending" && (
+                                <>
+                                  <Button size="sm" className="bg-green-600 hover:bg-green-700" onClick={() => handleAccept(request.id)}>
+                                    Accept
+                                  </Button>
+                                  <Button size="sm" variant="outline" onClick={() => handleForward(request.id)}>
+                                    Forward to Admin
+                                  </Button>
+                                </>
+                              )}
+                              {request.status === "approved" && (
+                                <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                                  Donate
+                                </Button>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      </div>
+                        </CardContent>
+                      </Card>
                     ))}
-                  </div>
+                  </TabsContent>
+                ))}
+              </Tabs>
+            )}
+          </div>
+          {/* Donor profile card on right */}
+          <aside className="w-full md:w-80 flex-shrink-0">
+            <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 sticky top-28">
+              <div className="flex flex-col items-center">
+                {profileLoading ? (
+                  <div className="py-10">Loading profile...</div>
+                ) : !donor ? (
+                  <div className="text-red-500">Profile not found</div>
+                ) : (
+                  <>
+                    <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center mb-2 overflow-hidden">
+                      <span className="text-4xl font-bold text-blue-600">{donor.name?.charAt(0) || "D"}</span>
+                    </div>
+                    <div className="font-bold text-xl text-gray-900 mb-1">{donor.name}</div>
+                    <div className="text-sm text-gray-500 mb-2">{donor.email}</div>
+                    <div className="w-full border-b border-gray-200 my-2"></div>
+                    <div className="w-full flex flex-col gap-2 text-gray-700 text-base">
+                      <div><b>CNIC:</b> {donor.cnic}</div>
+                      <div><b>Contact:</b> {donor.contact_number}</div>
+                      <div><b>Org:</b> {donor.organization_name || '-'}</div>
+                    </div>
+                    <div className="w-full border-b border-gray-200 my-2"></div>
+                    <div className="w-full flex flex-col gap-2 text-blue-900 text-base">
+                      <div><b>Total Donated:</b> PKR {donor.totalDonated?.toLocaleString()}</div>
+                      <div><b>Accepted Requests:</b> {donor.acceptedRequests}</div>
+                      <div><b>Total Requests:</b> {donor.totalRequests}</div>
+                    </div>
+                    <button
+                      className="mt-6 w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition text-lg shadow"
+                      onClick={async () => {
+                        await fetch("/api/logout", { method: "POST" });
+                        window.location.href = "/";
+                      }}
+                    >
+                      Logout
+                    </button>
+                  </>
                 )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Similar content for other tabs with filtered data */}
-          <TabsContent value="loans">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <DollarSign className="h-5 w-5 mr-2" />
-                  Loan Requests Available for Donation
-                </CardTitle>
-                <CardDescription>Help approved loan applicants</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {requests
-                    .filter((r) => r.type === "loan" && r.status === "approved")
-                    .map((request) => (
-                      <div key={request.id} className="border rounded-lg p-4">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h3 className="font-semibold">{request.user.fullName}</h3>
-                            <p className="text-lg font-semibold text-blue-600">
-                              PKR {request.amount?.toLocaleString()}
-                            </p>
-                            <p className="text-sm text-gray-500">{request.reason}</p>
-                          </div>
-                          <Button size="sm" className="bg-green-600 hover:bg-green-700">
-                            <HandHeart className="h-4 w-4 mr-1" />
-                            Donate
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="microfinance">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Heart className="h-5 w-5 mr-2" />
-                  Microfinance Requests Available for Donation
-                </CardTitle>
-                <CardDescription>Help with daily essentials and basic needs</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {requests
-                    .filter((r) => r.type === "microfinance" && r.status === "approved")
-                    .map((request) => (
-                      <div key={request.id} className="border rounded-lg p-4">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h3 className="font-semibold">{request.user.fullName}</h3>
-                            <p className="text-lg font-semibold text-blue-600">
-                              PKR {request.amount?.toLocaleString()}
-                            </p>
-                            <p className="text-sm text-gray-500">{request.reason}</p>
-                          </div>
-                          <Button size="sm" className="bg-green-600 hover:bg-green-700">
-                            <HandHeart className="h-4 w-4 mr-1" />
-                            Donate
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="general">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <CreditCard className="h-5 w-5 mr-2" />
-                  General Help Requests Available for Donation
-                </CardTitle>
-                <CardDescription>Help with emergency financial assistance</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {requests
-                    .filter((r) => r.type === "general" && r.status === "approved")
-                    .map((request) => (
-                      <div key={request.id} className="border rounded-lg p-4">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h3 className="font-semibold">{request.user.fullName}</h3>
-                            <p className="text-lg font-semibold text-blue-600">
-                              PKR {request.amount?.toLocaleString()}
-                            </p>
-                            <p className="text-sm text-gray-500">{request.reason}</p>
-                          </div>
-                          <Button size="sm" className="bg-green-600 hover:bg-green-700">
-                            <HandHeart className="h-4 w-4 mr-1" />
-                            Donate
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+              </div>
+            </div>
+          </aside>
+        </div>
       </div>
     </div>
-  )
+  );
 }
+

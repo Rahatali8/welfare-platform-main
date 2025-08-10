@@ -5,7 +5,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Menu, X, ShieldCheck, User, HeartHandshake } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/components/providers/auth-provider";
 import { ProfileDropdown } from "@/components/profile-dropdown";
 
@@ -16,6 +16,7 @@ export function Header() {
   const servicesRef = useRef<HTMLDivElement | null>(null);
   const dashboardRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
+  const pathname = usePathname();
   const { user, logout } = useAuth();
 
   // Close dropdowns when clicking outside
@@ -96,7 +97,7 @@ export function Header() {
                     <Link href="/dashboard/user" className="flex items-center gap-2 px-5 py-3 text-base text-blue-900 hover:bg-blue-50 rounded-t-xl">
                       <User className="w-5 h-5 text-blue-500" /> User Dashboard
                     </Link>
-                    <button onClick={() => handleDashboardClick("donor")} className="flex items-center gap-2 w-full text-left px-5 py-3 text-base text-blue-900 hover:bg-blue-50">
+                    <button onClick={() => handleDashboardClick("dashboard/donor")} className="flex items-center gap-2 w-full text-left px-5 py-3 text-base text-blue-900 hover:bg-blue-50">
                       <HeartHandshake className="w-5 h-5 text-green-500" /> Donor Dashboard
                     </button>
                     <Link href="/dashboard/admin-dashboard" className="flex items-center gap-2 px-5 py-3 text-base text-blue-900 hover:bg-blue-50 rounded-b-xl">
@@ -105,20 +106,44 @@ export function Header() {
                   </div>
                 )}
               </div>
-              {/* Donor Signup - ✅ Show only when logged in */}
-              <Link href="/donor/signup" className="text-white bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 shadow-md px-4 py-2 rounded-xl transition-all border border-green-200">Donor Signup</Link>
             </>
           )}
         </nav>
 
         {/* Auth Buttons */}
-  <div className="hidden md:flex items-center gap-4">
-          {user ? (
+        <div className="hidden md:flex items-center gap-4">
+          {pathname.startsWith("/dashboard/donor") ? (
+            <ProfileDropdown />
+          ) : user ? (
             <ProfileDropdown />
           ) : (
             <>
-              <Button variant="ghost" className="text-blue-900 font-semibold hover:bg-blue-50 px-4 py-2 rounded-lg" onClick={() => {window.location.href='/login';}}>Login</Button>
-              <Button className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-semibold px-4 py-2 rounded-lg shadow-md" onClick={() => {window.location.href='/signup';}}>Sign Up</Button>
+              {/* Login Dropdown */}
+              <div className="relative group">
+                <Button
+                  variant="ghost"
+                  className="text-blue-900 font-semibold hover:bg-blue-50 px-4 py-2 rounded-lg flex items-center gap-1"
+                >
+                  Login <ChevronDown className="w-4 h-4" />
+                </Button>
+                <div className="absolute hidden group-hover:block bg-white shadow-xl rounded-xl mt-2 w-44 z-50 border border-blue-100">
+                  <Link href="/login" className="block w-full text-left px-5 py-3 text-base text-blue-900 hover:bg-blue-50 rounded-t-xl">User Login</Link>
+                  <Link href="/donor/login" className="block w-full text-left px-5 py-3 text-base text-blue-900 hover:bg-blue-50">Donor Login</Link>
+                  <Link href="/dashboard/admin-dashboard" className="block w-full text-left px-5 py-3 text-base text-blue-900 hover:bg-blue-50 rounded-b-xl">Admin Login</Link>
+                </div>
+              </div>
+              {/* Signup Dropdown */}
+              <div className="relative group">
+                <Button
+                  className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-semibold px-4 py-2 rounded-lg shadow-md flex items-center gap-1"
+                >
+                  Sign Up <ChevronDown className="w-4 h-4" />
+                </Button>
+                <div className="absolute hidden group-hover:block bg-white shadow-xl rounded-xl mt-2 w-44 z-50 border border-blue-100">
+                  <Link href="/signup" className="block w-full text-left px-5 py-3 text-base text-blue-900 hover:bg-blue-50 rounded-t-xl">User Signup</Link>
+                  <Link href="/donor/signup" className="block w-full text-left px-5 py-3 text-base text-blue-900 hover:bg-blue-50 rounded-b-xl">Donor Signup</Link>
+                </div>
+              </div>
             </>
           )}
         </div>
@@ -158,7 +183,7 @@ export function Header() {
                       User Dashboard
                     </Link>
                     <button
-                      onClick={() => { handleDashboardClick("donor"); setIsMenuOpen(false); }}
+                      onClick={() => { handleDashboardClick("dashboard/donor"); setIsMenuOpen(false); }}
                       className="text-left text-sm text-gray-700 hover:text-blue-600"
                     >
                       Donor Dashboard
@@ -176,8 +201,23 @@ export function Header() {
                 <Button variant="ghost" onClick={() => { logout(); setIsMenuOpen(false); }} className="w-full justify-start">Logout</Button>
               ) : (
                 <>
-                  <Button variant="ghost" className="w-full" onClick={() => {setIsMenuOpen(false); window.location.href='/login';}}>Login</Button>
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => {setIsMenuOpen(false); window.location.href='/signup';}}>Sign Up</Button>
+                  {/* Login Dropdown */}
+                  <details className="border rounded-md">
+                    <summary className="px-4 py-2 text-gray-700 cursor-pointer w-full">Login</summary>
+                    <div className="pl-4 pb-2 flex flex-col space-y-1">
+                      <Link href="/login" className="text-left text-sm text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>User Login</Link>
+                      <Link href="/donor/login" className="text-left text-sm text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Donor Login</Link>
+                      <Link href="/dashboard/admin-dashboard" className="text-left text-sm text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Admin Login</Link>
+                    </div>
+                  </details>
+                  {/* Signup Dropdown */}
+                  <details className="border rounded-md">
+                    <summary className="px-4 py-2 text-gray-700 cursor-pointer w-full">Sign Up</summary>
+                    <div className="pl-4 pb-2 flex flex-col space-y-1">
+                      <Link href="/signup" className="text-left text-sm text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>User Signup</Link>
+                      <Link href="/donor/signup" className="text-left text-sm text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Donor Signup</Link>
+                    </div>
+                  </details>
                 </>
               )}
             </div>
@@ -186,4 +226,5 @@ export function Header() {
       )}
     </header>
   );
+// ...existing code...
 }

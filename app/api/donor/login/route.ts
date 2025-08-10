@@ -1,22 +1,23 @@
-import { db } from '@/lib/db';
+
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
-import { Role } from '@prisma/client'
+import { PrismaClient } from '@prisma/client';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   const { cnic, password } = await req.json();
 
-  const user = await db.user.findUnique({ where: { cnic } });
+  const donor = await prisma.donors.findUnique({ where: { cnic } });
 
-  if (!user || user.role !== 'DONOR') {
-    return NextResponse.json({ error: 'Invalid CNIC or role' }, { status: 400 });
+  if (!donor) {
+    return NextResponse.json({ error: 'No donor found with this CNIC' }, { status: 400 });
   }
 
-  const passwordMatch = await bcrypt.compare(password, user.password);
+  const passwordMatch = await bcrypt.compare(password, donor.password);
 
   if (!passwordMatch) {
     return NextResponse.json({ error: 'Invalid password' }, { status: 401 });
@@ -24,9 +25,9 @@ export async function POST(req: Request) {
 
   const token = jwt.sign(
     {
-      id: user.id,
-      role: user.role,
-      cnic: user.cnic,
+      id: donor.id,
+      role: 'DONOR',
+      cnic: donor.cnic,
     },
     JWT_SECRET,
     { expiresIn: '7d' }

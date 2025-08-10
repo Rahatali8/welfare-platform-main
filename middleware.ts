@@ -15,8 +15,8 @@ export async function middleware(request: NextRequest) {
 
   const token = request.cookies.get("auth-token")?.value;
 
-  // Remove authentication for /dashboard/user
-  if (pathname.startsWith("/dashboard/user")) {
+  // Remove authentication for /dashboard/user and /dashboard/donor
+  if (pathname.startsWith("/dashboard/user") || pathname.startsWith("/dashboard/donor")) {
     return NextResponse.next();
   }
 
@@ -34,11 +34,6 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/", request.url));
     }
 
-    // 🔵 DONOR Dashboard Access Control
-    if (pathname.startsWith("/dashboard/donor") && role !== "DONOR") {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
-
     return NextResponse.next();
   } catch (err) {
     console.error("Invalid Token", err);
@@ -51,4 +46,5 @@ export const config = {
     "/dashboard/:path*",
     "/apply-form",
   ],
+  runtime: "nodejs"
 };

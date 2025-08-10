@@ -20,6 +20,8 @@ export default function DonorSignupPage() {
     cnic: "",
     password: "",
     confirmPassword: "",
+    securityQuestion: "",
+    securityAnswer: "",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,8 +29,15 @@ export default function DonorSignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    if (name === "contact_number") {
+      if (value.length > 11) return;
+    }
+    if (name === "cnic") {
+      if (value.length > 13) return;
+    }
+    setForm({ ...form, [name]: value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -147,7 +156,7 @@ export default function DonorSignupPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="contact_number">Contact Number</Label>
-                  <Input name="contact_number" type="text" placeholder="Contact Number" value={form.contact_number} onChange={handleChange} />
+                  <Input name="contact_number" type="text" placeholder="Contact Number" value={form.contact_number} onChange={handleChange} maxLength={11} />
                 </div>
 
                 <div className="space-y-2">
@@ -157,7 +166,38 @@ export default function DonorSignupPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="cnic">CNIC *</Label>
-                  <Input name="cnic" type="text" placeholder="CNIC Number" value={form.cnic} onChange={handleChange} required />
+                  <Input name="cnic" type="text" placeholder="CNIC Number" value={form.cnic} onChange={handleChange} required maxLength={13} />
+                </div>
+
+                {/* Security Question Section (moved below CNIC) */}
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="securityQuestion">Security Question *</Label>
+                  <select
+                    name="securityQuestion"
+                    id="securityQuestion"
+                    value={form.securityQuestion}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+                  >
+                    <option value="">Select a question</option>
+                    <option value="donation-city">In which city did you make your first donation?</option>
+                    <option value="primary-school">What is your primary school name?</option>
+                    <option value="fav-organization">What is your favorite Organization?</option>
+                  </select>
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="securityAnswer">Your Answer *</Label>
+                  <Input
+                    name="securityAnswer"
+                    type="text"
+                    placeholder="One word answer only"
+                    value={form.securityAnswer}
+                    onChange={handleChange}
+                    required
+                    pattern="^\w+$"
+                    title="Please enter only one word (letters or numbers, no spaces)"
+                  />
                 </div>
               </div>
 

@@ -34,6 +34,8 @@ model Donors {
   email             String       @unique
   cnic              String       @unique
   password          String
+  securityQuestion  String?
+  securityAnswer    String?
   status            DonorStatus  @default(PENDING)
   created_at        DateTime     @default(now())
   updated_at        DateTime     @updatedAt

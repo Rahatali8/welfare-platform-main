@@ -1,6 +1,8 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { User, BadgeCheck, IdCard, ShieldCheck, UserCircle } from "lucide-react";
 
 // Utility to generate a pastel color from a string
@@ -12,10 +14,10 @@ function stringToColor(str: string) {
   const h = Math.abs(hash) % 360;
   return `hsl(${h}, 70%, 80%)`;
 }
-
 export function ProfileDropdown() {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
+  const router = useRouter();
   if (!user) return null;
 
   // Get first letter of name for fallback
@@ -116,9 +118,23 @@ export function ProfileDropdown() {
                   </div>
                 )} */}
               </div>
+              {/* Donor Profile Link (only for donor role) */}
+              {user.role === "DONOR" && (
+                <Link
+                  href="/dashboard/donor/profile"
+                  className="mt-6 w-full bg-gray-200 text-blue-900 py-2 rounded-lg font-semibold hover:bg-blue-100 transition text-lg shadow text-center block"
+                  onClick={() => setOpen(false)}
+                >
+                  View Profile
+                </Link>
+              )}
               <button
-                onClick={logout}
-                className="mt-6 w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition text-lg shadow"
+                onClick={() => {
+                  logout();
+                  setOpen(false);
+                  router.push("/");
+                }}
+                className="mt-3 w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition text-lg shadow"
               >
                 Sign Out
               </button>

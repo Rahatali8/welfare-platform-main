@@ -10,6 +10,8 @@ export default function DonorLoginPage() {
   const router = useRouter();
   const [cnic, setCnic] = useState("");
   const [password, setPassword] = useState("");
+  const [securityQuestion, setSecurityQuestion] = useState("");
+  const [securityAnswer, setSecurityAnswer] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -19,7 +21,7 @@ export default function DonorLoginPage() {
     setError("");
 
     try {
-      const res = await axios.post("/api/donor/login", { cnic, password });
+      const res = await axios.post("/api/donor/login", { cnic, password, securityQuestion, securityAnswer });
 
       if (res.status === 200) {
         router.push("/dashboard/donor");
@@ -44,7 +46,7 @@ export default function DonorLoginPage() {
           </p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-5">
+  <form onSubmit={handleLogin} className="space-y-5">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               CNIC <span className="text-red-500">*</span>
@@ -54,6 +56,38 @@ export default function DonorLoginPage() {
               value={cnic}
               onChange={(e) => setCnic(e.target.value)}
               placeholder="e.g. 35202-1234567-1"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+              required
+            />
+          </div>
+          {/* Security Question */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Security Question <span className="text-red-500">*</span>
+            </label>
+            <select
+              value={securityQuestion}
+              onChange={e => setSecurityQuestion(e.target.value)}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+            >
+              <option value="">Select a question</option>
+              <option value="donation-city">In which city did you make your first donation?</option>
+              <option value="primary-school">What is your primary school name?</option>
+              <option value="fav-organization">What is your favorite Organization?</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Security Answer <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={securityAnswer}
+              onChange={e => setSecurityAnswer(e.target.value)}
+              placeholder="One word answer only"
+              pattern="^\w+$"
+              title="Please enter only one word (letters or numbers, no spaces)"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
               required
             />

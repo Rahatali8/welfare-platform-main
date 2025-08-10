@@ -6,11 +6,11 @@ const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { name, organization_name, contact_number, email, cnic, password, confirmPassword } = body;
+  const body = await req.json();
+  const { name, organization_name, contact_number, email, cnic, password, confirmPassword, securityQuestion, securityAnswer } = body;
 
     // Check for required fields
-    if (!name || !email || !cnic || !password || !confirmPassword) {
+    if (!name || !email || !cnic || !password || !confirmPassword || !securityQuestion || !securityAnswer) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -40,6 +40,8 @@ export async function POST(req: NextRequest) {
         email,
         cnic,
         password: hashedPassword,
+        securityQuestion,
+        securityAnswer,
       }
     });
 
