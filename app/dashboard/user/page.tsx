@@ -16,7 +16,7 @@ export default function UserDashboard() {
     setRequestData(null);
     setLoading(true);
     if (!cnic || cnic.length < 13) {
-      setError("Valid CNIC enter karo (13 digits)");
+      setError("Valid CNIC (13 digits) is required.");
       setLoading(false);
       return;
     }
@@ -26,10 +26,10 @@ export default function UserDashboard() {
       if (res.ok && data.requests?.length > 0) {
         setRequestData(data.requests[0]);
       } else {
-        setError(data.message || "Koi record nahi mila.");
+        setError(data.message || "No record found.");
       }
     } catch (err) {
-      setError("Kuch masla hogaya, dobara koshish karein.");
+      setError("Something went wrong, please try again.");
     }
     setLoading(false);
   };
@@ -114,7 +114,7 @@ export default function UserDashboard() {
             <table className="min-w-full bg-white rounded-2xl">
               <thead>
                 <tr className="bg-blue-50 text-blue-900 text-left text-sm">
-                  <th className="py-3 px-4 font-semibold">Order ID</th>
+                  <th className="py-3 px-4 font-semibold">User ID</th>
                   <th className="py-3 px-4 font-semibold">Customer</th>
                   <th className="py-3 px-4 font-semibold">Address</th>
                   <th className="py-3 px-4 font-semibold">Product</th>
@@ -189,7 +189,7 @@ export default function UserDashboard() {
       {/* Request Status Table Section */}
      
       {/* Info/FAQ Section */}
-      <section className="max-w-4xl mx-auto px-4 mb-12">
+      <section className="max-w-4xl mx-auto px-4 mb-12 mt-10">
         <div className="flex flex-col md:flex-row gap-6">
           {/* Card 1: Need Help? */}
           <div className="flex-1 bg-gradient-to-br from-cyan-100 via-white to-blue-100 rounded-2xl shadow-xl p-6 md:p-8 flex flex-col gap-4">

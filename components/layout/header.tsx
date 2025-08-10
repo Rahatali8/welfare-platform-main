@@ -76,7 +76,7 @@ export function Header() {
             )}
           </div>
           {!user && (
-            <Link href="/stats-sec" className="text-blue-900 hover:text-blue-600 transition-colors px-2 py-1 rounded-md hover:bg-blue-50">Stats</Link>
+            <Link href="/stats-sec" className="text-blue-900 hover:text-blue-600 transition-colors px-2 py-1 rounded-md hover:bg-blue-50">Overview</Link>
           )}
 
           {user && (

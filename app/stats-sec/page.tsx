@@ -293,12 +293,6 @@ export default function DashboardAnalytics() {
             <h3 className="font-bold text-lg text-cyan-900 mb-1">Secure & Private</h3>
             <p className="text-gray-700 text-sm">Your data and donations are protected with top-tier security and privacy.</p>
           </div>
-          {/* Card 8 */}
-          <div className="col-span-1 row-span-1 bg-gradient-to-br from-gray-100 via-white to-blue-50 rounded-2xl shadow-xl p-6 flex flex-col items-center text-center border-t-4 border-gray-400 hover:scale-105 transition-transform min-h-[140px]">
-            <svg className="w-10 h-10 text-gray-600 mb-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3zm0 10c-4.418 0-8-1.79-8-4V7a4 4 0 014-4h8a4 4 0 014 4v7c0 2.21-3.582 4-8 4z" /></svg>
-            <h3 className="font-bold text-lg text-gray-900 mb-1">Community Driven</h3>
-            <p className="text-gray-700 text-sm">Built for the people, by the people—your feedback shapes our future.</p>
-          </div>
         </div>
       </div>
     </>
