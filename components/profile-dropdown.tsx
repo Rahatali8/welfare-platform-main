@@ -1,6 +1,3 @@
-
-
-
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useState } from "react";
@@ -22,7 +19,7 @@ export function ProfileDropdown() {
   if (!user) return null;
 
   // Get first letter of name for fallback
-  const initial = user.fullName?.charAt(0)?.toUpperCase() || "U";
+  const initial = user.fullName?.charAt(0)?.toUpperCase() || " ";
   const cnic = user.cnic || "N/A";
 
   return (
@@ -65,8 +62,8 @@ export function ProfileDropdown() {
               <div className="absolute left-1/2 top-full -translate-x-1/2 -translate-y-1/2 z-10">
                 <Avatar className="h-20 w-20 border-4 border-white shadow-lg">
                   <AvatarFallback
-                    className="text-3xl"
-                    style={{ background: stringToColor(user.fullName || user.cnic || "U") }}
+                    className="text-4xl font-extrabold"
+                    style={{ background: stringToColor(user.fullName || user.cnic || ".") }}
                   >
                     {initial}
                   </AvatarFallback>
@@ -109,7 +106,7 @@ export function ProfileDropdown() {
                     </div>
                   </div>
                 )}
-                {user.city && (
+                {/* {user.city && (
                   <div className="flex items-center gap-3 text-base text-gray-700">
                     <svg className="w-5 h-5 text-pink-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 22s8-4.5 8-10V5a2 2 0 00-2-2H6a2 2 0 00-2 2v7c0 5.5 8 10 8 10z" /></svg>
                     <div>
@@ -117,7 +114,7 @@ export function ProfileDropdown() {
                       <div className="font-medium">{user.city}</div>
                     </div>
                   </div>
-                )}
+                )} */}
               </div>
               <button
                 onClick={logout}

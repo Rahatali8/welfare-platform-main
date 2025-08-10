@@ -15,23 +15,19 @@ export async function middleware(request: NextRequest) {
 
   const token = request.cookies.get("auth-token")?.value;
 
+  // Remove authentication for /dashboard/user
+  if (pathname.startsWith("/dashboard/user")) {
+    return NextResponse.next();
+  }
+
+  // All other dashboards still require authentication
   if (!token) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as any;
-    const { role, cnic } = decoded;
-
-    // 🟠 USER Dashboard Access Control
-    if (pathname.startsWith("/dashboard/user")) {
-      const cleanCnic = cnic.replace(/-/g, ""); // remove dashes
-      const hasApp = await hasSubmittedApplication(cleanCnic);
-
-      if (!hasApp) {
-        return NextResponse.redirect(new URL("/apply-form", request.url));
-      }
-    }
+    const { role } = decoded;
 
     // 🔴 ADMIN Dashboard Access Control
     if (pathname.startsWith("/dashboard/admin") && role !== "ADMIN") {

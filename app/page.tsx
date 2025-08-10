@@ -1,17 +1,29 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import ImageCarousel from "@/components/image-currosal"
-import {Users,Heart,TrendingUp,ArrowRight,Play,Shield,Award,Globe,DollarSign,BookOpen,Home,Stethoscope,GraduationCap,Utensils,Phone,MapPin,Clock,Target,
+import {
+  Users, Heart, TrendingUp, ArrowRight, Play, Shield, Award, Globe, DollarSign, BookOpen, Home, Stethoscope, GraduationCap, Utensils, Phone, MapPin, Clock, Target,
 } from "lucide-react"
 import Link from "next/link"
 import CallToAction from "@/components/CTA-section"
-import { Footer } from "@/components/layout/footer"
 
 export default function HomePage() {
+  const [dailyRequests, setDailyRequests] = useState<{ date: string, count: number }[]>([]);
+  useEffect(() => {
+    async function fetchDaily() {
+      const res = await fetch('/api/stats/requests-daily');
+      const data = await res.json();
+      setDailyRequests(data.daily || []);
+    }
+    fetchDaily();
+    const interval = setInterval(fetchDaily, 10000); // auto-refresh every 10s
+    return () => clearInterval(interval);
+  }, []);
   const [stats, setStats] = useState({
     totalHelped: 15420,
     totalDonated: 2850000,
@@ -35,7 +47,7 @@ export default function HomePage() {
     return () => clearInterval(interval)
   }, [])
 
-  
+
   const services = [
     {
       icon: DollarSign,
@@ -103,7 +115,7 @@ export default function HomePage() {
             {/* Left Content */}
             <div className="space-y-8 animate-slide-in-left">
               {/* Trust Badge */}
-             
+
 
               {/* Main Heading */}
               <div className="space-y-6">
@@ -194,9 +206,8 @@ export default function HomePage() {
         </div>
       </section>
 
-
       {/*image-currosal-section*/}
-      <ImageCarousel/>
+      <ImageCarousel />
 
 
       {/* Services Section */}
