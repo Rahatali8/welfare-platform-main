@@ -51,7 +51,6 @@ model Request {
   description    String?
   status         String        @default("pending")
   created_at     DateTime      @default(now())
-
   full_name      String?
   father_name    String?
   cnic_number    String?
@@ -62,14 +61,11 @@ model Request {
   home_rent      String?
   fridge         String?
   monthly_income Int?
-
   cnic_front     String?
   cnic_back      String?
   document       String?
-
   reason         String?
   repayment_time String?
-
   user           User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("requests")
