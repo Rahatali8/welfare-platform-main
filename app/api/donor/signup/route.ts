@@ -42,6 +42,8 @@ export async function POST(req: NextRequest) {
         password: hashedPassword,
         securityQuestion,
         securityAnswer,
+        // Default to PENDING; admin must approve to activate
+        status: 'PENDING',
       }
     });
 

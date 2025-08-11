@@ -6,7 +6,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"
 
 export async function GET(request: NextRequest) {
   try {
-    const token = request.cookies.get("token")?.value
+    const token = request.cookies.get("auth-token")?.value || request.cookies.get("token")?.value
 
     if (!token) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
@@ -19,33 +19,62 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ message: "Forbidden" }, { status: 403 })
     }
 
-    const [requests] = await db.execute(`
+    const requests = (await db.$queryRaw<any[]>`
       SELECT 
-        r.*,
-        u.full_name,
-        u.cnic,
-        u.address
+        r.id,
+        r.user_id,
+        r.type,
+        r.description,
+        r.reason,
+        r.status,
+        r.created_at,
+        r.full_name,
+        r.father_name,
+        r.cnic_number,
+        r.marital_status,
+        r.family_count,
+        r.adult_member,
+        r.matric_member,
+        r.home_rent,
+        r.fridge,
+        r.monthly_income,
+        r.repayment_time,
+        r.cnic_front,
+        r.cnic_back,
+        r.document,
+        u.name AS user_name,
+        u.cnic AS user_cnic,
+        u.address AS user_address,
+        u.email AS user_email,
+        u.phone AS user_phone
       FROM requests r
       JOIN users u ON r.user_id = u.id
-      ORDER BY r.submitted_at DESC
-    `)
+      ORDER BY r.created_at DESC
+    `) as any[]
 
-    const formattedRequests = (requests as any[]).map((request) => ({
-      id: request.id,
-      userId: request.user_id,
-      type: request.type,
-      reason: request.reason,
-      amount: request.amount,
-      status: request.status,
-      submittedAt: request.submitted_at,
-      currentAddress: request.current_address,
-      cnicImage: request.cnic_image,
-      additionalData: request.additional_data ? JSON.parse(request.additional_data) : null,
-      user: {
-        fullName: request.full_name,
-        cnic: request.cnic,
-        address: request.address,
-      },
+    const formattedRequests = (requests as any[]).map((r) => ({
+      id: r.id,
+      // exact snake_case fields required for cards
+      user_id: r.user_id,
+      type: r.type,
+      description: r.description ?? null,
+      status: r.status,
+      created_at: r.created_at,
+      adult_member: r.adult_member ?? null,
+      cnic_back: r.cnic_back ?? null,
+      cnic_front: r.cnic_front ?? null,
+      cnic_number: r.cnic_number ?? null,
+      document: r.document ?? null,
+      family_count: r.family_count ?? null,
+      father_name: r.father_name ?? null,
+      fridge: r.fridge ?? null,
+      full_name: r.full_name ?? null,
+      home_rent: r.home_rent ?? null,
+      marital_status: r.marital_status ?? null,
+      matric_member: r.matric_member ?? null,
+      monthly_income: r.monthly_income ?? null,
+      reason: r.reason ?? null,
+      repayment_time: r.repayment_time ?? null,
     }))
 
     return NextResponse.json({

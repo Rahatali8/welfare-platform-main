@@ -100,7 +100,7 @@ export function Header() {
                     <button onClick={() => handleDashboardClick("dashboard/donor")} className="flex items-center gap-2 w-full text-left px-5 py-3 text-base text-blue-900 hover:bg-blue-50">
                       <HeartHandshake className="w-5 h-5 text-green-500" /> Donor Dashboard
                     </button>
-                    <Link href="/dashboard/admin-dashboard" className="flex items-center gap-2 px-5 py-3 text-base text-blue-900 hover:bg-blue-50 rounded-b-xl">
+                    <Link href="/dashboard/admin" className="flex items-center gap-2 px-5 py-3 text-base text-blue-900 hover:bg-blue-50 rounded-b-xl">
                       <ShieldCheck className="w-5 h-5 text-blue-700" /> Admin Dashboard
                     </Link>
                   </div>
@@ -129,7 +129,7 @@ export function Header() {
                 <div className="absolute hidden group-hover:block bg-white shadow-xl rounded-xl mt-2 w-44 z-50 border border-blue-100">
                   <Link href="/login" className="block w-full text-left px-5 py-3 text-base text-blue-900 hover:bg-blue-50 rounded-t-xl">User Login</Link>
                   <Link href="/donor/login" className="block w-full text-left px-5 py-3 text-base text-blue-900 hover:bg-blue-50">Donor Login</Link>
-                  <Link href="/dashboard/admin-dashboard" className="block w-full text-left px-5 py-3 text-base text-blue-900 hover:bg-blue-50 rounded-b-xl">Admin Login</Link>
+                  <Link href="/admin/login" className="block w-full text-left px-5 py-3 text-base text-blue-900 hover:bg-blue-50 rounded-b-xl">Admin Login</Link>
                 </div>
               </div>
               {/* Signup Dropdown */}
@@ -204,7 +204,7 @@ export function Header() {
                     <div className="pl-4 pb-2 flex flex-col space-y-1">
                       <Link href="/login" className="text-left text-sm text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>User Login</Link>
                       <Link href="/donor/login" className="text-left text-sm text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Donor Login</Link>
-                      <Link href="/dashboard/admin-dashboard" className="text-left text-sm text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Admin Login</Link>
+                      <Link href="/admin/login" className="text-left text-sm text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Admin Login</Link>
                     </div>
                   </details>
                   {/* Signup Dropdown */}

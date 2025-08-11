@@ -33,13 +33,18 @@ export async function POST(req: Request) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create user with all fields
+    // Prevent public signup from creating admin users
+    if (role === 'admin') {
+      return NextResponse.json({ error: 'Admin signup not allowed' }, { status: 403 });
+    }
+
     const newUser = await prisma.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
         cnic: cleanedCnic,
-        role,
+        role: role === 'donor' ? 'donor' : 'user',
         address,
         city,
         phone,

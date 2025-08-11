@@ -17,6 +17,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'No donor found with this CNIC' }, { status: 400 });
   }
 
+  // Enforce approval: only ACTIVE donors can log in
+  if (donor.status !== 'ACTIVE') {
+    return NextResponse.json({ error: 'Your account is pending approval by admin.' }, { status: 403 });
+  }
+
   const passwordMatch = await bcrypt.compare(password, donor.password);
 
   if (!passwordMatch) {
@@ -26,7 +31,7 @@ export async function POST(req: Request) {
   const token = jwt.sign(
     {
       id: donor.id,
-      role: 'DONOR',
+      role: 'donor',
       cnic: donor.cnic,
     },
     JWT_SECRET,

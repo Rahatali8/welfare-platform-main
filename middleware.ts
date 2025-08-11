@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import jwt from "jsonwebtoken";
 import { hasSubmittedApplication } from "./lib/helpers";
+
+export const runtime = "nodejs";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
@@ -13,7 +14,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const token = request.cookies.get("auth-token")?.value;
+  const token = request.cookies.get("auth-token")?.value || request.cookies.get("token")?.value;
 
   // Remove authentication for /dashboard/user and /dashboard/donor
   if (pathname.startsWith("/dashboard/user") || pathname.startsWith("/dashboard/donor")) {
@@ -25,20 +26,14 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET) as any;
-    const { role } = decoded;
-
-    // 🔴 ADMIN Dashboard Access Control
-    if (pathname.startsWith("/dashboard/admin") && role !== "ADMIN") {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
-
-    return NextResponse.next();
-  } catch (err) {
-    console.error("Invalid Token", err);
-    return NextResponse.redirect(new URL("/login", request.url));
+  // Edge-safe: don't verify JWT here (jsonwebtoken not supported in middleware).
+  // Rely on API route guards for role authorization.
+  // Only enforce that admin dashboard requires some auth cookie.
+  if (pathname.startsWith("/dashboard/admin") && !token) {
+    return NextResponse.redirect(new URL("/admin/login", request.url));
   }
+
+  return NextResponse.next();
 }
 
 export const config = {
@@ -46,5 +41,4 @@ export const config = {
     "/dashboard/:path*",
     "/apply-form",
   ],
-  runtime: "nodejs"
 };

@@ -32,24 +32,31 @@ import {
   LogOut,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
-interface Request {
-  id: number
-  userId: number
-  type: string
-  reason: string
-  amount?: number
-  status: "pending" | "approved" | "rejected"
-  submittedAt: string
-  currentAddress: string
-  cnicImage?: string
-  additionalData: any
-  user: {
-    fullName: string
-    cnic: string
-    address: string
+  interface Request {
+    id: number
+    user_id: number
+    type: string
+    description: string | null
+    status: "pending" | "approved" | "rejected"
+    created_at: string
+    adult_member: number | null
+    cnic_back: string | null
+    cnic_front: string | null
+    cnic_number: string | null
+    document: string | null
+    family_count: number | null
+    father_name: string | null
+    fridge: string | null
+    full_name: string | null
+    home_rent: string | null
+    marital_status: string | null
+    matric_member: number | null
+    monthly_income: number | null
+    reason: string | null
+    repayment_time: string | null
   }
-}
 
 interface Analytics {
   totalRequests: number
@@ -66,8 +73,10 @@ export default function AdminDashboard() {
   const [requests, setRequests] = useState<Request[]>([])
   const [filteredRequests, setFilteredRequests] = useState<Request[]>([])
   const [analytics, setAnalytics] = useState<Analytics | null>(null)
+  const [groupedRequests, setGroupedRequests] = useState<Record<string, any[]>>({})
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [donors, setDonors] = useState<any[]>([])
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [typeFilter, setTypeFilter] = useState("all")
@@ -77,6 +86,8 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchRequests()
     fetchAnalytics()
+    fetchDonors()
+    fetchGrouped()
   }, [])
 
   useEffect(() => {
@@ -111,16 +122,41 @@ export default function AdminDashboard() {
     }
   }
 
+  const fetchGrouped = async () => {
+    try {
+      const res = await fetch("/api/admin/requests-sections")
+      if (res.ok) {
+        const data = await res.json()
+        setGroupedRequests(data.requests || {})
+      }
+    } catch (e) {
+      // noop
+    }
+  }
+
+  const fetchDonors = async () => {
+    try {
+      const response = await fetch("/api/admin/donors")
+      if (response.ok) {
+        const data = await response.json()
+        setDonors(data.donors)
+      }
+    } catch (error) {
+      console.error("Error fetching donors:", error)
+    }
+  }
+
   const filterRequests = () => {
     let filtered = requests
 
     if (searchTerm) {
-      filtered = filtered.filter(
-        (request) =>
-          request.user.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          request.user.cnic.includes(searchTerm) ||
-          request.reason.toLowerCase().includes(searchTerm.toLowerCase()),
-      )
+      filtered = filtered.filter((request) => {
+        const name = (request.full_name ?? '').toLowerCase()
+        const cnic = (request.cnic_number ?? '')
+        const reason = (request.reason ?? '').toLowerCase()
+        const q = searchTerm.toLowerCase()
+        return name.includes(q) || cnic.includes(q) || reason.includes(q)
+      })
     }
 
     if (statusFilter !== "all") {
@@ -173,6 +209,24 @@ export default function AdminDashboard() {
       router.push("/")
     } catch (error) {
       console.error("Logout error:", error)
+    }
+  }
+
+  const updateDonorStatus = async (donorId: number, status: "ACTIVE" | "REJECTED" | "PENDING") => {
+    try {
+      const response = await fetch("/api/admin/donors", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ donorId, status }),
+      })
+      if (response.ok) {
+        toast({ title: `Donor ${status.toLowerCase()} successfully` })
+        fetchDonors()
+      } else {
+        toast({ title: "Failed to update donor", variant: "destructive" })
+      }
+    } catch (error) {
+      toast({ title: "Error updating donor", variant: "destructive" })
     }
   }
 
@@ -292,11 +346,12 @@ export default function AdminDashboard() {
         )}
 
         <Tabs defaultValue="all-requests" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="w-full flex flex-wrap gap-2">
             <TabsTrigger value="all-requests">All Requests</TabsTrigger>
-            <TabsTrigger value="loans">Loans</TabsTrigger>
-            <TabsTrigger value="microfinance">Microfinance</TabsTrigger>
-            <TabsTrigger value="general">General Help</TabsTrigger>
+            <TabsTrigger value="donor-requests">Donor Requests</TabsTrigger>
+            {Object.keys(groupedRequests).sort().map((type) => (
+              <TabsTrigger key={type} value={`type-${type}`}>{type}</TabsTrigger>
+            ))}
           </TabsList>
 
           <TabsContent value="all-requests">
@@ -360,21 +415,21 @@ export default function AdminDashboard() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {filteredRequests.map((request) => (
+                     {filteredRequests.map((request) => (
                       <div key={request.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
                         <div className="flex justify-between items-start mb-2">
                           <div className="flex-1">
                             <div className="flex items-center space-x-2 mb-1">
-                              <h3 className="font-semibold text-lg">{request.user.fullName}</h3>
-                              <Badge variant="outline">{formatCNIC(request.user.cnic)}</Badge>
+                              <h3 className="font-semibold text-lg">{request.full_name ?? '-'}</h3>
+                              {request.cnic_number && (<Badge variant="outline">{formatCNIC(request.cnic_number)}</Badge>)}
                             </div>
-                            <p className="text-gray-600 capitalize">{request.type} Request</p>
-                            <p className="text-sm text-gray-500">{request.reason}</p>
-                            {request.amount && (
-                              <p className="text-sm font-medium text-green-600">
-                                Amount: PKR {request.amount.toLocaleString()}
-                              </p>
-                            )}
+                            <div className="text-sm text-gray-700 flex flex-wrap gap-3">
+                              <span><b>ID:</b> {request.id}</span>
+                              <span><b>User ID:</b> {request.user_id}</span>
+                              <span><b>Type:</b> {request.type}</span>
+                              <span><b>Status:</b> {request.status}</span>
+                            </div>
+                            <p className="text-sm text-gray-500 mt-1">{request.reason ?? request.description ?? ''}</p>
                           </div>
                           <div className="flex items-center space-x-2">
                             <Badge className={getStatusColor(request.status)}>
@@ -386,11 +441,37 @@ export default function AdminDashboard() {
                           </div>
                         </div>
 
+                        <div className="text-sm text-gray-500 mt-2">
+                          <p><b>Submitted:</b> {new Date(request.created_at).toLocaleString()}</p>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2 text-xs text-gray-700 mt-3">
+                          <div><b>Full Name:</b> {request.full_name || 'N/A'}</div>
+                          <div><b>Father Name:</b> {request.father_name || 'N/A'}</div>
+                          <div><b>CNIC #:</b> {request.cnic_number || 'N/A'}</div>
+                          <div><b>Marital Status:</b> {request.marital_status || 'N/A'}</div>
+                          <div><b>Family Count:</b> {request.family_count || 'N/A'}</div>
+                          <div><b>Adult Members:</b> {request.adult_member || 'N/A'}</div>
+                          <div><b>Matric Members:</b> {request.matric_member || 'N/A'}</div>
+                          <div><b>Home Rent:</b> {request.home_rent || 'N/A'}</div>
+                          <div><b>Fridge:</b> {request.fridge || 'N/A'}</div>
+                          <div><b>Monthly Income:</b> {request.monthly_income ? `PKR ${request.monthly_income.toLocaleString()}` : 'N/A'}</div>
+                          <div><b>Repayment Time:</b> {request.repayment_time || 'N/A'}</div>
+                        </div>
+
+                        <div className="flex flex-wrap gap-3 mt-2">
+                          {request.cnic_front && (
+                            <a href={request.cnic_front.startsWith('/uploads/') ? request.cnic_front : `/uploads/${request.cnic_front.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline text-xs">CNIC Front</a>
+                          )}
+                          {request.cnic_back && (
+                            <a href={request.cnic_back.startsWith('/uploads/') ? request.cnic_back : `/uploads/${request.cnic_back.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline text-xs">CNIC Back</a>
+                          )}
+                          {request.document && (
+                            <a href={request.document.startsWith('/uploads/') ? request.document : `/uploads/${request.document.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline text-xs">Supporting Document</a>
+                          )}
+                        </div>
+
                         <div className="flex justify-between items-center mt-4">
-                          <div className="text-sm text-gray-500">
-                            <p>Submitted: {new Date(request.submittedAt).toLocaleDateString()}</p>
-                            <p>Address: {request.currentAddress}</p>
-                          </div>
 
                           <div className="flex space-x-2">
                             <Dialog>
@@ -403,20 +484,18 @@ export default function AdminDashboard() {
                               <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
                                 <DialogHeader>
                                   <DialogTitle>Request Details</DialogTitle>
-                                  <DialogDescription>
-                                    Complete information for {selectedRequest?.user.fullName}'s application
-                                  </DialogDescription>
+                              <DialogDescription>Complete information</DialogDescription>
                                 </DialogHeader>
                                 {selectedRequest && (
                                   <div className="space-y-4">
                                     <div className="grid grid-cols-2 gap-4">
                                       <div>
                                         <Label className="font-medium">Applicant Name</Label>
-                                        <p>{selectedRequest.user.fullName}</p>
+                                        <p>{selectedRequest.full_name ?? '-'}</p>
                                       </div>
                                       <div>
                                         <Label className="font-medium">CNIC</Label>
-                                        <p>{formatCNIC(selectedRequest.user.cnic)}</p>
+                                        <p>{selectedRequest.cnic_number ? formatCNIC(selectedRequest.cnic_number) : '-'}</p>
                                       </div>
                                       <div>
                                         <Label className="font-medium">Request Type</Label>
@@ -428,54 +507,86 @@ export default function AdminDashboard() {
                                           {selectedRequest.status}
                                         </Badge>
                                       </div>
-                                      {selectedRequest.amount && (
-                                        <div>
-                                          <Label className="font-medium">Amount</Label>
-                                          <p>PKR {selectedRequest.amount.toLocaleString()}</p>
-                                        </div>
-                                      )}
+                                      {/* amount removed from Request type */}
                                       <div>
                                         <Label className="font-medium">Submitted</Label>
-                                        <p>{new Date(selectedRequest.submittedAt).toLocaleDateString()}</p>
+                                        <p>{new Date(selectedRequest.created_at).toLocaleDateString()}</p>
                                       </div>
-                                    </div>
-
-                                    <div>
-                                      <Label className="font-medium">Registered Address</Label>
-                                      <p>{selectedRequest.user.address}</p>
-                                    </div>
-
-                                    <div>
-                                      <Label className="font-medium">Current Address</Label>
-                                      <p>{selectedRequest.currentAddress}</p>
                                     </div>
 
                                     <div>
                                       <Label className="font-medium">Reason</Label>
-                                      <p>{selectedRequest.reason}</p>
+                                      <p>{selectedRequest.reason ?? selectedRequest.description ?? ''}</p>
                                     </div>
 
-                                    {selectedRequest.additionalData && (
-                                      <div>
-                                        <Label className="font-medium">Additional Information</Label>
-                                        <div className="bg-gray-50 p-3 rounded-md">
-                                          <pre className="text-sm whitespace-pre-wrap">
-                                            {JSON.stringify(selectedRequest.additionalData, null, 2)}
-                                          </pre>
+                                    <div className="grid grid-cols-2 gap-4">
+                                      {selectedRequest.father_name && (
+                                        <div>
+                                          <Label className="font-medium">Father Name</Label>
+                                          <p>{selectedRequest.father_name}</p>
                                         </div>
-                                      </div>
-                                    )}
+                                      )}
+                                      {selectedRequest.marital_status && (
+                                        <div>
+                                          <Label className="font-medium">Marital Status</Label>
+                                          <p>{selectedRequest.marital_status}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.family_count !== null && (
+                                        <div>
+                                          <Label className="font-medium">Family Count</Label>
+                                          <p>{selectedRequest.family_count}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.adult_member !== null && (
+                                        <div>
+                                          <Label className="font-medium">Adult Members</Label>
+                                          <p>{selectedRequest.adult_member}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.matric_member !== null && (
+                                        <div>
+                                          <Label className="font-medium">Matric Members</Label>
+                                          <p>{selectedRequest.matric_member}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.home_rent && (
+                                        <div>
+                                          <Label className="font-medium">Home Rent</Label>
+                                          <p>{selectedRequest.home_rent}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.fridge && (
+                                        <div>
+                                          <Label className="font-medium">Fridge</Label>
+                                          <p>{selectedRequest.fridge}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.monthly_income !== null && (
+                                        <div>
+                                          <Label className="font-medium">Monthly Income</Label>
+                                          <p>PKR {selectedRequest.monthly_income.toLocaleString()}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.repayment_time && (
+                                        <div>
+                                          <Label className="font-medium">Repayment Time</Label>
+                                          <p>{selectedRequest.repayment_time}</p>
+                                        </div>
+                                      )}
+                                    </div>
 
-                                    {selectedRequest.cnicImage && (
-                                      <div>
-                                        <Label className="font-medium">CNIC Image</Label>
-                                        <img
-                                          src={selectedRequest.cnicImage || "/placeholder.svg"}
-                                          alt="CNIC"
-                                          className="max-w-full h-auto border rounded-md"
-                                        />
-                                      </div>
-                                    )}
+                                    <div className="flex flex-wrap gap-3">
+                                      {selectedRequest.cnic_front && (
+                                        <a href={selectedRequest.cnic_front.startsWith('/uploads/') ? selectedRequest.cnic_front : `/uploads/${selectedRequest.cnic_front.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline">View CNIC Front</a>
+                                      )}
+                                      {selectedRequest.cnic_back && (
+                                        <a href={selectedRequest.cnic_back.startsWith('/uploads/') ? selectedRequest.cnic_back : `/uploads/${selectedRequest.cnic_back.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline">View CNIC Back</a>
+                                      )}
+                                      {selectedRequest.document && (
+                                        <a href={selectedRequest.document.startsWith('/uploads/') ? selectedRequest.document : `/uploads/${selectedRequest.document.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline">View Supporting Document</a>
+                                      )}
+                                    </div>
 
                                     {selectedRequest.status === "pending" && (
                                       <div className="flex space-x-2 pt-4">
@@ -530,6 +641,61 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
+          {Object.entries(groupedRequests).map(([type, reqs]) => (
+            <TabsContent key={type} value={`type-${type}`}>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="capitalize">{type} Requests</CardTitle>
+                  <CardDescription>Filtered by type with images and details</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {(reqs as any[]).length === 0 ? (
+                    <div className="text-gray-500">No requests for this type.</div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {(reqs as any[]).map((r) => (
+                        <div key={r.id} className="border rounded-xl p-4 bg-white/70">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="font-semibold">{r.user?.fullName || '-'}</span>
+                            <Badge variant="outline">{r.user?.cnic || '-'}</Badge>
+                            <Badge className={r.status === 'approved' ? 'bg-green-100 text-green-800' : r.status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}>{r.status}</Badge>
+                          </div>
+                              <div className="text-sm text-gray-600 mb-1">{r.reason || r.description}</div>
+                          <div className="text-xs text-gray-500 mb-2">{new Date(r.createdAt).toLocaleString()}</div>
+                              <div className="grid grid-cols-2 gap-2 text-xs text-gray-700 mb-2">
+                                {r.fullName && (<div><b>Full Name:</b> {r.fullName}</div>)}
+                                {r.fatherName && (<div><b>Father Name:</b> {r.fatherName}</div>)}
+                                {r.cnicNumber && (<div><b>CNIC #:</b> {r.cnicNumber}</div>)}
+                                {r.maritalStatus && (<div><b>Marital Status:</b> {r.maritalStatus}</div>)}
+                                {typeof r.familyCount !== 'undefined' && r.familyCount !== null && (<div><b>Family Count:</b> {r.familyCount}</div>)}
+                                {typeof r.adultMember !== 'undefined' && r.adultMember !== null && (<div><b>Adult Members:</b> {r.adultMember}</div>)}
+                                {typeof r.matricMember !== 'undefined' && r.matricMember !== null && (<div><b>Matric Members:</b> {r.matricMember}</div>)}
+                                {r.homeRent && (<div><b>Home Rent:</b> {r.homeRent}</div>)}
+                                {r.fridge && (<div><b>Fridge:</b> {r.fridge}</div>)}
+                                {typeof r.monthlyIncome !== 'undefined' && r.monthlyIncome !== null && (<div><b>Monthly Income:</b> {r.monthlyIncome}</div>)}
+                                {r.repaymentTime && (<div><b>Repayment Time:</b> {r.repaymentTime}</div>)}
+                                {r.currentAddress && (<div className="col-span-2"><b>Current Address:</b> {r.currentAddress}</div>)}
+                              </div>
+                              <div className="flex flex-wrap gap-3">
+                             {r.cnic_front && (
+                              <a href={r.cnic_front.startsWith('/uploads/') ? r.cnic_front : `/uploads/${r.cnic_front.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline text-xs">CNIC Front</a>
+                            )}
+                             {r.cnic_back && (
+                              <a href={r.cnic_back.startsWith('/uploads/') ? r.cnic_back : `/uploads/${r.cnic_back.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline text-xs">CNIC Back</a>
+                            )}
+                            {r.document && (
+                              <a href={r.document.startsWith('/uploads/') ? r.document : `/uploads/${r.document.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline text-xs">Document</a>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+          ))}
+
           {/* Similar content for other tabs with filtered data */}
           <TabsContent value="loans">
             <Card>
@@ -548,9 +714,9 @@ export default function AdminDashboard() {
                       <div key={request.id} className="border rounded-lg p-4">
                         <div className="flex justify-between items-start">
                           <div>
-                            <h3 className="font-semibold">{request.user.fullName}</h3>
-                            <p className="text-sm text-gray-600">PKR {request.amount?.toLocaleString()}</p>
-                            <p className="text-sm text-gray-500">{request.reason}</p>
+                            <h3 className="font-semibold">{request.full_name ?? '-'}</h3>
+                             {/* amount removed */}
+                            <p className="text-sm text-gray-500">{request.reason ?? request.description ?? ''}</p>
                           </div>
                           <Badge className={getStatusColor(request.status)}>{request.status}</Badge>
                         </div>
@@ -578,9 +744,9 @@ export default function AdminDashboard() {
                       <div key={request.id} className="border rounded-lg p-4">
                         <div className="flex justify-between items-start">
                           <div>
-                            <h3 className="font-semibold">{request.user.fullName}</h3>
-                            <p className="text-sm text-gray-600">PKR {request.amount?.toLocaleString()}</p>
-                            <p className="text-sm text-gray-500">{request.reason}</p>
+                            <h3 className="font-semibold">{request.full_name ?? '-'}</h3>
+                             {/* amount removed */}
+                            <p className="text-sm text-gray-500">{request.reason ?? request.description ?? ''}</p>
                           </div>
                           <Badge className={getStatusColor(request.status)}>{request.status}</Badge>
                         </div>
@@ -608,15 +774,69 @@ export default function AdminDashboard() {
                       <div key={request.id} className="border rounded-lg p-4">
                         <div className="flex justify-between items-start">
                           <div>
-                            <h3 className="font-semibold">{request.user.fullName}</h3>
-                            <p className="text-sm text-gray-600">PKR {request.amount?.toLocaleString()}</p>
-                            <p className="text-sm text-gray-500">{request.reason}</p>
+                            <h3 className="font-semibold">{request.full_name ?? '-'}</h3>
+                             {/* amount removed */}
+                            <p className="text-sm text-gray-500">{request.reason ?? request.description ?? ''}</p>
                           </div>
                           <Badge className={getStatusColor(request.status)}>{request.status}</Badge>
                         </div>
                       </div>
                     ))}
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="donor-requests">
+            <Card>
+              <CardHeader>
+                <CardTitle>Donor Requests</CardTitle>
+                <CardDescription>Approve or reject donor signups</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {donors.length === 0 ? (
+                  <div className="text-center py-8">
+                    <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-600">No donor requests</p>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Name</TableHead>
+                          <TableHead>Email</TableHead>
+                          <TableHead>CNIC</TableHead>
+                          <TableHead>Organization</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead className="text-right">Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {donors.map((d) => (
+                          <TableRow key={d.id}>
+                            <TableCell className="font-medium">{d.name}</TableCell>
+                            <TableCell>{d.email}</TableCell>
+                            <TableCell>{formatCNIC(String(d.cnic ?? ""))}</TableCell>
+                            <TableCell>{d.organization_name || "-"}</TableCell>
+                            <TableCell>
+                              <Badge className={
+                                d.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : d.status === 'REJECTED' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
+                              }>
+                                {d.status}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-right space-x-2">
+                              <Button size="sm" variant="outline" onClick={() => updateDonorStatus(d.id, 'PENDING')}>Pending</Button>
+                              <Button size="sm" className="bg-green-600 hover:bg-green-700" onClick={() => updateDonorStatus(d.id, 'ACTIVE')}>Approve</Button>
+                              <Button size="sm" variant="destructive" onClick={() => updateDonorStatus(d.id, 'REJECTED')}>Reject</Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
