@@ -204,7 +204,7 @@ export default function UnifiedRequestForm() {
             <input ref={cnicBackRef} type="file" name="cnic_back" accept="image/*" onChange={handleFileChange(setCnicBack)} required />
           </div>
           <div>
-            <label>Supporting Document</label>
+            <label>Upload Applier Image</label>
             <input ref={documentRef} type="file" name="document" onChange={handleFileChange(setDocument)} required />
           </div>
         </div>

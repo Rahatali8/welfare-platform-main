@@ -13,23 +13,6 @@ import {
   LineChart as SignupLineChart,
   Line as SignupLine
 } from 'recharts';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  LineChart,
-  Line,
-  Legend,
-} from 'recharts';
-
-
-
 
 const COLORS = ['#38bdf8', '#06b6d4', '#fbbf24', '#f472b6', '#a3e635', '#f87171'];
 

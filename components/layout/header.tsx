@@ -134,15 +134,12 @@ export function Header() {
               </div>
               {/* Signup Dropdown */}
               <div className="relative group">
-                <Button
-                  className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-semibold px-4 py-2 rounded-lg shadow-md flex items-center gap-1"
-                >
-                  Sign Up <ChevronDown className="w-4 h-4" />
+              <Link href="/signup"><Button
+                  className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-semibold px-4 py-2 rounded-lg shadow-md flex items-center gap-1">
+                  Sign Up
                 </Button>
-                <div className="absolute hidden group-hover:block bg-white shadow-xl rounded-xl mt-2 w-44 z-50 border border-blue-100">
-                  <Link href="/signup" className="block w-full text-left px-5 py-3 text-base text-blue-900 hover:bg-blue-50 rounded-t-xl">User Signup</Link>
-                  <Link href="/donor/signup" className="block w-full text-left px-5 py-3 text-base text-blue-900 hover:bg-blue-50 rounded-b-xl">Donor Signup</Link>
-                </div>
+                </Link>
+                
               </div>
             </>
           )}
@@ -190,7 +187,7 @@ export function Header() {
                     </button>
                   </div>
                   {/* ✅ Donor Signup in Mobile view */}
-                  <Link href="/donor/signup" className="block text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Donor Signup</Link>
+                  {/* <Link href="/donor/signup" className="block text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Donor Signup</Link> */}
 
                 </details>
               </>
@@ -211,13 +208,13 @@ export function Header() {
                     </div>
                   </details>
                   {/* Signup Dropdown */}
-                  <details className="border rounded-md">
-                    <summary className="px-4 py-2 text-gray-700 cursor-pointer w-full">Sign Up</summary>
-                    <div className="pl-4 pb-2 flex flex-col space-y-1">
-                      <Link href="/signup" className="text-left text-sm text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>User Signup</Link>
-                      <Link href="/donor/signup" className="text-left text-sm text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Donor Signup</Link>
-                    </div>
-                  </details>
+                  <div className="relative group">
+              <Link href="/signup"><Button
+                  className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-semibold px-4 py-2 rounded-lg shadow-md flex items-center gap-1">
+                  Sign Up
+                </Button>
+                </Link>
+              </div>
                 </>
               )}
             </div>
