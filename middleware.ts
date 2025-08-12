@@ -1,10 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { hasSubmittedApplication } from "./lib/helpers";
 
 export const runtime = "nodejs";
-
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
@@ -21,16 +18,17 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Admin dashboard requires authentication
+  if (pathname.startsWith("/dashboard/admin")) {
+    if (!token) {
+      return NextResponse.redirect(new URL("/admin/login", request.url));
+    }
+    return NextResponse.next();
+  }
+
   // All other dashboards still require authentication
   if (!token) {
     return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  // Edge-safe: don't verify JWT here (jsonwebtoken not supported in middleware).
-  // Rely on API route guards for role authorization.
-  // Only enforce that admin dashboard requires some auth cookie.
-  if (pathname.startsWith("/dashboard/admin") && !token) {
-    return NextResponse.redirect(new URL("/admin/login", request.url));
   }
 
   return NextResponse.next();

@@ -1,36 +1,38 @@
-import { type NextRequest, NextResponse } from "next/server"
-import jwt from "jsonwebtoken"
+import { NextRequest, NextResponse } from "next/server"
 import { db } from "@/lib/db"
-
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"
+import { verifyAuth } from "@/lib/auth"
 
 export async function POST(request: NextRequest) {
   try {
-    const token = request.cookies.get("auth-token")?.value || request.cookies.get("token")?.value
-
-    if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+    const authResult = await verifyAuth(request)
+    if (!authResult.success || authResult.user?.role !== "admin") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const decoded = jwt.verify(token, JWT_SECRET) as any
+    const { requestId, status, rejectionReason } = await request.json()
 
-    if (decoded.role !== "admin") {
-      return NextResponse.json({ message: "Forbidden" }, { status: 403 })
+    if (!requestId || !status) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
-    const { requestId, status } = await request.json()
-
-    if (!requestId || !status || !["approved", "rejected"].includes(status)) {
-      return NextResponse.json({ message: "Invalid request data" }, { status: 400 })
-    }
-
-    await db.$executeRaw`UPDATE requests SET status = ${status}, updated_at = NOW() WHERE id = ${requestId}`
-
-    return NextResponse.json({
-      message: `Request ${status} successfully`,
+    // Update request status
+    const updatedRequest = await db.request.update({
+      where: { id: requestId },
+      data: {
+        status: status,
+        rejection_reason: status === "rejected" ? rejectionReason : null,
+        updated_at: new Date()
+      }
     })
+
+    return NextResponse.json({ 
+      success: true, 
+      message: `Request ${status} successfully`,
+      request: updatedRequest
+    })
+
   } catch (error) {
-    console.error("Update status error:", error)
-    return NextResponse.json({ message: "Internal server error" }, { status: 500 })
+    console.error("Error updating request status:", error)
+    return NextResponse.json({ error: "Failed to update request status" }, { status: 500 })
   }
 }

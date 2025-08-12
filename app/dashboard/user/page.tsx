@@ -136,23 +136,38 @@ export default function UserDashboard() {
                   </tr>
                 )}
                 {requestData && !loading && (
-                  <tr className="hover:bg-blue-50 transition">
-                    <td className="py-4 px-4 font-mono text-blue-900">{requestData.id || requestData.orderId || '—'}</td>
-                    <td className="py-4 px-4 flex items-center gap-2">
-                      <img
-                        src={requestData.gender === 'female' ? '/user-female.jpg' : '/user-male.png'}
-                        alt="User"
-                        className="w-8 h-8 rounded-full object-cover border-2 border-blue-200 shadow"
-                      />
-                      <span className="font-semibold text-blue-900">{requestData.full_name || requestData.name}</span>
-                    </td>
-                    <td className="py-4 px-4 text-blue-800">{requestData.city || requestData.address || '—'}</td>
-                    <td className="py-4 px-4 text-blue-800">{requestData.type || requestData.product || '—'}</td>
-                    <td className="py-4 px-4 text-blue-800">{requestData.created_at ? new Date(requestData.created_at).toLocaleDateString() : (requestData.date || '—')}</td>
-                    <td className="py-4 px-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold shadow-md ${requestData.status === 'approved' || requestData.status === 'Approved' ? 'bg-green-100 text-green-700' : requestData.status === 'pending' || requestData.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}`}>{requestData.status}</span>
-                    </td>
-                  </tr>
+                  <>
+                    <tr className="hover:bg-blue-50 transition">
+                      <td className="py-4 px-4 font-mono text-blue-900">{requestData.id || requestData.orderId || '—'}</td>
+                      <td className="py-4 px-4 flex items-center gap-2">
+                        <img
+                          src={requestData.gender === 'female' ? '/user-female.jpg' : '/user-male.png'}
+                          alt="User"
+                          className="w-8 h-8 rounded-full object-cover border-2 border-blue-200 shadow"
+                        />
+                        <span className="font-semibold text-blue-900">{requestData.full_name || requestData.name}</span>
+                      </td>
+                      <td className="py-4 px-4 text-blue-800">{requestData.city || requestData.address || '—'}</td>
+                      <td className="py-4 px-4 text-blue-800">{requestData.type || requestData.product || '—'}</td>
+                      <td className="py-4 px-4 text-blue-800">{requestData.created_at ? new Date(requestData.created_at).toLocaleDateString() : (requestData.date || '—')}</td>
+                      <td className="py-4 px-4">
+                        <span className={`px-3 py-1 rounded-full text-xs font-bold shadow-md ${((requestData.status || '').toLowerCase() === 'approved') ? 'bg-green-100 text-green-700' : ((requestData.status || '').toLowerCase() === 'pending') ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}`}>{requestData.status}</span>
+                      </td>
+                    </tr>
+                    {((requestData.status || '').toLowerCase() === 'rejected') && requestData.rejection_reason && (
+                      <tr>
+                        <td colSpan={6} className="py-4 px-4">
+                          <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
+                            <div className="font-semibold mb-1">Rejection Reason</div>
+                            <div>{requestData.rejection_reason}</div>
+                            {requestData.updated_at && (
+                              <div className="text-xs text-red-700 mt-1">Rejected on: {new Date(requestData.updated_at).toLocaleString()}</div>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </>
                 )}
                 {!loading && !requestData && !error && (
                   <tr>

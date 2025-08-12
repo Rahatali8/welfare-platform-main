@@ -30,8 +30,10 @@ export async function GET(request: Request) {
       grouped[type].push({
         id: r.id,
         type: r.type,
-        status: r.status,
+        status: (r.status ?? '').toLowerCase(),
         reason: r.reason,
+        updated_at: r.updated_at,
+        rejection_reason: r.rejection_reason,
         description: r.description,
         createdAt: r.created_at,
         full_name: r.full_name,

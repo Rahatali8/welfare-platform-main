@@ -134,7 +134,8 @@ export function Header() {
               </div>
               {/* Signup Dropdown */}
               <div className="relative group">
-              <Link href="/signup"><Button
+              <Link href="/signup">
+              <Button
                   className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-semibold px-4 py-2 rounded-lg shadow-md flex items-center gap-1">
                   Sign Up
                 </Button>

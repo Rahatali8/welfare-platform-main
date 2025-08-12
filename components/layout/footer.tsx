@@ -15,7 +15,7 @@ export function Footer() {
           <div className="space-y-4">
             <Link href="/" className="flex items-center space-x-2">
               <img
-                src="footer-logo.png" // <-- Replace this with the correct path to your logo
+                src="/footer-logo.png" // <-- Replace this with the correct path to your logo
                 alt="Welfare Platform Logo"
                 className="h-20 w-auto"
               />

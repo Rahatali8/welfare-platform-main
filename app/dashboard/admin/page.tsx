@@ -16,7 +16,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
 } from "@/components/ui/dialog"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Users,
   DollarSign,
@@ -41,6 +43,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
     description: string | null
     status: "pending" | "approved" | "rejected"
     created_at: string
+    updated_at: string
     adult_member: number | null
     cnic_back: string | null
     cnic_front: string | null
@@ -56,6 +59,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
     monthly_income: number | null
     reason: string | null
     repayment_time: string | null
+    rejection_reason: string | null
   }
 
 interface Analytics {
@@ -78,8 +82,11 @@ export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true)
   const [donors, setDonors] = useState<any[]>([])
   const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState("all")
+  const [statusFilter, setStatusFilter] = useState("pending")
   const [typeFilter, setTypeFilter] = useState("all")
+  const [showRejectionDialog, setShowRejectionDialog] = useState(false)
+  const [rejectionReason, setRejectionReason] = useState("")
+  const [requestToReject, setRequestToReject] = useState<Request | null>(null)
   const { toast } = useToast()
   const router = useRouter()
 
@@ -160,24 +167,24 @@ export default function AdminDashboard() {
     }
 
     if (statusFilter !== "all") {
-      filtered = filtered.filter((request) => request.status === statusFilter)
+      filtered = filtered.filter((request) => (request.status || '').toLowerCase() === statusFilter)
     }
 
     if (typeFilter !== "all") {
-      filtered = filtered.filter((request) => request.type === typeFilter)
+      filtered = filtered.filter((request) => (request.type || '').toLowerCase() === typeFilter)
     }
 
     setFilteredRequests(filtered)
   }
 
-  const updateRequestStatus = async (requestId: number, status: "approved" | "rejected") => {
+  const updateRequestStatus = async (requestId: number, status: "approved" | "rejected", rejectionReason?: string) => {
     try {
       const response = await fetch("/api/admin/update-status", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ requestId, status }),
+        body: JSON.stringify({ requestId, status, rejectionReason }),
       })
 
       if (response.ok) {
@@ -187,6 +194,9 @@ export default function AdminDashboard() {
         })
         fetchRequests()
         fetchAnalytics()
+        setShowRejectionDialog(false)
+        setRejectionReason("")
+        setRequestToReject(null)
       } else {
         toast({
           title: "Update Failed",
@@ -198,6 +208,23 @@ export default function AdminDashboard() {
       toast({
         title: "Error",
         description: "Failed to update status",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const handleRejectRequest = (request: Request) => {
+    setRequestToReject(request)
+    setShowRejectionDialog(true)
+  }
+
+  const confirmRejection = () => {
+    if (requestToReject && rejectionReason.trim()) {
+      updateRequestStatus(requestToReject.id, "rejected", rejectionReason.trim())
+    } else {
+      toast({
+        title: "Error",
+        description: "Please provide a reason for rejection",
         variant: "destructive",
       })
     }
@@ -231,7 +258,7 @@ export default function AdminDashboard() {
   }
 
   const getStatusIcon = (status: string) => {
-    switch (status) {
+    switch ((status || '').toLowerCase()) {
       case "pending":
         return <Clock className="h-4 w-4" />
       case "approved":
@@ -244,7 +271,7 @@ export default function AdminDashboard() {
   }
 
   const getStatusColor = (status: string) => {
-    switch (status) {
+    switch ((status || '').toLowerCase()) {
       case "pending":
         return "bg-yellow-100 text-yellow-800"
       case "approved":
@@ -348,6 +375,8 @@ export default function AdminDashboard() {
         <Tabs defaultValue="all-requests" className="space-y-6">
           <TabsList className="w-full flex flex-wrap gap-2">
             <TabsTrigger value="all-requests">All Requests</TabsTrigger>
+            <TabsTrigger value="accepted-requests">Accepted Requests</TabsTrigger>
+            <TabsTrigger value="rejected-requests">Rejected Requests</TabsTrigger>
             <TabsTrigger value="donor-requests">Donor Requests</TabsTrigger>
             {Object.keys(groupedRequests).sort().map((type) => (
               <TabsTrigger key={type} value={`type-${type}`}>{type}</TabsTrigger>
@@ -423,7 +452,7 @@ export default function AdminDashboard() {
                               <h3 className="font-semibold text-lg">{request.full_name ?? '-'}</h3>
                               {request.cnic_number && (<Badge variant="outline">{formatCNIC(request.cnic_number)}</Badge>)}
                             </div>
-                            <div className="text-sm text-gray-700 flex flex-wrap gap-3">
+                            <div className="flex items-center space-x-4 text-sm text-gray-600">
                               <span><b>ID:</b> {request.id}</span>
                               <span><b>User ID:</b> {request.user_id}</span>
                               <span><b>Type:</b> {request.type}</span>
@@ -445,31 +474,7 @@ export default function AdminDashboard() {
                           <p><b>Submitted:</b> {new Date(request.created_at).toLocaleString()}</p>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-2 text-xs text-gray-700 mt-3">
-                          <div><b>Full Name:</b> {request.full_name || 'N/A'}</div>
-                          <div><b>Father Name:</b> {request.father_name || 'N/A'}</div>
-                          <div><b>CNIC #:</b> {request.cnic_number || 'N/A'}</div>
-                          <div><b>Marital Status:</b> {request.marital_status || 'N/A'}</div>
-                          <div><b>Family Count:</b> {request.family_count || 'N/A'}</div>
-                          <div><b>Adult Members:</b> {request.adult_member || 'N/A'}</div>
-                          <div><b>Matric Members:</b> {request.matric_member || 'N/A'}</div>
-                          <div><b>Home Rent:</b> {request.home_rent || 'N/A'}</div>
-                          <div><b>Fridge:</b> {request.fridge || 'N/A'}</div>
-                          <div><b>Monthly Income:</b> {request.monthly_income ? `PKR ${request.monthly_income.toLocaleString()}` : 'N/A'}</div>
-                          <div><b>Repayment Time:</b> {request.repayment_time || 'N/A'}</div>
-                        </div>
-
-                        <div className="flex flex-wrap gap-3 mt-2">
-                          {request.cnic_front && (
-                            <a href={request.cnic_front.startsWith('/uploads/') ? request.cnic_front : `/uploads/${request.cnic_front.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline text-xs">CNIC Front</a>
-                          )}
-                          {request.cnic_back && (
-                            <a href={request.cnic_back.startsWith('/uploads/') ? request.cnic_back : `/uploads/${request.cnic_back.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline text-xs">CNIC Back</a>
-                          )}
-                          {request.document && (
-                            <a href={request.document.startsWith('/uploads/') ? request.document : `/uploads/${request.document.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline text-xs">Supporting Document</a>
-                          )}
-                        </div>
+                        {/* Summary view only; full details available in dialog */}
 
                         <div className="flex justify-between items-center mt-4">
 
@@ -588,7 +593,7 @@ export default function AdminDashboard() {
                                       )}
                                     </div>
 
-                                    {selectedRequest.status === "pending" && (
+                                    {(selectedRequest.status || '').toLowerCase() === "pending" && (
                                       <div className="flex space-x-2 pt-4">
                                         <Button
                                           onClick={() => updateRequestStatus(selectedRequest.id, "approved")}
@@ -598,7 +603,7 @@ export default function AdminDashboard() {
                                           Approve
                                         </Button>
                                         <Button
-                                          onClick={() => updateRequestStatus(selectedRequest.id, "rejected")}
+                                          onClick={() => handleRejectRequest(selectedRequest)}
                                           variant="destructive"
                                         >
                                           <XCircle className="h-4 w-4 mr-2" />
@@ -611,7 +616,7 @@ export default function AdminDashboard() {
                               </DialogContent>
                             </Dialog>
 
-                            {request.status === "pending" && (
+                            {(request.status || '').toLowerCase() === "pending" && (
                               <>
                                 <Button
                                   size="sm"
@@ -624,7 +629,7 @@ export default function AdminDashboard() {
                                 <Button
                                   size="sm"
                                   variant="destructive"
-                                  onClick={() => updateRequestStatus(request.id, "rejected")}
+                                  onClick={() => handleRejectRequest(request)}
                                 >
                                   <XCircle className="h-4 w-4 mr-1" />
                                   Reject
@@ -652,40 +657,207 @@ export default function AdminDashboard() {
                   {(reqs as any[]).length === 0 ? (
                     <div className="text-gray-500">No requests for this type.</div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {(reqs as any[]).map((r) => (
-                        <div key={r.id} className="border rounded-xl p-4 bg-white/70">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-semibold">{r.user?.fullName || '-'}</span>
-                            <Badge variant="outline">{r.user?.cnic || '-'}</Badge>
-                            <Badge className={r.status === 'approved' ? 'bg-green-100 text-green-800' : r.status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}>{r.status}</Badge>
-                          </div>
-                              <div className="text-sm text-gray-600 mb-1">{r.reason || r.description}</div>
-                          <div className="text-xs text-gray-500 mb-2">{new Date(r.createdAt).toLocaleString()}</div>
-                              <div className="grid grid-cols-2 gap-2 text-xs text-gray-700 mb-2">
-                                {r.fullName && (<div><b>Full Name:</b> {r.fullName}</div>)}
-                                {r.fatherName && (<div><b>Father Name:</b> {r.fatherName}</div>)}
-                                {r.cnicNumber && (<div><b>CNIC #:</b> {r.cnicNumber}</div>)}
-                                {r.maritalStatus && (<div><b>Marital Status:</b> {r.maritalStatus}</div>)}
-                                {typeof r.familyCount !== 'undefined' && r.familyCount !== null && (<div><b>Family Count:</b> {r.familyCount}</div>)}
-                                {typeof r.adultMember !== 'undefined' && r.adultMember !== null && (<div><b>Adult Members:</b> {r.adultMember}</div>)}
-                                {typeof r.matricMember !== 'undefined' && r.matricMember !== null && (<div><b>Matric Members:</b> {r.matricMember}</div>)}
-                                {r.homeRent && (<div><b>Home Rent:</b> {r.homeRent}</div>)}
-                                {r.fridge && (<div><b>Fridge:</b> {r.fridge}</div>)}
-                                {typeof r.monthlyIncome !== 'undefined' && r.monthlyIncome !== null && (<div><b>Monthly Income:</b> {r.monthlyIncome}</div>)}
-                                {r.repaymentTime && (<div><b>Repayment Time:</b> {r.repaymentTime}</div>)}
-                                {r.currentAddress && (<div className="col-span-2"><b>Current Address:</b> {r.currentAddress}</div>)}
+                    <div className="space-y-4">
+                      {(reqs as any[]).map((request) => (
+                        <div key={request.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                          <div className="flex justify-between items-start mb-2">
+                            <div className="flex-1">
+                              <div className="flex items-center space-x-2 mb-1">
+                                <h3 className="font-semibold text-lg">{request.full_name ?? '-'}</h3>
+                                {request.cnic_number && (<Badge variant="outline">{formatCNIC(request.cnic_number)}</Badge>)}
                               </div>
-                              <div className="flex flex-wrap gap-3">
-                             {r.cnic_front && (
-                              <a href={r.cnic_front.startsWith('/uploads/') ? r.cnic_front : `/uploads/${r.cnic_front.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline text-xs">CNIC Front</a>
-                            )}
-                             {r.cnic_back && (
-                              <a href={r.cnic_back.startsWith('/uploads/') ? r.cnic_back : `/uploads/${r.cnic_back.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline text-xs">CNIC Back</a>
-                            )}
-                            {r.document && (
-                              <a href={r.document.startsWith('/uploads/') ? r.document : `/uploads/${r.document.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline text-xs">Document</a>
-                            )}
+                              <div className="flex items-center space-x-4 text-sm text-gray-600">
+                                <span><b>ID:</b> {request.id}</span>
+                                <span><b>User ID:</b> {request.user_id}</span>
+                                <span><b>Type:</b> {request.type}</span>
+                                <span><b>Status:</b> {request.status}</span>
+                              </div>
+                              <p className="text-sm text-gray-500 mt-1">{request.reason ?? request.description ?? ''}</p>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Badge className={getStatusColor(request.status)}>
+                                <div className="flex items-center space-x-1">
+                                  {getStatusIcon(request.status)}
+                                  <span className="capitalize">{request.status}</span>
+                                </div>
+                              </Badge>
+                            </div>
+                          </div>
+
+                          <div className="text-sm text-gray-500 mt-2">
+                            <p><b>Submitted:</b> {new Date(request.created_at).toLocaleString()}</p>
+                          </div>
+
+                          {/* Summary view only; full details available in dialog */}
+
+                          <div className="flex justify-between items-center mt-4">
+                            <div className="flex space-x-2">
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button variant="outline" size="sm" onClick={() => setSelectedRequest(request)}>
+                                    <Eye className="h-4 w-4 mr-1" />
+                                    View Full
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                                  <DialogHeader>
+                                    <DialogTitle>Request Details</DialogTitle>
+                                    <DialogDescription>Complete information</DialogDescription>
+                                  </DialogHeader>
+                                  {selectedRequest && (
+                                    <div className="space-y-4">
+                                      <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                          <Label className="font-medium">Applicant Name</Label>
+                                          <p>{selectedRequest.full_name ?? '-'}</p>
+                                        </div>
+                                        <div>
+                                          <Label className="font-medium">CNIC</Label>
+                                          <p>{selectedRequest.cnic_number ? formatCNIC(selectedRequest.cnic_number) : '-'}</p>
+                                        </div>
+                                        <div>
+                                          <Label className="font-medium">Request Type</Label>
+                                          <p className="capitalize">{selectedRequest.type}</p>
+                                        </div>
+                                        <div>
+                                          <Label className="font-medium">Status</Label>
+                                          <Badge className={getStatusColor(selectedRequest.status)}>
+                                            {selectedRequest.status}
+                                          </Badge>
+                                        </div>
+                                        <div>
+                                          <Label className="font-medium">Submitted</Label>
+                                          <p>{new Date(selectedRequest.created_at).toLocaleDateString()}</p>
+                                        </div>
+                                      </div>
+
+                                      <div>
+                                        <Label className="font-medium">Reason</Label>
+                                        <p>{selectedRequest.reason ?? selectedRequest.description ?? ''}</p>
+                                      </div>
+
+                                      <div className="grid grid-cols-2 gap-4">
+                                        {selectedRequest.father_name && (
+                                          <div>
+                                            <Label className="font-medium">Father Name</Label>
+                                            <p>{selectedRequest.father_name}</p>
+                                          </div>
+                                        )}
+                                        {selectedRequest.marital_status && (
+                                          <div>
+                                            <Label className="font-medium">Marital Status</Label>
+                                            <p>{selectedRequest.marital_status}</p>
+                                          </div>
+                                        )}
+                                        {selectedRequest.family_count !== null && (
+                                          <div>
+                                            <Label className="font-medium">Family Count</Label>
+                                            <p>{selectedRequest.family_count}</p>
+                                          </div>
+                                        )}
+                                        {selectedRequest.adult_member !== null && (
+                                          <div>
+                                            <Label className="font-medium">Adult Members</Label>
+                                            <p>{selectedRequest.adult_member}</p>
+                                          </div>
+                                        )}
+                                        {selectedRequest.matric_member !== null && (
+                                          <div>
+                                            <Label className="font-medium">Matric Members</Label>
+                                            <p>{selectedRequest.matric_member}</p>
+                                          </div>
+                                        )}
+                                        {selectedRequest.home_rent && (
+                                          <div>
+                                            <Label className="font-medium">Home Rent</Label>
+                                            <p>{selectedRequest.home_rent}</p>
+                                          </div>
+                                        )}
+                                        {selectedRequest.fridge && (
+                                          <div>
+                                            <Label className="font-medium">Fridge</Label>
+                                            <p>{selectedRequest.fridge}</p>
+                                          </div>
+                                        )}
+                                        {selectedRequest.monthly_income !== null && (
+                                          <div>
+                                            <Label className="font-medium">Monthly Income</Label>
+                                            <p>PKR {selectedRequest.monthly_income.toLocaleString()}</p>
+                                          </div>
+                                        )}
+                                        {selectedRequest.repayment_time && (
+                                          <div>
+                                            <Label className="font-medium">Repayment Time</Label>
+                                            <p>{selectedRequest.repayment_time}</p>
+                                          </div>
+                                        )}
+                                      </div>
+
+                                      <div className="space-y-2">
+                                        {selectedRequest.cnic_front && (
+                                          <div>
+                                            <Label className="font-medium">CNIC Front</Label>
+                                            <a href={selectedRequest.cnic_front.startsWith('/uploads/') ? selectedRequest.cnic_front : `/uploads/${selectedRequest.cnic_front.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline">View CNIC Front</a>
+                                          </div>
+                                        )}
+                                        {selectedRequest.cnic_back && (
+                                          <div>
+                                            <Label className="font-medium">CNIC Back</Label>
+                                            <a href={selectedRequest.cnic_back.startsWith('/uploads/') ? selectedRequest.cnic_back : `/uploads/${selectedRequest.cnic_back.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline">View CNIC Back</a>
+                                          </div>
+                                        )}
+                                        {selectedRequest.document && (
+                                          <div>
+                                            <Label className="font-medium">Supporting Document</Label>
+                                            <a href={selectedRequest.document.startsWith('/uploads/') ? selectedRequest.document : `/uploads/${selectedRequest.document.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline">View Document</a>
+                                          </div>
+                                        )}
+                                      </div>
+
+                                      {selectedRequest.status === "pending" && (
+                                        <div className="flex space-x-2 pt-4">
+                                          <Button
+                                            onClick={() => updateRequestStatus(selectedRequest.id, "approved")}
+                                            className="bg-green-600 hover:bg-green-700"
+                                          >
+                                            <CheckCircle className="h-4 w-4 mr-2" />
+                                            Approve
+                                          </Button>
+                                          <Button
+                                            onClick={() => handleRejectRequest(selectedRequest)}
+                                            variant="destructive"
+                                          >
+                                            <XCircle className="h-4 w-4 mr-2" />
+                                            Reject
+                                          </Button>
+                                        </div>
+                                      )}
+                                    </div>
+                                  )}
+                                </DialogContent>
+                              </Dialog>
+
+                              {request.status === "pending" && (
+                                <>
+                                  <Button
+                                    size="sm"
+                                    onClick={() => updateRequestStatus(request.id, "approved")}
+                                    className="bg-green-600 hover:bg-green-700"
+                                  >
+                                    <CheckCircle className="h-4 w-4 mr-1" />
+                                    Approve
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="destructive"
+                                    onClick={() => handleRejectRequest(request)}
+                                  >
+                                    <XCircle className="h-4 w-4 mr-1" />
+                                    Reject
+                                  </Button>
+                                </>
+                              )}
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -711,14 +883,205 @@ export default function AdminDashboard() {
                   {requests
                     .filter((r) => r.type === "loan")
                     .map((request) => (
-                      <div key={request.id} className="border rounded-lg p-4">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h3 className="font-semibold">{request.full_name ?? '-'}</h3>
-                             {/* amount removed */}
-                            <p className="text-sm text-gray-500">{request.reason ?? request.description ?? ''}</p>
+                      <div key={request.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                        <div className="flex justify-between items-start mb-2">
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-2 mb-1">
+                              <h3 className="font-semibold text-lg">{request.full_name ?? '-'}</h3>
+                              {request.cnic_number && (<Badge variant="outline">{formatCNIC(request.cnic_number)}</Badge>)}
+                            </div>
+                            <div className="flex items-center space-x-4 text-sm text-gray-600">
+                              <span><b>ID:</b> {request.id}</span>
+                              <span><b>User ID:</b> {request.user_id}</span>
+                              <span><b>Type:</b> {request.type}</span>
+                              <span><b>Status:</b> {request.status}</span>
+                            </div>
+                            <p className="text-sm text-gray-500 mt-1">{request.reason ?? request.description ?? ''}</p>
                           </div>
-                          <Badge className={getStatusColor(request.status)}>{request.status}</Badge>
+                          <div className="flex items-center space-x-2">
+                            <Badge className={getStatusColor(request.status)}>
+                              <div className="flex items-center space-x-1">
+                                {getStatusIcon(request.status)}
+                                <span className="capitalize">{request.status}</span>
+                              </div>
+                            </Badge>
+                          </div>
+                        </div>
+
+                        <div className="text-sm text-gray-500 mt-2">
+                          <p><b>Submitted:</b> {new Date(request.created_at).toLocaleString()}</p>
+                        </div>
+
+                          {/* Summary view only; full details available in dialog */}
+
+                        <div className="flex justify-between items-center mt-4">
+                          <div className="flex space-x-2">
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button variant="outline" size="sm" onClick={() => setSelectedRequest(request)}>
+                                  <Eye className="h-4 w-4 mr-1" />
+                                  View Full
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                                <DialogHeader>
+                                  <DialogTitle>Request Details</DialogTitle>
+                                  <DialogDescription>Complete information</DialogDescription>
+                                </DialogHeader>
+                                {selectedRequest && (
+                                  <div className="space-y-4">
+                                    <div className="grid grid-cols-2 gap-4">
+                                      <div>
+                                        <Label className="font-medium">Applicant Name</Label>
+                                        <p>{selectedRequest.full_name ?? '-'}</p>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">CNIC</Label>
+                                        <p>{selectedRequest.cnic_number ? formatCNIC(selectedRequest.cnic_number) : '-'}</p>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">Request Type</Label>
+                                        <p className="capitalize">{selectedRequest.type}</p>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">Status</Label>
+                                        <Badge className={getStatusColor(selectedRequest.status)}>
+                                          {selectedRequest.status}
+                                        </Badge>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">Submitted</Label>
+                                        <p>{new Date(selectedRequest.created_at).toLocaleDateString()}</p>
+                                      </div>
+                                    </div>
+
+                                    <div>
+                                      <Label className="font-medium">Reason</Label>
+                                      <p>{selectedRequest.reason ?? selectedRequest.description ?? ''}</p>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                      {selectedRequest.father_name && (
+                                        <div>
+                                          <Label className="font-medium">Father Name</Label>
+                                          <p>{selectedRequest.father_name}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.marital_status && (
+                                        <div>
+                                          <Label className="font-medium">Marital Status</Label>
+                                          <p>{selectedRequest.marital_status}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.family_count !== null && (
+                                        <div>
+                                          <Label className="font-medium">Family Count</Label>
+                                          <p>{selectedRequest.family_count}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.adult_member !== null && (
+                                        <div>
+                                          <Label className="font-medium">Adult Members</Label>
+                                          <p>{selectedRequest.adult_member}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.matric_member !== null && (
+                                        <div>
+                                          <Label className="font-medium">Matric Members</Label>
+                                          <p>{selectedRequest.matric_member}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.home_rent && (
+                                        <div>
+                                          <Label className="font-medium">Home Rent</Label>
+                                          <p>{selectedRequest.home_rent}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.fridge && (
+                                        <div>
+                                          <Label className="font-medium">Fridge</Label>
+                                          <p>{selectedRequest.fridge}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.monthly_income !== null && (
+                                        <div>
+                                          <Label className="font-medium">Monthly Income</Label>
+                                          <p>PKR {selectedRequest.monthly_income.toLocaleString()}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.repayment_time && (
+                                        <div>
+                                          <Label className="font-medium">Repayment Time</Label>
+                                          <p>{selectedRequest.repayment_time}</p>
+                                        </div>
+                                      )}
+                                    </div>
+
+                                    <div className="space-y-2">
+                                      {selectedRequest.cnic_front && (
+                                        <div>
+                                          <Label className="font-medium">CNIC Front</Label>
+                                          <a href={selectedRequest.cnic_front.startsWith('/uploads/') ? selectedRequest.cnic_front : `/uploads/${selectedRequest.cnic_front.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline">View CNIC Front</a>
+                                        </div>
+                                      )}
+                                      {selectedRequest.cnic_back && (
+                                        <div>
+                                          <Label className="font-medium">CNIC Back</Label>
+                                          <a href={selectedRequest.cnic_back.startsWith('/uploads/') ? selectedRequest.cnic_back : `/uploads/${selectedRequest.cnic_back.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline">View CNIC Back</a>
+                                        </div>
+                                      )}
+                                      {selectedRequest.document && (
+                                        <div>
+                                          <Label className="font-medium">Supporting Document</Label>
+                                          <a href={selectedRequest.document.startsWith('/uploads/') ? selectedRequest.document : `/uploads/${selectedRequest.document.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline">View Document</a>
+                                        </div>
+                                      )}
+                                    </div>
+
+                                    {selectedRequest.status === "pending" && (
+                                      <div className="flex space-x-2 pt-4">
+                                        <Button
+                                          onClick={() => updateRequestStatus(selectedRequest.id, "approved")}
+                                          className="bg-green-600 hover:bg-green-700"
+                                        >
+                                          <CheckCircle className="h-4 w-4 mr-2" />
+                                          Approve
+                                        </Button>
+                                        <Button
+                                          onClick={() => handleRejectRequest(selectedRequest)}
+                                          variant="destructive"
+                                        >
+                                          <XCircle className="h-4 w-4 mr-2" />
+                                          Reject
+                                        </Button>
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                              </DialogContent>
+                            </Dialog>
+
+                            {request.status === "pending" && (
+                              <>
+                                <Button
+                                  size="sm"
+                                  onClick={() => updateRequestStatus(request.id, "approved")}
+                                  className="bg-green-600 hover:bg-green-700"
+                                >
+                                  <CheckCircle className="h-4 w-4 mr-1" />
+                                  Approve
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => handleRejectRequest(request)}
+                                >
+                                  <XCircle className="h-4 w-4 mr-1" />
+                                  Reject
+                                </Button>
+                              </>
+                            )}
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -741,14 +1104,205 @@ export default function AdminDashboard() {
                   {requests
                     .filter((r) => r.type === "microfinance")
                     .map((request) => (
-                      <div key={request.id} className="border rounded-lg p-4">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h3 className="font-semibold">{request.full_name ?? '-'}</h3>
-                             {/* amount removed */}
-                            <p className="text-sm text-gray-500">{request.reason ?? request.description ?? ''}</p>
+                      <div key={request.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                        <div className="flex justify-between items-start mb-2">
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-2 mb-1">
+                              <h3 className="font-semibold text-lg">{request.full_name ?? '-'}</h3>
+                              {request.cnic_number && (<Badge variant="outline">{formatCNIC(request.cnic_number)}</Badge>)}
+                            </div>
+                            <div className="flex items-center space-x-4 text-sm text-gray-600">
+                              <span><b>ID:</b> {request.id}</span>
+                              <span><b>User ID:</b> {request.user_id}</span>
+                              <span><b>Type:</b> {request.type}</span>
+                              <span><b>Status:</b> {request.status}</span>
+                            </div>
+                            <p className="text-sm text-gray-500 mt-1">{request.reason ?? request.description ?? ''}</p>
                           </div>
-                          <Badge className={getStatusColor(request.status)}>{request.status}</Badge>
+                          <div className="flex items-center space-x-2">
+                            <Badge className={getStatusColor(request.status)}>
+                              <div className="flex items-center space-x-1">
+                                {getStatusIcon(request.status)}
+                                <span className="capitalize">{request.status}</span>
+                              </div>
+                            </Badge>
+                          </div>
+                        </div>
+
+                        <div className="text-sm text-gray-500 mt-2">
+                          <p><b>Submitted:</b> {new Date(request.created_at).toLocaleString()}</p>
+                        </div>
+
+                          {/* Summary view only; full details available in dialog */}
+
+                        <div className="flex justify-between items-center mt-4">
+                          <div className="flex space-x-2">
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button variant="outline" size="sm" onClick={() => setSelectedRequest(request)}>
+                                  <Eye className="h-4 w-4 mr-1" />
+                                  View Full
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                                <DialogHeader>
+                                  <DialogTitle>Request Details</DialogTitle>
+                                  <DialogDescription>Complete information</DialogDescription>
+                                </DialogHeader>
+                                {selectedRequest && (
+                                  <div className="space-y-4">
+                                    <div className="grid grid-cols-2 gap-4">
+                                      <div>
+                                        <Label className="font-medium">Applicant Name</Label>
+                                        <p>{selectedRequest.full_name ?? '-'}</p>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">CNIC</Label>
+                                        <p>{selectedRequest.cnic_number ? formatCNIC(selectedRequest.cnic_number) : '-'}</p>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">Request Type</Label>
+                                        <p className="capitalize">{selectedRequest.type}</p>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">Status</Label>
+                                        <Badge className={getStatusColor(selectedRequest.status)}>
+                                          {selectedRequest.status}
+                                        </Badge>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">Submitted</Label>
+                                        <p>{new Date(selectedRequest.created_at).toLocaleDateString()}</p>
+                                      </div>
+                                    </div>
+
+                                    <div>
+                                      <Label className="font-medium">Reason</Label>
+                                      <p>{selectedRequest.reason ?? selectedRequest.description ?? ''}</p>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                      {selectedRequest.father_name && (
+                                        <div>
+                                          <Label className="font-medium">Father Name</Label>
+                                          <p>{selectedRequest.father_name}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.marital_status && (
+                                        <div>
+                                          <Label className="font-medium">Marital Status</Label>
+                                          <p>{selectedRequest.marital_status}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.family_count !== null && (
+                                        <div>
+                                          <Label className="font-medium">Family Count</Label>
+                                          <p>{selectedRequest.family_count}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.adult_member !== null && (
+                                        <div>
+                                          <Label className="font-medium">Adult Members</Label>
+                                          <p>{selectedRequest.adult_member}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.matric_member !== null && (
+                                        <div>
+                                          <Label className="font-medium">Matric Members</Label>
+                                          <p>{selectedRequest.matric_member}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.home_rent && (
+                                        <div>
+                                          <Label className="font-medium">Home Rent</Label>
+                                          <p>{selectedRequest.home_rent}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.fridge && (
+                                        <div>
+                                          <Label className="font-medium">Fridge</Label>
+                                          <p>{selectedRequest.fridge}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.monthly_income !== null && (
+                                        <div>
+                                          <Label className="font-medium">Monthly Income</Label>
+                                          <p>PKR {selectedRequest.monthly_income.toLocaleString()}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.repayment_time && (
+                                        <div>
+                                          <Label className="font-medium">Repayment Time</Label>
+                                          <p>{selectedRequest.repayment_time}</p>
+                                        </div>
+                                      )}
+                                    </div>
+
+                                    <div className="space-y-2">
+                                      {selectedRequest.cnic_front && (
+                                        <div>
+                                          <Label className="font-medium">CNIC Front</Label>
+                                          <a href={selectedRequest.cnic_front.startsWith('/uploads/') ? selectedRequest.cnic_front : `/uploads/${selectedRequest.cnic_front.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline">View CNIC Front</a>
+                                        </div>
+                                      )}
+                                      {selectedRequest.cnic_back && (
+                                        <div>
+                                          <Label className="font-medium">CNIC Back</Label>
+                                          <a href={selectedRequest.cnic_back.startsWith('/uploads/') ? selectedRequest.cnic_back : `/uploads/${selectedRequest.cnic_back.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline">View CNIC Back</a>
+                                        </div>
+                                      )}
+                                      {selectedRequest.document && (
+                                        <div>
+                                          <Label className="font-medium">Supporting Document</Label>
+                                          <a href={selectedRequest.document.startsWith('/uploads/') ? selectedRequest.document : `/uploads/${selectedRequest.document.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline">View Document</a>
+                                        </div>
+                                      )}
+                                    </div>
+
+                                    {selectedRequest.status === "pending" && (
+                                      <div className="flex space-x-2 pt-4">
+                                        <Button
+                                          onClick={() => updateRequestStatus(selectedRequest.id, "approved")}
+                                          className="bg-green-600 hover:bg-green-700"
+                                        >
+                                          <CheckCircle className="h-4 w-4 mr-2" />
+                                          Approve
+                                        </Button>
+                                        <Button
+                                          onClick={() => handleRejectRequest(selectedRequest)}
+                                          variant="destructive"
+                                        >
+                                          <XCircle className="h-4 w-4 mr-2" />
+                                          Reject
+                                        </Button>
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                              </DialogContent>
+                            </Dialog>
+
+                            {request.status === "pending" && (
+                              <>
+                                <Button
+                                  size="sm"
+                                  onClick={() => updateRequestStatus(request.id, "approved")}
+                                  className="bg-green-600 hover:bg-green-700"
+                                >
+                                  <CheckCircle className="h-4 w-4 mr-1" />
+                                  Approve
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => handleRejectRequest(request)}
+                                >
+                                  <XCircle className="h-4 w-4 mr-1" />
+                                  Reject
+                                </Button>
+                              </>
+                            )}
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -771,14 +1325,205 @@ export default function AdminDashboard() {
                   {requests
                     .filter((r) => r.type === "general")
                     .map((request) => (
-                      <div key={request.id} className="border rounded-lg p-4">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h3 className="font-semibold">{request.full_name ?? '-'}</h3>
-                             {/* amount removed */}
-                            <p className="text-sm text-gray-500">{request.reason ?? request.description ?? ''}</p>
+                      <div key={request.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                        <div className="flex justify-between items-start mb-2">
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-2 mb-1">
+                              <h3 className="font-semibold text-lg">{request.full_name ?? '-'}</h3>
+                              {request.cnic_number && (<Badge variant="outline">{formatCNIC(request.cnic_number)}</Badge>)}
+                            </div>
+                            <div className="flex items-center space-x-4 text-sm text-gray-600">
+                              <span><b>ID:</b> {request.id}</span>
+                              <span><b>User ID:</b> {request.user_id}</span>
+                              <span><b>Type:</b> {request.type}</span>
+                              <span><b>Status:</b> {request.status}</span>
+                            </div>
+                            <p className="text-sm text-gray-500 mt-1">{request.reason ?? request.description ?? ''}</p>
                           </div>
-                          <Badge className={getStatusColor(request.status)}>{request.status}</Badge>
+                          <div className="flex items-center space-x-2">
+                            <Badge className={getStatusColor(request.status)}>
+                              <div className="flex items-center space-x-1">
+                                {getStatusIcon(request.status)}
+                                <span className="capitalize">{request.status}</span>
+                              </div>
+                            </Badge>
+                          </div>
+                        </div>
+
+                        <div className="text-sm text-gray-500 mt-2">
+                          <p><b>Submitted:</b> {new Date(request.created_at).toLocaleString()}</p>
+                        </div>
+
+                          {/* Summary view only; full details available in dialog */}
+
+                        <div className="flex justify-between items-center mt-4">
+                          <div className="flex space-x-2">
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button variant="outline" size="sm" onClick={() => setSelectedRequest(request)}>
+                                  <Eye className="h-4 w-4 mr-1" />
+                                  View Full
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                                <DialogHeader>
+                                  <DialogTitle>Request Details</DialogTitle>
+                                  <DialogDescription>Complete information</DialogDescription>
+                                </DialogHeader>
+                                {selectedRequest && (
+                                  <div className="space-y-4">
+                                    <div className="grid grid-cols-2 gap-4">
+                                      <div>
+                                        <Label className="font-medium">Applicant Name</Label>
+                                        <p>{selectedRequest.full_name ?? '-'}</p>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">CNIC</Label>
+                                        <p>{selectedRequest.cnic_number ? formatCNIC(selectedRequest.cnic_number) : '-'}</p>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">Request Type</Label>
+                                        <p className="capitalize">{selectedRequest.type}</p>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">Status</Label>
+                                        <Badge className={getStatusColor(selectedRequest.status)}>
+                                          {selectedRequest.status}
+                                        </Badge>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">Submitted</Label>
+                                        <p>{new Date(selectedRequest.created_at).toLocaleDateString()}</p>
+                                      </div>
+                                    </div>
+
+                                    <div>
+                                      <Label className="font-medium">Reason</Label>
+                                      <p>{selectedRequest.reason ?? selectedRequest.description ?? ''}</p>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                      {selectedRequest.father_name && (
+                                        <div>
+                                          <Label className="font-medium">Father Name</Label>
+                                          <p>{selectedRequest.father_name}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.marital_status && (
+                                        <div>
+                                          <Label className="font-medium">Marital Status</Label>
+                                          <p>{selectedRequest.marital_status}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.family_count !== null && (
+                                        <div>
+                                          <Label className="font-medium">Family Count</Label>
+                                          <p>{selectedRequest.family_count}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.adult_member !== null && (
+                                        <div>
+                                          <Label className="font-medium">Adult Members</Label>
+                                          <p>{selectedRequest.adult_member}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.matric_member !== null && (
+                                        <div>
+                                          <Label className="font-medium">Matric Members</Label>
+                                          <p>{selectedRequest.matric_member}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.home_rent && (
+                                        <div>
+                                          <Label className="font-medium">Home Rent</Label>
+                                          <p>{selectedRequest.home_rent}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.fridge && (
+                                        <div>
+                                          <Label className="font-medium">Fridge</Label>
+                                          <p>{selectedRequest.fridge}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.monthly_income !== null && (
+                                        <div>
+                                          <Label className="font-medium">Monthly Income</Label>
+                                          <p>PKR {selectedRequest.monthly_income.toLocaleString()}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.repayment_time && (
+                                        <div>
+                                          <Label className="font-medium">Repayment Time</Label>
+                                          <p>{selectedRequest.repayment_time}</p>
+                                        </div>
+                                      )}
+                                    </div>
+
+                                    <div className="space-y-2">
+                                      {selectedRequest.cnic_front && (
+                                        <div>
+                                          <Label className="font-medium">CNIC Front</Label>
+                                          <a href={selectedRequest.cnic_front.startsWith('/uploads/') ? selectedRequest.cnic_front : `/uploads/${selectedRequest.cnic_front.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline">View CNIC Front</a>
+                                        </div>
+                                      )}
+                                      {selectedRequest.cnic_back && (
+                                        <div>
+                                          <Label className="font-medium">CNIC Back</Label>
+                                          <a href={selectedRequest.cnic_back.startsWith('/uploads/') ? selectedRequest.cnic_back : `/uploads/${selectedRequest.cnic_back.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline">View CNIC Back</a>
+                                        </div>
+                                      )}
+                                      {selectedRequest.document && (
+                                        <div>
+                                          <Label className="font-medium">Supporting Document</Label>
+                                          <a href={selectedRequest.document.startsWith('/uploads/') ? selectedRequest.document : `/uploads/${selectedRequest.document.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline">View Document</a>
+                                        </div>
+                                      )}
+                                    </div>
+
+                                    {selectedRequest.status === "pending" && (
+                                      <div className="flex space-x-2 pt-4">
+                                        <Button
+                                          onClick={() => updateRequestStatus(selectedRequest.id, "approved")}
+                                          className="bg-green-600 hover:bg-green-700"
+                                        >
+                                          <CheckCircle className="h-4 w-4 mr-2" />
+                                          Approve
+                                        </Button>
+                                        <Button
+                                          onClick={() => handleRejectRequest(selectedRequest)}
+                                          variant="destructive"
+                                        >
+                                          <XCircle className="h-4 w-4 mr-2" />
+                                          Reject
+                                        </Button>
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                              </DialogContent>
+                            </Dialog>
+
+                            {request.status === "pending" && (
+                              <>
+                                <Button
+                                  size="sm"
+                                  onClick={() => updateRequestStatus(request.id, "approved")}
+                                  className="bg-green-600 hover:bg-green-700"
+                                >
+                                  <CheckCircle className="h-4 w-4 mr-1" />
+                                  Approve
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => handleRejectRequest(request)}
+                                >
+                                  <XCircle className="h-4 w-4 mr-1" />
+                                  Reject
+                                </Button>
+                              </>
+                            )}
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -840,8 +1585,426 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          <TabsContent value="accepted-requests">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <CheckCircle className="h-5 w-5 mr-2 text-green-600" />
+                  Accepted Requests
+                </CardTitle>
+                <CardDescription>View all approved welfare applications</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {requests
+                    .filter((r) => r.status === "approved")
+                    .map((request) => (
+                      <div key={request.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow bg-green-50">
+                        <div className="flex justify-between items-start mb-2">
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-2 mb-1">
+                              <h3 className="font-semibold text-lg">{request.full_name ?? '-'}</h3>
+                              {request.cnic_number && (<Badge variant="outline">{formatCNIC(request.cnic_number)}</Badge>)}
+                            </div>
+                            <div className="flex items-center space-x-4 text-sm text-gray-600">
+                              <span><b>ID:</b> {request.id}</span>
+                              <span><b>User ID:</b> {request.user_id}</span>
+                              <span><b>Type:</b> {request.type}</span>
+                              <span><b>Status:</b> {request.status}</span>
+                            </div>
+                            <p className="text-sm text-gray-500 mt-1">{request.reason ?? request.description ?? ''}</p>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Badge className="bg-green-100 text-green-800">
+                              <div className="flex items-center space-x-1">
+                                <CheckCircle className="h-4 w-4" />
+                                <span className="capitalize">{request.status}</span>
+                              </div>
+                            </Badge>
+                          </div>
+                        </div>
+
+                        <div className="text-sm text-gray-500 mt-2">
+                          <p><b>Submitted:</b> {new Date(request.created_at).toLocaleString()}</p>
+                          <p><b>Approved:</b> {new Date(request.updated_at).toLocaleString()}</p>
+                        </div>
+
+                          {/* Summary view only; full details available in dialog */}
+
+                        <div className="flex justify-between items-center mt-4">
+                          <div className="flex space-x-2">
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button variant="outline" size="sm" onClick={() => setSelectedRequest(request)}>
+                                  <Eye className="h-4 w-4 mr-1" />
+                                  View Full
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                                <DialogHeader>
+                                  <DialogTitle>Request Details</DialogTitle>
+                                  <DialogDescription>Complete information</DialogDescription>
+                                </DialogHeader>
+                                {selectedRequest && (
+                                  <div className="space-y-4">
+                                    <div className="grid grid-cols-2 gap-4">
+                                      <div>
+                                        <Label className="font-medium">Applicant Name</Label>
+                                        <p>{selectedRequest.full_name ?? '-'}</p>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">CNIC</Label>
+                                        <p>{selectedRequest.cnic_number ? formatCNIC(selectedRequest.cnic_number) : '-'}</p>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">Request Type</Label>
+                                        <p className="capitalize">{selectedRequest.type}</p>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">Status</Label>
+                                        <Badge className="bg-green-100 text-green-800">
+                                          {selectedRequest.status}
+                                        </Badge>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">Submitted</Label>
+                                        <p>{new Date(selectedRequest.created_at).toLocaleDateString()}</p>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">Approved</Label>
+                                        <p>{new Date(selectedRequest.updated_at).toLocaleDateString()}</p>
+                                      </div>
+                                    </div>
+
+                                    <div>
+                                      <Label className="font-medium">Reason</Label>
+                                      <p>{selectedRequest.reason ?? selectedRequest.description ?? ''}</p>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                      {selectedRequest.father_name && (
+                                        <div>
+                                          <Label className="font-medium">Father Name</Label>
+                                          <p>{selectedRequest.father_name}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.marital_status && (
+                                        <div>
+                                          <Label className="font-medium">Marital Status</Label>
+                                          <p>{selectedRequest.marital_status}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.family_count !== null && (
+                                        <div>
+                                          <Label className="font-medium">Family Count</Label>
+                                          <p>{selectedRequest.family_count}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.adult_member !== null && (
+                                        <div>
+                                          <Label className="font-medium">Adult Members</Label>
+                                          <p>{selectedRequest.adult_member}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.matric_member !== null && (
+                                        <div>
+                                          <Label className="font-medium">Matric Members</Label>
+                                          <p>{selectedRequest.matric_member}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.home_rent && (
+                                        <div>
+                                          <Label className="font-medium">Home Rent</Label>
+                                          <p>{selectedRequest.home_rent}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.fridge && (
+                                        <div>
+                                          <Label className="font-medium">Fridge</Label>
+                                          <p>{selectedRequest.fridge}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.monthly_income !== null && (
+                                        <div>
+                                          <Label className="font-medium">Monthly Income</Label>
+                                          <p>PKR {selectedRequest.monthly_income.toLocaleString()}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.repayment_time && (
+                                        <div>
+                                          <Label className="font-medium">Repayment Time</Label>
+                                          <p>{selectedRequest.repayment_time}</p>
+                                        </div>
+                                      )}
+                                    </div>
+
+                                    <div className="space-y-2">
+                                      {selectedRequest.cnic_front && (
+                                        <div>
+                                          <Label className="font-medium">CNIC Front</Label>
+                                          <a href={selectedRequest.cnic_front.startsWith('/uploads/') ? selectedRequest.cnic_front : `/uploads/${selectedRequest.cnic_front.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline">View CNIC Front</a>
+                                        </div>
+                                      )}
+                                      {selectedRequest.cnic_back && (
+                                        <div>
+                                          <Label className="font-medium">CNIC Back</Label>
+                                          <a href={selectedRequest.cnic_back.startsWith('/uploads/') ? selectedRequest.cnic_back : `/uploads/${selectedRequest.cnic_back.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline">View CNIC Back</a>
+                                        </div>
+                                      )}
+                                      {selectedRequest.document && (
+                                        <div>
+                                          <Label className="font-medium">Supporting Document</Label>
+                                          <a href={selectedRequest.document.startsWith('/uploads/') ? selectedRequest.document : `/uploads/${selectedRequest.document.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline">View Document</a>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
+                              </DialogContent>
+                            </Dialog>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="rejected-requests">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <XCircle className="h-5 w-5 mr-2 text-red-600" />
+                  Rejected Requests
+                </CardTitle>
+                <CardDescription>View all rejected welfare applications with rejection reasons</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {requests
+                    .filter((r) => r.status === "rejected")
+                    .map((request) => (
+                      <div key={request.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow bg-red-50">
+                        <div className="flex justify-between items-start mb-2">
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-2 mb-1">
+                              <h3 className="font-semibold text-lg">{request.full_name ?? '-'}</h3>
+                              {request.cnic_number && (<Badge variant="outline">{formatCNIC(request.cnic_number)}</Badge>)}
+                            </div>
+                            <div className="flex items-center space-x-4 text-sm text-gray-600">
+                              <span><b>ID:</b> {request.id}</span>
+                              <span><b>User ID:</b> {request.user_id}</span>
+                              <span><b>Type:</b> {request.type}</span>
+                              <span><b>Status:</b> {request.status}</span>
+                            </div>
+                            <p className="text-sm text-gray-500 mt-1">{request.reason ?? request.description ?? ''}</p>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Badge className="bg-red-100 text-red-800">
+                              <div className="flex items-center space-x-1">
+                                <XCircle className="h-4 w-4" />
+                                <span className="capitalize">{request.status}</span>
+                              </div>
+                            </Badge>
+                          </div>
+                        </div>
+
+                        <div className="text-sm text-gray-500 mt-2">
+                          <p><b>Submitted:</b> {new Date(request.created_at).toLocaleString()}</p>
+                          <p><b>Rejected:</b> {new Date(request.updated_at).toLocaleString()}</p>
+                        </div>
+
+                        {/* Rejection Reason */}
+                        {request.rejection_reason && (
+                          <div className="mt-3 p-3 bg-red-100 rounded-lg">
+                            <div className="text-sm font-medium text-red-800 mb-1">Rejection Reason:</div>
+                            <div className="text-sm text-red-700">{request.rejection_reason}</div>
+                          </div>
+                        )}
+
+                        {/* Summary view only; full details available in dialog */}
+
+                        <div className="flex justify-between items-center mt-4">
+                          <div className="flex space-x-2">
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button variant="outline" size="sm" onClick={() => setSelectedRequest(request)}>
+                                  <Eye className="h-4 w-4 mr-1" />
+                                    View Full
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                                <DialogHeader>
+                                  <DialogTitle>Request Details</DialogTitle>
+                                  <DialogDescription>Complete information</DialogDescription>
+                                </DialogHeader>
+                                {selectedRequest && (
+                                  <div className="space-y-4">
+                                    <div className="grid grid-cols-2 gap-4">
+                                      <div>
+                                        <Label className="font-medium">Applicant Name</Label>
+                                        <p>{selectedRequest.full_name ?? '-'}</p>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">CNIC</Label>
+                                        <p>{selectedRequest.cnic_number ? formatCNIC(selectedRequest.cnic_number) : '-'}</p>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">Request Type</Label>
+                                        <p className="capitalize">{selectedRequest.type}</p>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">Status</Label>
+                                        <Badge className="bg-red-100 text-red-800">
+                                          {selectedRequest.status}
+                                        </Badge>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">Submitted</Label>
+                                        <p>{new Date(selectedRequest.created_at).toLocaleDateString()}</p>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">Rejected</Label>
+                                        <p>{new Date(selectedRequest.updated_at).toLocaleDateString()}</p>
+                                      </div>
+                                    </div>
+
+                                    <div>
+                                      <Label className="font-medium">Reason</Label>
+                                      <p>{selectedRequest.reason ?? selectedRequest.description ?? ''}</p>
+                                    </div>
+
+                                    {selectedRequest.rejection_reason && (
+                                      <div>
+                                        <Label className="font-medium">Rejection Reason</Label>
+                                        <div className="p-3 bg-red-100 rounded-lg">
+                                          <p className="text-red-800">{selectedRequest.rejection_reason}</p>
+                                        </div>
+                                      </div>
+                                    )}
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                      {selectedRequest.father_name && (
+                                        <div>
+                                          <Label className="font-medium">Father Name</Label>
+                                          <p>{selectedRequest.father_name}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.marital_status && (
+                                        <div>
+                                          <Label className="font-medium">Marital Status</Label>
+                                          <p>{selectedRequest.marital_status}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.family_count !== null && (
+                                        <div>
+                                          <Label className="font-medium">Family Count</Label>
+                                          <p>{selectedRequest.family_count}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.adult_member !== null && (
+                                        <div>
+                                          <Label className="font-medium">Adult Members</Label>
+                                          <p>{selectedRequest.adult_member}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.matric_member !== null && (
+                                        <div>
+                                          <Label className="font-medium">Matric Members</Label>
+                                          <p>{selectedRequest.matric_member}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.home_rent && (
+                                        <div>
+                                          <Label className="font-medium">Home Rent</Label>
+                                          <p>{selectedRequest.home_rent}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.fridge && (
+                                        <div>
+                                          <Label className="font-medium">Fridge</Label>
+                                          <p>{selectedRequest.fridge}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.monthly_income !== null && (
+                                        <div>
+                                          <Label className="font-medium">Monthly Income</Label>
+                                          <p>PKR {selectedRequest.monthly_income.toLocaleString()}</p>
+                                        </div>
+                                      )}
+                                      {selectedRequest.repayment_time && (
+                                        <div>
+                                          <Label className="font-medium">Repayment Time</Label>
+                                          <p>{selectedRequest.repayment_time}</p>
+                                        </div>
+                                      )}
+                                    </div>
+
+                                    <div className="space-y-2">
+                                      {selectedRequest.cnic_front && (
+                                        <div>
+                                          <Label className="font-medium">CNIC Front</Label>
+                                          <a href={selectedRequest.cnic_front.startsWith('/uploads/') ? selectedRequest.cnic_front : `/uploads/${selectedRequest.cnic_front.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline">View CNIC Front</a>
+                                        </div>
+                                      )}
+                                      {selectedRequest.cnic_back && (
+                                        <div>
+                                          <Label className="font-medium">CNIC Back</Label>
+                                          <a href={selectedRequest.cnic_back.startsWith('/uploads/') ? selectedRequest.cnic_back : `/uploads/${selectedRequest.cnic_back.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline">View CNIC Back</a>
+                                        </div>
+                                      )}
+                                      {selectedRequest.document && (
+                                        <div>
+                                          <Label className="font-medium">Supporting Document</Label>
+                                          <a href={selectedRequest.document.startsWith('/uploads/') ? selectedRequest.document : `/uploads/${selectedRequest.document.replace(/^.*[\\/]/,'')}`} target="_blank" className="text-blue-700 underline">View Document</a>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
+                              </DialogContent>
+                            </Dialog>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
       </div>
+
+      {/* Rejection Dialog */}
+      <Dialog open={showRejectionDialog} onOpenChange={setShowRejectionDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reject Request</DialogTitle>
+            <DialogDescription>
+              Please provide a reason for rejecting this request.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="rejection-reason" className="text-right">
+                Reason
+              </Label>
+              <Textarea
+                id="rejection-reason"
+                value={rejectionReason}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setRejectionReason(e.target.value)}
+                className="col-span-3"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowRejectionDialog(false)}>Cancel</Button>
+            <Button onClick={confirmRejection}>Reject</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

@@ -7,9 +7,9 @@ export async function POST(req: Request) {
   try {
     const { email, password } = await req.json()
 
-    // Read from custom `admins` table (id, name, email, cnic, phone, address, city, password, created_at)
+    // Read from `admins` table - only select existing columns per schema
     const rows = (await db.$queryRaw<any[]>`
-      SELECT id, name, email, cnic, phone, address, city, password, created_at
+      SELECT id, name, email, cnic, password, created_at
       FROM admins
       WHERE email = ${email}
       LIMIT 1
