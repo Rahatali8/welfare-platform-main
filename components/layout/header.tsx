@@ -18,6 +18,7 @@ export function Header() {
   const router = useRouter();
   const pathname = usePathname();
   const { user, logout } = useAuth();
+  const isAdminArea = pathname.startsWith("/dashboard/admin") || pathname.startsWith("/admin");
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -112,8 +113,10 @@ export function Header() {
 
         {/* Auth Buttons */}
         <div className="hidden md:flex items-center gap-4">
-          {pathname.startsWith("/dashboard/donor") ? (
-            <ProfileDropdown />
+          {isAdminArea ? (
+            null
+          ) : pathname.startsWith("/dashboard/donor") ? (
+            null
           ) : user ? (
             <ProfileDropdown />
           ) : (
@@ -134,13 +137,12 @@ export function Header() {
               </div>
               {/* Signup Dropdown */}
               <div className="relative group">
-              <Link href="/signup">
-              <Button
-                  className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-semibold px-4 py-2 rounded-lg shadow-md flex items-center gap-1">
-                  Sign Up
-                </Button>
+                <Link href="/signup">
+                  <Button
+                    className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-semibold px-4 py-2 rounded-lg shadow-md flex items-center gap-1">
+                    Sign Up
+                  </Button>
                 </Link>
-                
               </div>
             </>
           )}
@@ -165,7 +167,7 @@ export function Header() {
             <Link href="/stats-sec" className="text-gray-700 hover:text-blue-600 transition-colors">stats</Link>
           )}
 
-            {user && (
+            {user && !isAdminArea && (
               <>
                 <Link href="/apply" className="block text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Apply</Link>
 

@@ -6,11 +6,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import ImageCarousel from "@/components/image-currosal"
-import {
-  Users, Heart, TrendingUp, ArrowRight, Play, Shield, Award, Globe, DollarSign, BookOpen, Home, Stethoscope, GraduationCap, Utensils, Phone, MapPin, Clock, Target,
-} from "lucide-react"
+import {Users, Heart, TrendingUp, ArrowRight, Play, Shield, Award, Globe, DollarSign, BookOpen, Home, Stethoscope, GraduationCap, Utensils, Phone, MapPin, Clock, Target,} from "lucide-react"
 import Link from "next/link"
 import CallToAction from "@/components/CTA-section"
+import CompleteHeroSection from "@/components/complete-herosection";
 
 export default function HomePage() {
   const [dailyRequests, setDailyRequests] = useState<{ date: string, count: number }[]>([]);
@@ -102,9 +101,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-cyan-50">
-        {/* Animated Background Elements */}
+      {/* <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-cyan-50">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-blue-100 opacity-20 animate-pulse"></div>
           <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-cyan-100 opacity-20 animate-pulse delay-1000"></div>
@@ -112,12 +109,8 @@ export default function HomePage() {
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-12">
           <div className="grid lg:grid-cols-2 gap-12 items-start">
-            {/* Left Content */}
             <div className="space-y-8 animate-slide-in-left">
-              {/* Trust Badge */}
 
-
-              {/* Main Heading */}
               <div className="space-y-6">
                 <h1 className="text-4xl lg:text-4xl font-bold leading-tight">
                   <span className="bg-gradient-to-r from-blue-900 via-blue-700 to-cyan-600 bg-clip-text text-transparent">
@@ -132,7 +125,6 @@ export default function HomePage() {
                 </p>
               </div>
 
-              {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button
                   asChild
@@ -158,7 +150,6 @@ export default function HomePage() {
                 </Button>
               </div>
 
-              {/* Quick Stats */}
               <div className="grid grid-cols-2 gap-6 pt-4 pb-10">
                 <div className="text-center p-4 bg-white/60 rounded-2xl backdrop-blur-sm border border-blue-100">
                   <div className="text-3xl font-bold text-blue-900">{stats.totalHelped.toLocaleString()}</div>
@@ -173,7 +164,6 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right Content */}
             <div className="relative animate-slide-in-right">
               <div className="relative group">
                 <div className="relative overflow-hidden rounded-3xl shadow-2xl transform group-hover:scale-105 transition-all duration-500">
@@ -184,7 +174,6 @@ export default function HomePage() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
 
-                  {/* Live Stats Overlay */}
                   <div className="absolute bottom-6 left-6 right-6">
                     <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20">
                       <div className="grid grid-cols-2 gap-4 text-white">
@@ -204,9 +193,17 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
-      {/*image-currosal-section*/}
+
+
+
+
+<CompleteHeroSection/>
+
+
+      
+
       <ImageCarousel />
 
 

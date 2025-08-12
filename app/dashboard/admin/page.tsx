@@ -67,10 +67,6 @@ interface Analytics {
   pendingRequests: number
   approvedRequests: number
   rejectedRequests: number
-  totalAmount: number
-  loanRequests: number
-  microfinanceRequests: number
-  generalRequests: number
 }
 
 export default function AdminDashboard() {
@@ -314,10 +310,15 @@ export default function AdminDashboard() {
                 <p className="text-sm text-gray-600">Manage all welfare requests and applications</p>
               </div>
             </div>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" onClick={() => router.push('/dashboard/admin/profile')}>
+                Profile
+              </Button>
             <Button variant="outline" onClick={handleLogout}>
               <LogOut className="h-4 w-4 mr-2" />
               Logout
             </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -361,12 +362,12 @@ export default function AdminDashboard() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Amount</CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium">Rejected</CardTitle>
+                <XCircle className="h-4 w-4 text-red-600" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">PKR {analytics.totalAmount.toLocaleString()}</div>
-                <p className="text-xs text-muted-foreground">Requested amount</p>
+                <div className="text-2xl font-bold text-red-600">{analytics.rejectedRequests}</div>
+                <p className="text-xs text-muted-foreground">Rejected applications</p>
               </CardContent>
             </Card>
           </div>
