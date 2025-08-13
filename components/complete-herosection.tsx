@@ -21,7 +21,7 @@ const CompleteHeroSection: React.FC = () => {
   ]
 
   const [backgroundImage, setBackgroundImage] = useState<string | null>(images[0] || null)
-  const [ ,setIsTransitioning] = useState(false)
+  const [, setIsTransitioning] = useState(false)
   const [activeImageIndex, setActiveImageIndex] = useState<number | null>(0)
   const [clickedImagePosition, setClickedImagePosition] = useState<{ x: number; y: number } | null>(null)
   const [animatingImage, setAnimatingImage] = useState<string | null>(null)
@@ -54,7 +54,7 @@ const CompleteHeroSection: React.FC = () => {
       heading: "Harr Mustaqbil Hoo Roshan",
       paragraph:
         "Rozgar ke zariye apne aur apne ghar walon ka mustaqbil behtar banayein.",
-      buttons:["Apply for Assistance", "What We have Served"],
+      buttons: ["Apply for Assistance", "What We have Served"],
     },
     {
       heading: "Rozgar Se Mily Khudmukhtari",
@@ -133,7 +133,7 @@ const CompleteHeroSection: React.FC = () => {
       const text = currentContent.paragraph
       setTypedText("")
       setIsTyping(true)
-      
+
       let index = 0
       const typeInterval = setInterval(() => {
         if (index < text.length) {
@@ -152,17 +152,17 @@ const CompleteHeroSection: React.FC = () => {
   // Background style object
   const backgroundStyle = backgroundImage
     ? {
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }
+      backgroundImage: `url(${backgroundImage})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+    }
     : {
-        // backgroundImage: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }
+      // backgroundImage: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+    }
 
   return (
     <>
@@ -276,9 +276,8 @@ const CompleteHeroSection: React.FC = () => {
       >
         {/* Animated background overlay */}
         <div
-          className={`absolute inset-0 transition-all duration-700 ease-out ${
-            backgroundImage ? "bg-black/5 md:bg-black/10" : "bg-transparent"
-          }`}
+          className={`absolute inset-0 transition-all duration-700 ease-out ${backgroundImage ? "bg-black/5 md:bg-black/10" : "bg-transparent"
+            }`}
         />
 
         {/* Professional grid overlay */}
@@ -298,22 +297,26 @@ const CompleteHeroSection: React.FC = () => {
         {/* Left Side VIP Content */}
         <div className="absolute left-4 md:left-8 top-1/2 transform -translate-y-1/2 z-20 max-w-2xl">
           <div
-            className={`space-y-6 md:space-y-8 transition-all duration-500 ease-out ${
-              contentTransition ? "opacity-0 transform translate-x-8" : "opacity-100 transform translate-x-0"
-            }`}
+            className={`space-y-6 md:space-y-8 transition-all duration-500 ease-out ${contentTransition ? "opacity-0 transform translate-x-8" : "opacity-100 transform translate-x-0"
+              }`}
           >
-          
 
-            {/* Glassmorphic Heading with subtle shadow */}
+
             <h1
-              className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#000099] leading-tight"
+              className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
               style={{
-                textShadow: "0 2px 4px rgba(0,0,0,0.7), 0 0 8px rgba(255,255,255,0.1)",
-                filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.2))"
+                // textShadow:"0 2px 4px rgba(0,0,0,0.7), 0 0 8px rgba(255,255,255,0.1)",
+                // filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.2))",
               }}
             >
-              {currentContent.heading}
+              <span style={{ color: "#140152"}}>
+                {currentContent.heading.split(" ").slice(0, Math.ceil(currentContent.heading.split(" ").length / 2)).join(" ")}
+              </span>{" "}
+              <span style={{ color: "#00A5E0" }}>
+                {currentContent.heading.split(" ").slice(Math.ceil(currentContent.heading.split(" ").length / 2)).join(" ")}
+              </span>
             </h1>
+
 
             {/* Glassmorphic Paragraph with typing animation */}
             <p
@@ -341,15 +344,14 @@ const CompleteHeroSection: React.FC = () => {
                       window.location.href = '/stats-sec';
                     }
                   }}
-                  className={`px-6 md:px-8 py-3 md:py-3.5 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${
-                    index === 0
+                  className={`px-6 md:px-8 py-3 md:py-3.5 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${index === 0
                       ? "bg-[#000099] text-white hover:bg-[#000099] shadow-lg hover:shadow-xl"
                       : "bg-white/10 backdrop-blur-[2px] border-2 border-[#000099] text-white hover:bg-white/20 hover:border-[#000099]"
-                  }`}
+                    }`}
                   style={{
                     textShadow: index === 0 ? "none" : "1px 1px 2px rgba(0,0,0,0.8)",
-                    boxShadow: index === 0 
-                      ? "0 4px 15px rgba(0,0,0,0.2), 0 0 20px rgba(255,255,255,0.3)" 
+                    boxShadow: index === 0
+                      ? "0 4px 15px rgba(0,0,0,0.2), 0 0 20px rgba(255,255,255,0.3)"
                       : "0 4px 15px rgba(0,0,0,0.3), 0 0 20px rgba(255,255,255,0.1)"
                   }}
                 >
@@ -403,9 +405,8 @@ const CompleteHeroSection: React.FC = () => {
                   return (
                     <div
                       key={i}
-                      className={`opacity-0 animate-slide-in cursor-pointer group relative flex-shrink-0 ${
-                        isVisible ? "z-10" : "z-0"
-                      }`}
+                      className={`opacity-0 animate-slide-in cursor-pointer group relative flex-shrink-0 ${isVisible ? "z-10" : "z-0"
+                        }`}
                       style={{
                         width: dimensions.cardSize * 0.8,
                         height: dimensions.cardSize * 0.8,
@@ -417,11 +418,10 @@ const CompleteHeroSection: React.FC = () => {
 
 
                       <div
-                        className={`relative rounded-xl shadow-2xl overflow-hidden ring-1 transition-all duration-700 ease-out w-full h-full ${
-                          isActive
+                        className={`relative rounded-xl shadow-2xl overflow-hidden ring-1 transition-all duration-700 ease-out w-full h-full ${isActive
                             ? "ring-2 ring-white/70 shadow-white/30 scale-105 brightness-110"
                             : "ring-white/30 bg-white/5 hover:ring-white/50 hover:scale-110 hover:shadow-2xl hover:shadow-white/20"
-                        }`}
+                          }`}
                         style={{
                           transition: "all 0.7s cubic-bezier(0.4, 0, 0.2, 1)",
                         }}
@@ -429,11 +429,10 @@ const CompleteHeroSection: React.FC = () => {
                         <img
                           src={src || "/placeholder.svg"}
                           alt=""
-                          className={`block w-full h-full object-cover transition-all duration-700 ${
-                            isActive
+                          className={`block w-full h-full object-cover transition-all duration-700 ${isActive
                               ? "brightness-110 contrast-110 saturate-120"
                               : "group-hover:brightness-105 group-hover:scale-110"
-                          }`}
+                            }`}
                           draggable={false}
                         />
 
@@ -449,7 +448,7 @@ const CompleteHeroSection: React.FC = () => {
                         <div className="absolute top-2 right-2 w-3 h-3 bg-gradient-to-br from-white/60 to-transparent rounded-full opacity-80" />
                       </div>
 
-                      
+
                     </div>
                   )
                 })}
