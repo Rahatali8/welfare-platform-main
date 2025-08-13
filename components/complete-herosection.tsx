@@ -63,7 +63,7 @@ const CompleteHeroSection: React.FC = () => {
       buttons: ["Apply for Assistance", "What We have Served"],
     },
     {
-      heading: "Harr Qadam Taraqqii Raah Parr",
+      heading: "Harr Qadam Taraqi Ki Raah Parr",
       paragraph:
         "Rozgar ke har mauqe ke sath aapke sapnon ko haqiqat mein tabdeel karna.",
       buttons: ["Apply for Assistance", "What We have Served"],
@@ -309,7 +309,7 @@ const CompleteHeroSection: React.FC = () => {
                 // filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.2))",
               }}
             >
-              <span style={{ color: "#140152"}}>
+              <span style={{ color: "#1B0073"}}>
                 {currentContent.heading.split(" ").slice(0, Math.ceil(currentContent.heading.split(" ").length / 2)).join(" ")}
               </span>{" "}
               <span style={{ color: "#00A5E0" }}>
@@ -345,8 +345,8 @@ const CompleteHeroSection: React.FC = () => {
                     }
                   }}
                   className={`px-6 md:px-8 py-3 md:py-3.5 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${index === 0
-                      ? "bg-[#000099] text-white hover:bg-[#000099] shadow-lg hover:shadow-xl"
-                      : "bg-white/10 backdrop-blur-[2px] border-2 border-[#000099] text-white hover:bg-white/20 hover:border-[#000099]"
+                      ? "bg-[#1B0073] text-white hover:bg-[#1B0073] shadow-lg hover:shadow-xl"
+                      : "bg-white/10 backdrop-blur-[2px] border-2 border-[#00A5E0] text-white hover:bg-white/20 hover:border-[#00A5E0]"
                     }`}
                   style={{
                     textShadow: index === 0 ? "none" : "1px 1px 2px rgba(0,0,0,0.8)",

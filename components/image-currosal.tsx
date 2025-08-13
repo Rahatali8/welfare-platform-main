@@ -8,32 +8,32 @@ const carouselImages = [
   {
     src: "/welfare-work.png",
     alt: "Students in classroom learning",
-    title: "Quality Education",
-    description: "Providing world-class education to underserved communities",
-  },
-  {
-    src: "/welfare-work.png",
-    alt: "Food distribution to families",
-    title: "Food Security",
-    description: "Ensuring no family goes hungry in our communities",
+    title: "Rozgar Aur Umeed, Har Ghar Tak",
+    description: "Har haath ko kaam, har ghar mein khushi hum aapko rozgar ke mauqay aur behtareen mustaqbil ki taraf le ja rahe hain.",
   },
   {
     src: "/welfare-work.png",
     alt: "Medical camp providing healthcare",
-    title: "Healthcare Access",
-    description: "Bringing essential medical services to remote areas",
+    title: "Rozgar Se Mily Khudmukhtari",
+    description: "Financial independence aur self-respect ka safar yahin se shuru hota hai.",
   },
   {
     src: "/welfare-work.png",
     alt: "Tree planting environmental initiative",
-    title: "Environmental Care",
-    description: "Creating a sustainable future through environmental initiatives",
+    title: "Madad Jo Badle Zindagi",
+    description: "Free of cost support aur employment solutions jo aapki zindagi ko ek nayi raah par le jayein.",
   },
   {
     src: "/welfare-work.png",
     alt: "Technical training center",
-    title: "Skills Development",
-    description: "Empowering youth with technical and vocational skills",
+    title: "Harr Qadam Taraqi Ki Raah Parr",
+    description: "Rozgar ke har mauqe ke sath aapke sapnon ko haqiqat mein tabdeel karna.",
+  },
+  {
+    src: "/welfare-work.png",
+    alt: "Food distribution to families",
+    title: "Food Distribution Activities",
+    description: "Hamara Azam Sehatmand Pakistan ke sath sath muskurahat bhi aapke ghar le aana hamari zimmedari hai.",
   },
 ]
 

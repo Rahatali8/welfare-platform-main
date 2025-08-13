@@ -11,8 +11,8 @@ export default function CallToAction() {
               <div className="h-0.5 bg-gradient-to-l from-blue-600 via-cyan-500 to-transparent"></div>
             </div>
             <div className="text-center px-8">
-              <h2 className="text-5xl md:text-5xl font-bold mb-3 text-blue-900">Join Our <span className="text-blue-600">Mission</span></h2>
-              <p className="text-lg text-gray max-w-3xl mx-auto">
+              <h2 className="text-5xl md:text-5xl font-bold mb-3 text-[#1B0073]">Join Our <span className="text-[#00A5E0]">Mission</span></h2>
+              <p className="text-lg text-[#5F5F5F] max-w-3xl mx-auto">
                 Together, we can create lasting change in the lives of those who need it most. Your support makes a real
                 difference in our community.
               </p>
