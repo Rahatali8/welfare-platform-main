@@ -57,13 +57,13 @@ export default function AboutPage() {
     {
       name: "Muhammad Muzahir Sheikh",
       role: "Chairman & Founder",
-      image: "/placeholder.svg?height=200&width=200&text=MA",
+      image: "/chairmain.jpg",
       description: "Leading social welfare initiatives for over 20 years",
     },
     {
       name: "Muhammad saad Sheikh",
       role: "Head of Technology Department",
-      image: "/placeholder.svg?height=200&width=200&text=FA",
+      image: "/Saad Bhai.jpg",
       description: "Expert in welfare program management and community development",
     },
     {
@@ -78,28 +78,6 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-white">
-
-      {/* Hero Section */}
-      {/* <section className="py-20 px-4 bg-gradient-to-br from-blue-50 to-white">
-        <div className="container mx-auto">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">Empowering Communities Since 2010</h1>
-            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-              For over a decade, Idara Al-Khair has been at the forefront of social welfare in Pakistan, transforming
-              lives through comprehensive support programs, innovative technology, and unwavering commitment to human
-              dignity.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700" asChild>
-                <Link href="/apply">Join Our Mission</Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild>
-                <Link href="/contact">Get In Touch</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section> */}
 
 
 <main className="relative min-h-[60vh] bg-background">
