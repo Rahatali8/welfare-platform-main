@@ -1,7 +1,6 @@
 'use client'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Heart, Users, Target, TrendingUp, Shield } from "lucide-react"
 import Link from "next/link"
 import ArcGalleryHero from "@/components/arc-gallery-hero";
@@ -17,13 +16,13 @@ export default function AboutPage() {
   ]
 
   const images = [
-    '/freepik__enhance__98192.png',
-    '/LS.png',
-    '/freepik__a-closeup-shot-features-a-glossy-purple-crossshape__48873.png',
-    '/freepik__the-style-is-3d-model-with-octane-render-volumetri__57555.png',
-    '/eqirGoRIJPaIMgEUeliWpNxeFmI.jpg',
-    '/ultra-detailed_close-up_side_profile_of_a_dark-skinned_model_wearing_futuristic_chrome_wraparound_s_ps17q5ms2ptu5t6bdru6_2.png',
-    '/slide.png',
+    '/hero1.jpg',
+    '/hero2.jpg',
+    '/user-male.png',
+    '/user-female.jpg',
+    '/welfare-work.png',
+    '/head-logo.png',
+    '/footer-logo.png',
     '/freepik__abstract-digital-art-featuring-a-series-of-horizon__489.png',
     '/image 15.png',
     '/VkvvhXlWo3hEBzcqwTpjd_aa4bf9ee998f4ec0b17a8bf16fe3e9e2.jpg',
@@ -103,7 +102,7 @@ export default function AboutPage() {
       </section> */}
 
 
-<main className="relative min-h-screen bg-background">
+<main className="relative min-h-[60vh] bg-background">
       <ArcGalleryHero
         images={images}
         startAngle={20}
@@ -114,7 +113,6 @@ export default function AboutPage() {
         cardSizeLg={120}
         cardSizeMd={100}
         cardSizeSm={80}
-        className="pt-16 pb-16 md:pt-20 md:pb-20 lg:pt-24 lg:pb-24"
       />
     </main>
 

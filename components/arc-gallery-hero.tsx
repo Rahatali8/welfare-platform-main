@@ -101,11 +101,10 @@ const ArcGalleryHero: React.FC<ArcGalleryHeroProps> = ({
           {images.map((_, index) => (
             <div
               key={index}
-              className={`w-3 h-3 rounded-full transition-all duration-300 cursor-pointer ${
-                index === currentBackgroundImage
-                  ? "bg-white scale-125 shadow-lg"
-                  : "bg-white/50 hover:bg-white/80 hover:scale-110"
-              }`}
+              className={`w-3 h-3 rounded-full transition-all duration-300 cursor-pointer ${index === currentBackgroundImage
+                ? "bg-white scale-125 shadow-lg"
+                : "bg-white/50 hover:bg-white/80 hover:scale-110"
+                }`}
               onClick={() => setBackgroundImage(index)}
             />
           ))}
@@ -141,11 +140,10 @@ const ArcGalleryHero: React.FC<ArcGalleryHeroProps> = ({
             return (
               <div
                 key={i}
-                className={`absolute cursor-pointer transition-all duration-700 ease-out ${
-                  isBackground || isAutoSlide
-                    ? "opacity-40 scale-75 ring-4 ring-yellow-400/50"
-                    : "opacity-0 animate-fade-in-up hover:scale-110"
-                }`}
+                className={`absolute cursor-pointer transition-all duration-700 ease-out ${isBackground || isAutoSlide
+                  ? "opacity-100 scale-90 ring-4 ring-yellow-400/50"
+                  : "opacity-80 hover:opacity-100 hover:scale-110"
+                  }`}
                 style={{
                   width: dimensions.cardSize,
                   height: dimensions.cardSize,
@@ -160,11 +158,10 @@ const ArcGalleryHero: React.FC<ArcGalleryHeroProps> = ({
                 onClick={() => handleImageClick(i)}
               >
                 <div
-                  className={`rounded-2xl shadow-xl overflow-hidden ring-1 ring-white/20 bg-card transition-all duration-500 w-full h-full backdrop-blur-sm ${
-                    isBackground || isAutoSlide
-                      ? "shadow-2xl ring-2 ring-yellow-400/70 animate-pulse"
-                      : "hover:shadow-2xl hover:ring-2 hover:ring-purple-400/50"
-                  }`}
+                  className={`rounded-2xl shadow-xl overflow-hidden ring-1 ring-white/20 bg-card transition-all duration-500 w-full h-full backdrop-blur-sm ${isBackground || isAutoSlide
+                    ? "shadow-2xl ring-2 ring-yellow-400/70 animate-pulse"
+                    : "hover:shadow-2xl hover:ring-2 hover:ring-purple-400/50"
+                    }`}
                   style={{
                     transform: `rotate(${angle / 6}deg) rotateX(10deg)`,
                     filter: isBackground || isAutoSlide ? "brightness(1.1) saturate(1.3) contrast(1.1)" : "none",
@@ -189,6 +186,15 @@ const ArcGalleryHero: React.FC<ArcGalleryHeroProps> = ({
                   )}
                   {/* Hover effect */}
                   <div className="absolute inset-0 bg-gradient-to-br from-purple-400/0 via-transparent to-pink-400/0 hover:from-purple-400/20 hover:to-pink-400/20 transition-all duration-300" />
+
+                  {/* Image title - only show for active image */}
+                  {(isBackground || isAutoSlide) && (
+                    <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-center">
+                      <p className="text-white text-sm font-medium drop-shadow-lg bg-black/20 px-2 py-1 rounded-md backdrop-blur-sm animate-fade-in">
+                        Image {i + 1}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             )
@@ -197,45 +203,33 @@ const ArcGalleryHero: React.FC<ArcGalleryHeroProps> = ({
       </div>
 
       {/* Text Content without card - Direct on background */}
-      <div className="relative z-20 flex-1 flex items-center justify-center px-6 -mt-40 md:-mt-52 lg:-mt-64">
-        <div
-          className="text-center max-w-2xl px-6 opacity-0 animate-fade-in"
-          style={{
-            animationDelay: "800ms",
-            animationFillMode: "forwards",
-          }}
-        >
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white drop-shadow-2xl">
-            Make v0.dev your new home
+      <div
+        className="relative z-20 flex items-center justify-center px-6"
+        style={{ marginTop: `-${dimensions.radius * 0.6}px` }}
+      >
+        <div className="text-center max-w-2xl px-6 animate-softPulse">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">
+            Empowering Lives Through <span className="text-[#00A5E0]">Support and Skills</span>
           </h1>
-          <p className="mt-4 text-lg text-white/90 drop-shadow-lg">
-            Create stunning UI Designs in seconds. Experience automatic image transitions every 4 seconds.
-          </p>
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button className="w-full sm:w-auto px-8 py-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 hover:scale-105">
-              Start generating
-            </button>
-            <button className="w-full sm:w-auto px-8 py-4 rounded-full border-2 border-white/50 text-white hover:bg-white/10 hover:border-white/70 transition-all duration-300 hover:scale-105 backdrop-blur-sm">
-              Learn more
-            </button>
-          </div>
-
-          {/* Status indicator without card background */}
-          <div className="mt-6 text-sm text-white/80 drop-shadow-md">
-            {backgroundImage !== null ? (
-              <span className="flex items-center justify-center gap-2">
-                <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse drop-shadow-sm" />
-                Manual selection active • Click same image to enable auto-slide
-              </span>
-            ) : (
-              <span className="flex items-center justify-center gap-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse drop-shadow-sm" />
-                Auto-sliding every 4 seconds • Click any image to override
-              </span>
-            )}
-          </div>
         </div>
       </div>
+
+      <style jsx>{`
+  @keyframes softPulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.03);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  .animate-softPulse {
+    animation: softPulse 3s ease-in-out infinite;
+  }
+`}</style>
     </section>
   )
 }
