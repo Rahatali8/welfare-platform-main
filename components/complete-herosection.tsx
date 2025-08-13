@@ -39,7 +39,7 @@ const CompleteHeroSection: React.FC = () => {
       buttons: ["Apply for Assistance", "What We have Served"],
     },
     {
-      heading: "Har Hunar Ko Moka",
+      heading: `Har Hunar Ko Moka`,
       paragraph:
         "Aapke skills ko unke sahi muqaam tak pohanchana hamara mission hai – training, support aur employment ke sath.",
       buttons: ["Apply for Assistance", "What We have Served"],
@@ -51,19 +51,19 @@ const CompleteHeroSection: React.FC = () => {
       buttons: ["Apply for Assistance", "What We have Served"],
     },
     {
-      heading: "Mustaqbil Roshan",
+      heading: "Harr Mustaqbil Hoo Roshan",
       paragraph:
         "Rozgar ke zariye apne aur apne ghar walon ka mustaqbil behtar banayein.",
       buttons:["Apply for Assistance", "What We have Served"],
     },
     {
-      heading: "Rozgar Se Khudmukhtari",
+      heading: "Rozgar Se Mily Khudmukhtari",
       paragraph:
         "Financial independence aur self-respect ka safar yahin se shuru hota hai.",
       buttons: ["Apply for Assistance", "What We have Served"],
     },
     {
-      heading: "Qadam Qadam Taraqqi",
+      heading: "Harr Qadam Taraqqii Raah Parr",
       paragraph:
         "Rozgar ke har mauqe ke sath aapke sapnon ko haqiqat mein tabdeel karna.",
       buttons: ["Apply for Assistance", "What We have Served"],
@@ -277,7 +277,7 @@ const CompleteHeroSection: React.FC = () => {
         {/* Animated background overlay */}
         <div
           className={`absolute inset-0 transition-all duration-700 ease-out ${
-            backgroundImage ? "bg-black/5 md:bg-black/10 backdrop-blur-[2px] md:backdrop-blur-[4px]" : "bg-transparent"
+            backgroundImage ? "bg-black/5 md:bg-black/10" : "bg-transparent"
           }`}
         />
 
@@ -306,9 +306,9 @@ const CompleteHeroSection: React.FC = () => {
 
             {/* Glassmorphic Heading with subtle shadow */}
             <h1
-              className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight"
+              className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#000099] leading-tight"
               style={{
-                textShadow: "0 2px 4px rgba(0,0,0,0.3), 0 0 8px rgba(255,255,255,0.1)",
+                textShadow: "0 2px 4px rgba(0,0,0,0.7), 0 0 8px rgba(255,255,255,0.1)",
                 filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.2))"
               }}
             >
@@ -317,7 +317,7 @@ const CompleteHeroSection: React.FC = () => {
 
             {/* Glassmorphic Paragraph with typing animation */}
             <p
-              className="text-base md:text-lg text-white leading-relaxed max-w-xl font-medium"
+              className=" text-white leading-relaxed text-xl"
               style={{
                 textShadow: "0 1px 3px rgba(0,0,0,0.4), 0 0 6px rgba(255,255,255,0.05)",
                 filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.3))"
@@ -343,8 +343,8 @@ const CompleteHeroSection: React.FC = () => {
                   }}
                   className={`px-6 md:px-8 py-3 md:py-3.5 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${
                     index === 0
-                      ? "bg-white text-blue-700 hover:bg-gray-100 shadow-lg hover:shadow-xl"
-                      : "bg-white/10 backdrop-blur-sm border-2 border-white/80 text-white hover:bg-white/20 hover:border-white"
+                      ? "bg-[#000099] text-white hover:bg-[#000099] shadow-lg hover:shadow-xl"
+                      : "bg-white/10 backdrop-blur-[2px] border-2 border-[#000099] text-white hover:bg-white/20 hover:border-[#000099]"
                   }`}
                   style={{
                     textShadow: index === 0 ? "none" : "1px 1px 2px rgba(0,0,0,0.8)",
@@ -356,27 +356,6 @@ const CompleteHeroSection: React.FC = () => {
                   <span className="text-sm md:text-base font-bold">{buttonText}</span>
                 </button>
               ))}
-            </div>
-
-            {/* VIP Decorative Elements */}
-            <div className="flex items-center gap-4 md:gap-6 pt-3 md:pt-4">
-              <div
-                className="w-20 md:w-32 h-1 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-full"
-                style={{
-                  boxShadow: "0 0 20px rgba(147, 51, 234, 0.5)",
-                }}
-              />
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full animate-pulse"></div>
-                <span
-                  className="text-xs md:text-sm text-white/70 font-medium"
-                  style={{
-                    textShadow: "1px 1px 2px rgba(0,0,0,0.8)",
-                  }}
-                >
-                 Get Experience With Live Analytics
-                </span>
-              </div>
             </div>
           </div>
         </div>
@@ -478,11 +457,6 @@ const CompleteHeroSection: React.FC = () => {
             </div>
           </div>
         </div>
-
-
-
-        {/* Professional ambient lighting */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-purple-500/10 pointer-events-none" />
       </section>
     </>
   )
@@ -491,5 +465,4 @@ const CompleteHeroSection: React.FC = () => {
 export default CompleteHeroSection
 
 
-// heading  #000099
-// butons #33cccc
+// oolors.co/visualizer/140152-ffffff-00a5e0-18997b-c3c3c3

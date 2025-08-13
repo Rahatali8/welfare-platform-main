@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import ImageCarousel from "@/components/image-currosal"
-import {Users, Heart, TrendingUp, ArrowRight, Play, Shield, Award, Globe, DollarSign, BookOpen, Home, Stethoscope, GraduationCap, Utensils, Phone, MapPin, Clock, Target,} from "lucide-react"
+import { Users, Heart, TrendingUp, ArrowRight, Play, Shield, Award, Globe, DollarSign, BookOpen, Home, Stethoscope, GraduationCap, Utensils, Phone, MapPin, Clock, Target, } from "lucide-react"
 import Link from "next/link"
 import CallToAction from "@/components/CTA-section"
 import CompleteHeroSection from "@/components/complete-herosection";
@@ -101,151 +101,8 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-cyan-50">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-blue-100 opacity-20 animate-pulse"></div>
-          <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-cyan-100 opacity-20 animate-pulse delay-1000"></div>
-        </div>
 
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-12">
-          <div className="grid lg:grid-cols-2 gap-12 items-start">
-            <div className="space-y-8 animate-slide-in-left">
-
-              <div className="space-y-6">
-                <h1 className="text-4xl lg:text-4xl font-bold leading-tight">
-                  <span className="bg-gradient-to-r from-blue-900 via-blue-700 to-cyan-600 bg-clip-text text-transparent">
-                    Empowering Communities
-                  </span>
-                  <br />
-                  <span className="text-blue-900">Through Compassionate Care</span>
-                </h1>
-                <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
-                  Pakistan's most trusted welfare platform providing financial assistance, healthcare support, education
-                  scholarships, and emergency relief to deserving families across the nation.
-                </p>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button
-                  asChild
-                  size="lg"
-                  className="bg-gradient-to-r from-blue-900 to-blue-700 hover:from-blue-800 hover:to-blue-600 text-white px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-                >
-                  <Link href="/signup">
-                    <Heart className="h-5 w-5 mr-2" />
-                    Get Assistance
-                    <ArrowRight className="h-5 w-5 ml-2" />
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  size="lg"
-                  className="border-2 border-blue-900 text-blue-900 hover:bg-blue-50 px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 bg-white"
-                >
-                  <Link href="/stats-sec">
-                    <Play className="h-5 w-5 mr-2" />
-                    What We Have Served
-                  </Link>
-                </Button>
-              </div>
-
-              <div className="grid grid-cols-2 gap-6 pt-4 pb-10">
-                <div className="text-center p-4 bg-white/60 rounded-2xl backdrop-blur-sm border border-blue-100">
-                  <div className="text-3xl font-bold text-blue-900">{stats.totalHelped.toLocaleString()}</div>
-                  <div className="text-sm text-gray-600">Lives Transformed</div>
-                </div>
-                <div className="text-center p-4 bg-white/60 rounded-2xl backdrop-blur-sm border border-blue-100">
-                  <div className="text-3xl font-bold text-blue-900">
-                    PKR {(stats.totalDonated / 1000000).toFixed(1)}M
-                  </div>
-                  <div className="text-sm text-gray-600">Total Distributed</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="relative animate-slide-in-right">
-              <div className="relative group">
-                <div className="relative overflow-hidden rounded-3xl shadow-2xl transform group-hover:scale-105 transition-all duration-500">
-                  <img
-                    src="/welfare-work.png"
-                    alt="Welfare Work in Action"
-                    className="w-full h-[400px] object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
-
-                  <div className="absolute bottom-6 left-6 right-6">
-                    <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20">
-                      <div className="grid grid-cols-2 gap-4 text-white">
-                        <div className="text-center">
-                          <div className="text-2xl font-bold">{stats.activeProjects}</div>
-                          <div className="text-xs opacity-90">Active Projects</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-2xl font-bold">{stats.successRate}%</div>
-                          <div className="text-xs opacity-90">Success Rate</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section> */}
-
-
-
-
-
-<CompleteHeroSection/>
-
-
-      
-
-      <ImageCarousel />
-
-
-      {/* Services Section */}
-      <section className="py-20 bg-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-5xl font-bold text-blue-900 mb-4">Comprehensive Welfare Programs</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              We provide holistic support across multiple sectors to ensure sustainable development and empowerment of
-              communities.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {services.map((service, index) => (
-              <Card
-                key={index}
-                className="group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-0 shadow-lg bg-gradient-to-br from-white to-gray-50"
-              >
-                <CardHeader className="pb-4">
-                  <div
-                    className={`w-16 h-16 ${service.color} rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
-                  >
-                    <service.icon className="h-8 w-8" />
-                  </div>
-                  <CardTitle className="text-xl text-blue-900">{service.title}</CardTitle>
-                  <Badge variant="secondary" className="w-fit">
-                    {service.cases}
-                  </Badge>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">{service.description}</p>
-                  <Button variant="ghost" className="text-blue-600 hover:text-blue-800 p-0">
-                    Learn More <ArrowRight className="h-4 w-4 ml-1" />
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+      <CompleteHeroSection />
 
       {/* Why Choose Us */}
       <section className="py-20 bg-gray-50">
@@ -317,6 +174,51 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <ImageCarousel />
+
+
+      {/* Services Section */}
+      <section className="py-20 bg-white">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-5xl font-bold text-blue-900 mb-4">Comprehensive Welfare Programs</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              We provide holistic support across multiple sectors to ensure sustainable development and empowerment of
+              communities.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {services.map((service, index) => (
+              <Card
+                key={index}
+                className="group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-0 shadow-lg bg-gradient-to-br from-white to-gray-50"
+              >
+                <CardHeader className="pb-4">
+                  <div
+                    className={`w-16 h-16 ${service.color} rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
+                  >
+                    <service.icon className="h-8 w-8" />
+                  </div>
+                  <CardTitle className="text-xl text-blue-900">{service.title}</CardTitle>
+                  <Badge variant="secondary" className="w-fit">
+                    {service.cases}
+                  </Badge>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600 mb-4">{service.description}</p>
+                  <Button variant="ghost" className="text-blue-600 hover:text-blue-800 p-0">
+                    Learn More <ArrowRight className="h-4 w-4 ml-1" />
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      
 
       {/* How It Works */}
       <section className="py-20 bg-white">

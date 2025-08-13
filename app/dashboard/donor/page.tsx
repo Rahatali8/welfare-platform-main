@@ -256,14 +256,14 @@ export default function DonorDashboardPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 font-sans">
       {/* VIP Header */}
       <header className="bg-gradient-to-r from-blue-900 via-purple-900 to-indigo-900 text-white shadow-2xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center space-x-4">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="flex justify-between items-center py-6">
+        <div className="flex items-center space-x-4">
               <div className="relative">
                 <Heart className="h-12 w-12 text-yellow-400 drop-shadow-lg animate-pulse" />
                 <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
               </div>
-              <div>
+          <div>
                 <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 drop-shadow-lg tracking-tight uppercase">
                   VIP Donor Dashboard
                 </h1>
@@ -272,27 +272,93 @@ export default function DonorDashboardPage() {
                   Empowering change through generosity
                   <Sparkles className="h-4 w-4" />
                 </p>
-              </div>
-            </div>
-            
-            {/* Logout Button */}
-            <Button
-              onClick={async () => {
-                try {
-                  await fetch("/api/logout", { method: "POST" });
-                  window.location.href = "/";
-                } catch (error) {
-                  console.error("Logout error:", error);
-                  window.location.href = "/";
-                }
-              }}
-              className="bg-gradient-to-r from-red-500 to-pink-500 text-white font-semibold hover:from-red-600 hover:to-pink-600 transition-all px-6 py-2 rounded-xl shadow-lg"
-            >
-              Logout
-            </Button>
           </div>
         </div>
-      </header>
+            
+            {/* Profile Circle in header (replaces logout button) */}
+            {donor && (
+          <Popover>
+            <PopoverTrigger asChild>
+                  <button className="relative group">
+                    <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center shadow-2xl border-4 border-white/20 hover:scale-110 transition-all duration-300">
+                      <span className="text-xl md:text-2xl font-bold text-white">{donor.name?.charAt(0) || "D"}</span>
+                    </div>
+                    {analytics && (
+                      <div className="absolute -top-2 -right-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[10px] md:text-xs px-2 py-0.5 rounded-full font-bold shadow-lg">
+                        {getVIPLevel(analytics.impactScore).level}
+                      </div>
+                    )}
+              </button>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="p-0 border-0 bg-transparent shadow-none">
+                  <div className="bg-white rounded-3xl shadow-2xl p-6 md:p-8 w-80 md:w-96 border border-gray-200">
+                <div className="flex flex-col items-center">
+                      <div className="relative mb-4">
+                        <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center overflow-hidden shadow-xl">
+                          <span className="text-3xl md:text-4xl font-bold text-white">{donor.name?.charAt(0) || "D"}</span>
+                        </div>
+                        {analytics && (
+                          <div className="absolute -top-2 -right-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-3 py-1 rounded-full font-bold shadow-lg flex items-center gap-1">
+                            {getVIPLevel(analytics.impactScore).icon}
+                            {getVIPLevel(analytics.impactScore).level}
+                          </div>
+                        )}
+                      </div>
+                      <div className="font-bold text-xl md:text-2xl text-gray-900 mb-1">{donor.name}</div>
+                      <div className="text-sm text-gray-500 mb-4">{donor.email}</div>
+
+                      {analytics && (
+                        <div className="w-full bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-4 mb-4">
+                          <div className="text-center mb-3">
+                            <div className="text-2xl md:text-3xl font-bold text-blue-900">{analytics.impactScore}</div>
+                            <div className="text-sm text-blue-600">Impact Score</div>
+                          </div>
+                          <Progress value={analytics.impactScore} className="h-2" />
+                  </div>
+                      )}
+
+                      <div className="w-full border-b border-gray-200 my-4"></div>
+                      <div className="w-full grid grid-cols-2 gap-4 text-gray-700 text-sm">
+                    <div><b>CNIC:</b> {donor.cnic}</div>
+                    <div><b>Contact:</b> {donor.contact_number}</div>
+                    <div><b>Org:</b> {donor.organization_name || '-'}</div>
+                        <div><b>Member Since:</b> {new Date(donor.created_at).toLocaleDateString()}</div>
+                      </div>
+
+                      {analytics && (
+                        <>
+                          <div className="w-full border-b border-gray-200 my-4"></div>
+                          <div className="w-full grid grid-cols-1 gap-3 text-blue-900 text-base">
+                            <div className="flex justify-between items-center">
+                              <span><b>Total Donated:</b></span>
+                              <span className="font-bold">PKR {analytics.totalDonated.toLocaleString()}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span><b>Accepted Requests:</b></span>
+                              <span className="font-bold">{analytics.acceptedRequests}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span><b>Monthly Average:</b></span>
+                              <span className="font-bold">PKR {analytics.monthlyDonations.toLocaleString()}</span>
+                  </div>
+                  </div>
+                        </>
+                      )}
+
+                  <button
+                        className="mt-6 w-full bg-gradient-to-r from-red-500 to-pink-500 text-white py-3 rounded-xl font-semibold hover:from-red-600 hover:to-pink-600 transition-all text-lg shadow-lg"
+                        onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+        )}
+      </div>
+    </div>
+  </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Analytics Overview */}
@@ -347,90 +413,6 @@ export default function DonorDashboardPage() {
                 </CardContent>
               </Card>
             </div>
-
-            {/* Donor Profile Circle */}
-            {donor && (
-              <div className="flex justify-end mb-8">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <button className="relative group">
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center shadow-2xl border-4 border-white/20 hover:scale-110 transition-all duration-300">
-                        <span className="text-2xl font-bold text-white">{donor.name?.charAt(0) || "D"}</span>
-                      </div>
-                      {analytics && (
-                        <div className="absolute -top-2 -right-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-2 py-1 rounded-full font-bold shadow-lg">
-                          {getVIPLevel(analytics.impactScore).level}
-                        </div>
-                      )}
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent align="end" className="p-0 border-0 bg-transparent shadow-none">
-                    <div className="bg-white rounded-3xl shadow-2xl p-8 w-96 border border-gray-200">
-                      <div className="flex flex-col items-center">
-                        <div className="relative mb-4">
-                          <div className="w-24 h-24 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center overflow-hidden shadow-xl">
-                            <span className="text-4xl font-bold text-white">{donor.name?.charAt(0) || "D"}</span>
-                          </div>
-                          {analytics && (
-                            <div className="absolute -top-2 -right-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-3 py-1 rounded-full font-bold shadow-lg flex items-center gap-1">
-                              {getVIPLevel(analytics.impactScore).icon}
-                              {getVIPLevel(analytics.impactScore).level}
-                            </div>
-                          )}
-                        </div>
-                        <div className="font-bold text-2xl text-gray-900 mb-1">{donor.name}</div>
-                        <div className="text-sm text-gray-500 mb-4">{donor.email}</div>
-                        
-                        {analytics && (
-                          <div className="w-full bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-4 mb-4">
-                            <div className="text-center mb-3">
-                              <div className="text-3xl font-bold text-blue-900">{analytics.impactScore}</div>
-                              <div className="text-sm text-blue-600">Impact Score</div>
-                            </div>
-                            <Progress value={analytics.impactScore} className="h-2" />
-                          </div>
-                        )}
-                        
-                        <div className="w-full border-b border-gray-200 my-4"></div>
-                        <div className="w-full grid grid-cols-2 gap-4 text-gray-700 text-sm">
-                          <div><b>CNIC:</b> {donor.cnic}</div>
-                          <div><b>Contact:</b> {donor.contact_number}</div>
-                          <div><b>Org:</b> {donor.organization_name || '-'}</div>
-                          <div><b>Member Since:</b> {new Date(donor.created_at).toLocaleDateString()}</div>
-                        </div>
-                        
-                        {analytics && (
-                          <>
-                            <div className="w-full border-b border-gray-200 my-4"></div>
-                            <div className="w-full grid grid-cols-1 gap-3 text-blue-900 text-base">
-                              <div className="flex justify-between items-center">
-                                <span><b>Total Donated:</b></span>
-                                <span className="font-bold text-lg">PKR {analytics.totalDonated.toLocaleString()}</span>
-                              </div>
-                              <div className="flex justify-between items-center">
-                                <span><b>Accepted Requests:</b></span>
-                                <span className="font-bold">{analytics.acceptedRequests}</span>
-                              </div>
-                              <div className="flex justify-between items-center">
-                                <span><b>Monthly Average:</b></span>
-                                <span className="font-bold">PKR {analytics.monthlyDonations.toLocaleString()}</span>
-                              </div>
-                            </div>
-                          </>
-                        )}
-                        
-                        <button
-                          className="mt-6 w-full bg-gradient-to-r from-red-500 to-pink-500 text-white py-3 rounded-xl font-semibold hover:from-red-600 hover:to-pink-600 transition-all text-lg shadow-lg"
-                          onClick={handleLogout}
-                        >
-                          Logout
-                        </button>
-                      </div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              </div>
-            )}
 
             {/* Charts and Stats */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
@@ -522,34 +504,34 @@ export default function DonorDashboardPage() {
         )}
 
         {/* Requests Section */}
-        <div className="mb-8">
+            <div className="mb-8">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full"></div>
             <h2 className="text-3xl font-bold text-gray-900">Active Requests</h2>
             <Badge className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1">
               {Object.values(groupedRequests).reduce((total, requests) => total + requests.length, 0)} Total
             </Badge>
-          </div>
+            </div>
           
-          {loading ? (
+            {loading ? (
             <div className="text-center py-20">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
               <p className="text-gray-600">Loading requests...</p>
             </div>
-          ) : error ? (
+            ) : error ? (
             <div className="text-center py-20">
               <XCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
               <p className="text-red-600">{error}</p>
             </div>
-          ) : Object.keys(groupedRequests).length === 0 ? (
+            ) : Object.keys(groupedRequests).length === 0 ? (
             <div className="text-center py-20">
               <Heart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <p className="text-gray-600">No requests available at the moment.</p>
             </div>
-          ) : (
-            <Tabs defaultValue={Object.keys(groupedRequests)[0]} className="w-full">
+            ) : (
+              <Tabs defaultValue={Object.keys(groupedRequests)[0]} className="w-full">
               <TabsList className="mb-6 bg-white shadow-lg border border-gray-200 p-1 rounded-xl">
-                {Object.keys(groupedRequests).map((type) => (
+                  {Object.keys(groupedRequests).map((type) => (
                   <TabsTrigger key={type} value={type} className="capitalize data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-500 data-[state=active]:text-white rounded-lg">
                     <div className="flex items-center gap-2">
                       {getTypeIcon(type)}
@@ -558,20 +540,20 @@ export default function DonorDashboardPage() {
                         {groupedRequests[type].length}
                       </Badge>
                     </div>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
               
-              {Object.entries(groupedRequests).map(([type, requests]) => (
-                <TabsContent key={type} value={type}>
-                  {requests.length === 0 ? (
+                {Object.entries(groupedRequests).map(([type, requests]) => (
+                  <TabsContent key={type} value={type}>
+                    {requests.length === 0 ? (
                     <div className="text-center py-20">
                       <Heart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                       <p className="text-gray-600">No {type} requests available.</p>
                     </div>
-                  ) : (
+                    ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {requests.map((request) => (
+                        {requests.map((request) => (
                         <Card key={request.id} className="bg-white shadow-lg hover:shadow-2xl transition-all duration-300 border-0 group">
                           <CardContent className="p-6">
                             <div className="flex flex-col gap-4">
@@ -602,10 +584,10 @@ export default function DonorDashboardPage() {
                                 <p className="text-gray-700 text-sm italic line-clamp-2">
                                   {request.reason || request.description || "No description provided"}
                                 </p>
-                              </div>
+                                </div>
 
                               {/* Amount */}
-                              {request.amount && (
+                                {request.amount && (
                                 <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-3 border border-blue-200">
                                   <div className="flex items-center justify-between">
                                     <span className="text-sm font-medium text-gray-600">Requested Amount:</span>
@@ -618,39 +600,39 @@ export default function DonorDashboardPage() {
                               <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
                                 <div><b>Email:</b> {request.user?.email || '-'}</div>
                                 <div><b>Phone:</b> {request.user?.phone || '-'}</div>
-                              </div>
+                                </div>
 
                               {/* Document Links */}
                               <div className="flex flex-wrap gap-2">
-                                {request.image && (
+                                  {request.image && (
                                   <Button size="sm" variant="outline" className="text-xs">
                                     <Eye className="h-3 w-3 mr-1" />
                                     Image
                                   </Button>
-                                )}
-                                {request.cnic_front && (
+                                  )}
+                                  {request.cnic_front && (
                                   <Button size="sm" variant="outline" className="text-xs">
                                     <Eye className="h-3 w-3 mr-1" />
-                                    CNIC Front
+                                      CNIC Front
                                   </Button>
-                                )}
-                                {request.cnic_back && (
+                                  )}
+                                  {request.cnic_back && (
                                   <Button size="sm" variant="outline" className="text-xs">
                                     <Eye className="h-3 w-3 mr-1" />
-                                    CNIC Back
+                                      CNIC Back
                                   </Button>
-                                )}
-                                {request.document && (
+                                  )}
+                                  {request.document && (
                                   <Button size="sm" variant="outline" className="text-xs">
                                     <Eye className="h-3 w-3 mr-1" />
                                     Document
                                   </Button>
-                                )}
-                              </div>
+                                  )}
+                                </div>
 
                               {/* Action Buttons */}
                               <div className="flex gap-2 pt-2">
-                                {request.status?.toLowerCase() === "pending" && (
+                                  {request.status?.toLowerCase() === "pending" && (
                                   <>
                                     <Button 
                                       size="sm" 
@@ -669,27 +651,27 @@ export default function DonorDashboardPage() {
                                       <ArrowUpRight className="h-4 w-4" />
                                     </Button>
                                   </>
-                                )}
-                                {request.status === "approved" && (
+                                  )}
+                                  {request.status === "approved" && (
                                   <Button 
                                     size="sm" 
                                     className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold hover:from-blue-600 hover:to-purple-600 transition-all w-full"
                                   >
                                     <DollarSign className="h-4 w-4 mr-1" />
                                     Donate Now
-                                  </Button>
-                                )}
+                                    </Button>
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  )}
-                </TabsContent>
-              ))}
-            </Tabs>
-          )}
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    )}
+                  </TabsContent>
+                ))}
+              </Tabs>
+            )}
         </div>
       </div>
     </div>
