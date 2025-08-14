@@ -11,19 +11,25 @@ import {
   Users, 
   DollarSign, 
   Target, 
-  Award,
   Calendar,
   Clock,
   CheckCircle,
   XCircle,
   Eye,
-  ArrowUpRight,
   Star,
   Crown,
   Sparkles
 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 
 type RequestUser = {
@@ -106,6 +112,8 @@ export default function DonorDashboardPage() {
   const [donor, setDonor] = useState<any>(null);
   const [profileLoading, setProfileLoading] = useState(true);
   const [analytics, setAnalytics] = useState<DonorAnalytics | null>(null);
+  const [acceptedByMe, setAcceptedByMe] = useState<any[]>([]);
+  const [selectedRequest, setSelectedRequest] = useState<RequestType | null>(null);
 
   useEffect(() => {
     async function fetchRequests() {
@@ -203,36 +211,76 @@ export default function DonorDashboardPage() {
     fetchProfile();
   }, [groupedRequests]);
 
+  // Load locally stored accepted items for this donor (client-only)
+  useEffect(() => {
+    try {
+      const raw = typeof window !== 'undefined' ? localStorage.getItem('acceptedByDonors') : null;
+      const list = raw ? JSON.parse(raw) : [];
+      if (donor) {
+        const mine = list.filter((x: any) => x.donor?.email ? x.donor.email === donor.email : true);
+        setAcceptedByMe(mine);
+      } else {
+        setAcceptedByMe(list);
+      }
+    } catch {
+      setAcceptedByMe([]);
+    }
+  }, [donor]);
+
   async function handleAccept(request: RequestType) {
-    const amount = window.prompt(
+    const amountInput = window.prompt(
       `Enter amount to donate (max PKR ${request.amount?.toLocaleString() || '0'}) or leave blank to fulfill full request:`
     );
-    if (amount === null) return;
-    let donateAmount = Number(amount);
-    if (!amount || isNaN(donateAmount) || donateAmount >= (request.amount || 0)) {
-      donateAmount = request.amount || 0;
+    if (amountInput === null) return;
+    let donateAmount = Number(amountInput);
+    const isFullfill = !amountInput || isNaN(donateAmount) || donateAmount >= (request.amount || 0);
+    if (isFullfill) donateAmount = request.amount || 0;
+    // Guard: ensure positive amount. If full-fill but request amount is unknown/zero, ask again.
+    if (!donateAmount || isNaN(donateAmount) || donateAmount <= 0) {
+      const retry = window.prompt('Please enter a valid positive amount to donate:');
+      if (retry === null) return;
+      const retryAmount = Number(retry);
+      if (!retryAmount || isNaN(retryAmount) || retryAmount <= 0) {
+        alert('Amount must be a positive number');
+        return;
+      }
+      donateAmount = retryAmount;
     }
+    
+    // Call server to mark request approved for admin view
     try {
       const res = await fetch('/api/donor/accept-request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ requestId: request.id, amount: donateAmount })
+        body: JSON.stringify({ requestId: Number(request.id), amount: donateAmount })
       });
       const data = await res.json();
-      if (res.ok) {
-        alert('Request accepted and donation recorded!');
-        window.location.reload();
-      } else {
+      if (!res.ok) {
         alert(data.error || 'Failed to accept request');
+        return;
       }
+      // Persist lightweight record locally for donor's Accepted tab
+      try {
+        const raw = localStorage.getItem('acceptedByDonors');
+        const list = raw ? JSON.parse(raw) : [];
+        list.push({
+          id: Date.now(),
+          amount: donateAmount,
+          isFullfill,
+          acceptedAt: new Date().toISOString(),
+          donor: donor || {},
+          request: { ...request, status: 'approved' },
+        });
+        localStorage.setItem('acceptedByDonors', JSON.stringify(list));
+      } catch {}
+      alert('Request accepted successfully');
+      window.location.reload();
     } catch (e) {
       alert('Server error');
     }
   }
 
-  function handleForward(id: string) {
-    alert(`Forwarded request ${id}`);
-  }
+  // Removed forward feature per request
 
   async function handleLogout() {
     try {
@@ -247,7 +295,7 @@ export default function DonorDashboardPage() {
   const getVIPLevel = (impactScore: number) => {
     if (impactScore >= 90) return { level: "Diamond", color: "text-purple-500", icon: <Crown className="h-5 w-5" /> };
     if (impactScore >= 70) return { level: "Platinum", color: "text-gray-500", icon: <Star className="h-5 w-5" /> };
-    if (impactScore >= 50) return { level: "Gold", color: "text-yellow-500", icon: <Award className="h-5 w-5" /> };
+    if (impactScore >= 50) return { level: "Gold", color: "text-yellow-500", icon: <Star className="h-5 w-5" /> };
     if (impactScore >= 30) return { level: "Silver", color: "text-gray-400", icon: <Sparkles className="h-5 w-5" /> };
     return { level: "Bronze", color: "text-orange-500", icon: <Heart className="h-5 w-5" /> };
   };
@@ -290,8 +338,8 @@ export default function DonorDashboardPage() {
                     )}
               </button>
             </PopoverTrigger>
-            <PopoverContent align="end" className="p-0 border-0 bg-transparent shadow-none">
-                  <div className="bg-white rounded-3xl shadow-2xl p-6 md:p-8 w-80 md:w-96 border border-gray-200">
+            <PopoverContent side="bottom" align="center" sideOffset={10} className="p-0 border-0 bg-transparent shadow-none max-w-[calc(100vw-24px)]">
+              <div className="bg-white rounded-3xl shadow-2xl p-6 md:p-8 w-full max-w-sm md:max-w-md border border-gray-200">
                 <div className="flex flex-col items-center">
                       <div className="relative mb-4">
                         <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center overflow-hidden shadow-xl">
@@ -414,92 +462,9 @@ export default function DonorDashboardPage() {
               </Card>
             </div>
 
-            {/* Charts and Stats */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-              {/* Donation History Chart */}
-              <Card className="bg-white shadow-lg border-0">
-                <CardHeader>
-                  <CardTitle className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5 text-blue-600" />
-                    Donation History
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {analytics.donationHistory.map((item, index) => (
-                      <div key={index} className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-gray-600">{item.month}</span>
-                        <div className="flex items-center gap-2">
-                          <div className="w-32 bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
-                              style={{ width: `${(item.amount / Math.max(...analytics.donationHistory.map(d => d.amount))) * 100}%` }}
-                            ></div>
-                          </div>
-                          <span className="text-sm font-bold text-gray-900">PKR {item.amount.toLocaleString()}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+            {/* Charts and Stats removed per request */}
 
-              {/* Request Statistics */}
-              <Card className="bg-white shadow-lg border-0">
-                <CardHeader>
-                  <CardTitle className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                    <Users className="h-5 w-5 text-green-600" />
-                    Request Statistics
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                        <span className="text-sm font-medium">Pending</span>
-                      </div>
-                      <span className="text-lg font-bold text-blue-600">{analytics.requestStats.pending}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                        <span className="text-sm font-medium">Approved</span>
-                      </div>
-                      <span className="text-lg font-bold text-green-600">{analytics.requestStats.approved}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                        <span className="text-sm font-medium">Rejected</span>
-                      </div>
-                      <span className="text-lg font-bold text-red-600">{analytics.requestStats.rejected}</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Top Categories */}
-            <Card className="bg-white shadow-lg border-0 mb-8">
-              <CardHeader>
-                <CardTitle className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                  <Award className="h-5 w-5 text-yellow-600" />
-                  Top Donation Categories
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {analytics.topCategories.map((category, index) => (
-                    <div key={index} className="text-center p-4 bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl border border-gray-200">
-                      <div className="text-2xl font-bold text-gray-900 mb-2">{category.type}</div>
-                      <div className="text-lg font-semibold text-blue-600 mb-1">{category.count} requests</div>
-                      <div className="text-sm text-gray-600">PKR {category.amount.toLocaleString()}</div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            {/* Top Categories removed per request */}
           </div>
         )}
 
@@ -553,34 +518,28 @@ export default function DonorDashboardPage() {
                     </div>
                     ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {requests.map((request) => (
-                        <Card key={request.id} className="bg-white shadow-lg hover:shadow-2xl transition-all duration-300 border-0 group">
+                        {requests.filter(r => r.status?.toLowerCase() === 'pending').map((request) => (
+                          <Card key={request.id} className="bg-white shadow-sm hover:shadow-md transition-shadow border rounded-lg">
                           <CardContent className="p-6">
                             <div className="flex flex-col gap-4">
                               {/* Header */}
                               <div className="flex items-start justify-between">
                                 <div className="flex-1">
-                                  <h3 className="font-bold text-lg text-gray-900 truncate">{request.user?.fullName || "-"}</h3>
-                                  <p className="text-sm text-gray-500">{formatCNIC(request.user?.cnic || "")}</p>
+                                  <h3 className="font-semibold text-lg text-gray-900 truncate">{request.user?.fullName || "-"}</h3>
+                                  <p className="text-sm text-gray-600">{formatCNIC(request.user?.cnic || "")}</p>
                                 </div>
                                 <div className="flex flex-col gap-1">
-                                  <Badge className={`${getTypeColor(request.type)} text-xs font-semibold`}>
+                                  <Badge className="bg-gray-100 text-gray-800 border text-xs font-medium">
                                     {getTypeIcon(request.type)} {request.type}
                                   </Badge>
-                                  <Badge className={
-                                    request.status?.toLowerCase() === "pending"
-                                      ? "bg-yellow-100 text-yellow-800 border-yellow-200"
-                                      : request.status === "approved"
-                                      ? "bg-green-100 text-green-800 border-green-200"
-                                      : "bg-red-100 text-red-800 border-red-200"
-                                  }>
+                                  <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200 text-xs font-medium">
                                     {request.status}
                                   </Badge>
                                 </div>
                               </div>
 
                               {/* Description */}
-                              <div className="bg-gray-50 rounded-lg p-3">
+                              <div className="bg-gray-50 rounded-md p-3 border">
                                 <p className="text-gray-700 text-sm italic line-clamp-2">
                                   {request.reason || request.description || "No description provided"}
                                 </p>
@@ -588,78 +547,141 @@ export default function DonorDashboardPage() {
 
                               {/* Amount */}
                                 {request.amount && (
-                                <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-3 border border-blue-200">
+                                  <div className="rounded-md p-3 border bg-white">
                                   <div className="flex items-center justify-between">
                                     <span className="text-sm font-medium text-gray-600">Requested Amount:</span>
-                                    <span className="font-bold text-lg text-blue-700">PKR {request.amount.toLocaleString()}</span>
+                                      <span className="font-semibold text-gray-900">PKR {request.amount.toLocaleString()}</span>
                                   </div>
                                 </div>
                               )}
 
                               {/* Contact Info */}
                               <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
-                                <div><b>Email:</b> {request.user?.email || '-'}</div>
-                                <div><b>Phone:</b> {request.user?.phone || '-'}</div>
+                                <div><span className="font-medium">Submitted:</span> {request.createdAt ? new Date(request.createdAt).toLocaleDateString() : '-'}</div>
+                                <div><span className="font-medium">Address:</span> {request.user?.address || '-'}</div>
+                                <div><span className="font-medium">Email:</span> {request.user?.email || '-'}</div>
+                                <div><span className="font-medium">Phone:</span> {request.user?.phone || '-'}</div>
                                 </div>
 
                               {/* Document Links */}
-                              <div className="flex flex-wrap gap-2">
-                                  {request.image && (
-                                  <Button size="sm" variant="outline" className="text-xs">
-                                    <Eye className="h-3 w-3 mr-1" />
-                                    Image
-                                  </Button>
-                                  )}
+                              <div className="flex flex-wrap gap-3 text-xs">
                                   {request.cnic_front && (
-                                  <Button size="sm" variant="outline" className="text-xs">
-                                    <Eye className="h-3 w-3 mr-1" />
-                                      CNIC Front
-                                  </Button>
+                                  <a className="text-blue-600 hover:underline" href={String(request.cnic_front)} target="_blank" rel="noreferrer">
+                                    View CNIC Front
+                                  </a>
                                   )}
                                   {request.cnic_back && (
-                                  <Button size="sm" variant="outline" className="text-xs">
-                                    <Eye className="h-3 w-3 mr-1" />
-                                      CNIC Back
-                                  </Button>
+                                  <a className="text-blue-600 hover:underline" href={String(request.cnic_back)} target="_blank" rel="noreferrer">
+                                    View CNIC Back
+                                  </a>
                                   )}
                                   {request.document && (
-                                  <Button size="sm" variant="outline" className="text-xs">
-                                    <Eye className="h-3 w-3 mr-1" />
-                                    Document
-                                  </Button>
+                                  <a className="text-blue-600 hover:underline" href={String(request.document)} target="_blank" rel="noreferrer">
+                                    View Document
+                                  </a>
                                   )}
                                 </div>
 
                               {/* Action Buttons */}
                               <div className="flex gap-2 pt-2">
                                   {request.status?.toLowerCase() === "pending" && (
-                                  <>
+                                    <div className="flex gap-2 w-full">
+                                      <Dialog>
+                                        <DialogTrigger asChild>
+                                          <Button size="sm" variant="outline" className="w-1/2" onClick={() => setSelectedRequest(request)}>
+                                            <Eye className="h-4 w-4 mr-1" />
+                                            View Details
+                                          </Button>
+                                        </DialogTrigger>
+                                        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                                          <DialogHeader>
+                                            <DialogTitle>Request Details</DialogTitle>
+                                            <DialogDescription>
+                                              Complete information for {selectedRequest?.user?.fullName || '-'}
+                                            </DialogDescription>
+                                          </DialogHeader>
+                                          {selectedRequest && (
+                                            <div className="space-y-4">
+                                              <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                  <div className="font-medium">Applicant Name</div>
+                                                  <p>{selectedRequest.user?.fullName}</p>
+                                                </div>
+                                                <div>
+                                                  <div className="font-medium">CNIC</div>
+                                                  <p>{formatCNIC(selectedRequest.user?.cnic || '')}</p>
+                                                </div>
+                                                <div>
+                                                  <div className="font-medium">Request Type</div>
+                                                  <p className="capitalize">{selectedRequest.type}</p>
+                                                </div>
+                                                <div>
+                                                  <div className="font-medium">Status</div>
+                                                  <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">{selectedRequest.status}</Badge>
+                                                </div>
+                                                {selectedRequest.amount && (
+                                                  <div>
+                                                    <div className="font-medium">Amount</div>
+                                                    <p>PKR {selectedRequest.amount.toLocaleString()}</p>
+                                                  </div>
+                                                )}
+                                                <div>
+                                                  <div className="font-medium">Submitted</div>
+                                                  <p>{selectedRequest.createdAt ? new Date(selectedRequest.createdAt).toLocaleDateString() : '-'}</p>
+                                                </div>
+                                              </div>
+
+                                              <div>
+                                                <div className="font-medium">Registered Address</div>
+                                                <p>{selectedRequest.user?.address || '-'}</p>
+                                              </div>
+
+                                              <div>
+                                                <div className="font-medium">Reason</div>
+                                                <p>{selectedRequest.reason || selectedRequest.description || '-'}</p>
+                                              </div>
+
+                                              {(selectedRequest as any).cnic_front || (selectedRequest as any).cnic_back || (selectedRequest as any).document ? (
+                                                <div className="space-y-2">
+                                                  <div className="font-medium">Documents</div>
+                                                  <ul className="list-disc list-inside text-sm">
+                                                    {(selectedRequest as any).cnic_front && (
+                                                      <li><a className="text-blue-600 hover:underline" href={String((selectedRequest as any).cnic_front)} target="_blank" rel="noreferrer">View CNIC Front</a></li>
+                                                    )}
+                                                    {(selectedRequest as any).cnic_back && (
+                                                      <li><a className="text-blue-600 hover:underline" href={String((selectedRequest as any).cnic_back)} target="_blank" rel="noreferrer">View CNIC Back</a></li>
+                                                    )}
+                                                    {(selectedRequest as any).document && (
+                                                      <li><a className="text-blue-600 hover:underline" href={String((selectedRequest as any).document)} target="_blank" rel="noreferrer">View Document</a></li>
+                                                    )}
+                                                  </ul>
+                                                </div>
+                                              ) : null}
+
+                                              {/* Additional fields */}
+                                              <div className="grid grid-cols-2 gap-3 bg-gray-50 p-3 rounded-md">
+                                                {Object.entries(selectedRequest as any)
+                                                  .filter(([k, v]) => v !== null && v !== undefined && v !== '' && !['id','user','type','status','reason','description','amount','createdAt','updatedAt','image','cnic_front','cnic_back','document'].includes(k) && typeof v !== 'object')
+                                                  .map(([k, v]) => (
+                                                    <div key={k} className="text-sm">
+                                                      <span className="font-medium capitalize mr-2">{k.replace(/_/g,' ')}</span>
+                                                      <span className="text-gray-700">{String(v)}</span>
+                                                    </div>
+                                                  ))}
+                                              </div>
+                                            </div>
+                                          )}
+                                        </DialogContent>
+                                      </Dialog>
                                     <Button 
                                       size="sm" 
-                                      className="bg-gradient-to-r from-green-500 to-emerald-500 text-white font-semibold hover:from-green-600 hover:to-emerald-600 transition-all flex-1"
+                                        className="bg-green-600 hover:bg-green-700 text-white font-medium transition-colors flex-1"
                                       onClick={() => handleAccept(request)}
                                     >
                                       <CheckCircle className="h-4 w-4 mr-1" />
                                       Accept
                                     </Button>
-                                    <Button 
-                                      size="sm" 
-                                      variant="outline" 
-                                      className="border-blue-300 text-blue-700 hover:bg-blue-50 transition-all"
-                                      onClick={() => handleForward(request.id)}
-                                    >
-                                      <ArrowUpRight className="h-4 w-4" />
-                                    </Button>
-                                  </>
-                                  )}
-                                  {request.status === "approved" && (
-                                  <Button 
-                                    size="sm" 
-                                    className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold hover:from-blue-600 hover:to-purple-600 transition-all w-full"
-                                  >
-                                    <DollarSign className="h-4 w-4 mr-1" />
-                                    Donate Now
-                                    </Button>
+                                    </div>
                                   )}
                                 </div>
                               </div>
@@ -671,6 +693,46 @@ export default function DonorDashboardPage() {
                   </TabsContent>
                 ))}
               </Tabs>
+            )}
+        </div>
+
+          {/* Accepted by Me */}
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-1 h-8 bg-gradient-to-b from-green-500 to-emerald-500 rounded-full"></div>
+              <h2 className="text-3xl font-bold text-gray-900">My Accepted Requests</h2>
+              <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 py-1">{acceptedByMe.length}</Badge>
+            </div>
+            {acceptedByMe.length === 0 ? (
+              <div className="text-center py-12">
+                <Heart className="h-10 w-10 text-gray-400 mx-auto mb-3" />
+                <p className="text-gray-600">You haven't accepted any requests yet.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {acceptedByMe.map((item: any) => (
+                  <Card key={item.id} className="bg-white shadow-sm border rounded-lg">
+                    <CardContent className="p-6">
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <h3 className="font-semibold text-lg text-gray-900">{item.request.user?.fullName || '-'}</h3>
+                          <p className="text-sm text-gray-600">{item.request.user?.cnic || '-'}</p>
+                          <p className="text-sm text-gray-600 capitalize">{item.request.type} Request</p>
+                          <p className="text-sm text-gray-500">{item.request.reason}</p>
+                          {item.request.amount && (
+                            <p className="text-sm text-gray-600">Requested: PKR {item.request.amount.toLocaleString()}</p>
+                          )}
+                          <p className="text-sm font-medium text-green-700">
+                            You pledged: {item.isFullfill ? `Full amount (PKR ${item.amount.toLocaleString()})` : `PKR ${item.amount.toLocaleString()}`}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">Accepted at: {new Date(item.acceptedAt).toLocaleString()}</p>
+                        </div>
+                        <Badge className="bg-green-100 text-green-800 border">approved</Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             )}
         </div>
       </div>
