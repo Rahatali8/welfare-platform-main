@@ -297,38 +297,16 @@ export default function AdminDashboard() {
     return cnic
   }
 
-if (isLoading) {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 flex items-center justify-center">
-      <div className="flex flex-col items-center space-y-6">
-        
-        {/* Glowing Orbit Loader */}
-        <div className="relative w-20 h-20">
-          <div className="absolute inset-0 rounded-full border-4 border-t-transparent border-blue-500 animate-spin"></div>
-          <div className="absolute inset-2 rounded-full border-4 border-b-transparent border-indigo-400 animate-[spin_1.5s_linear_reverse_infinite]"></div>
-          <div className="absolute inset-4 rounded-full border-4 border-l-transparent border-cyan-300 animate-spin"></div>
-          {/* Glow effect */}
-          <div className="absolute inset-0 rounded-full bg-blue-400 blur-xl opacity-30 animate-pulse"></div>
-        </div>
-
-        {/* Loading Text with Shimmer */}
-        <div className="relative">
-          <p className="text-xl font-semibold text-gray-700 bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500 bg-clip-text text-transparent animate-[shimmer_2s_infinite]">
-            Loading Admin Dashboard...
-          </p>
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading admin dashboard...</p>
         </div>
       </div>
-
-      {/* Shimmer Animation */}
-      <style jsx>{`
-        @keyframes shimmer {
-          0% { background-position: -200% 0; }
-          100% { background-position: 200% 0; }
-        }
-      `}</style>
-    </div>
-  )
-}
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -351,7 +329,7 @@ if (isLoading) {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 align-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Analytics Cards */}
         {analytics && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -388,6 +366,16 @@ if (isLoading) {
               </CardContent>
             </Card>
 
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Amount</CardTitle>
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">PKR {analytics.totalAmount.toLocaleString()}</div>
+                <p className="text-xs text-muted-foreground">Requested amount</p>
+              </CardContent>
+            </Card>
           </div>
         )}
 
