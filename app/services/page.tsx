@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -235,22 +237,23 @@ export default function ServicesPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-blue-50 to-white">
-        <div className="container mx-auto">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">Comprehensive Welfare Programs</h1>
-            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-              From emergency assistance to long-term empowerment, our 12 specialized programs address every aspect of
-              community welfare and individual development.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700" asChild>
-                <Link href="/apply">Apply for Assistance</Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild>
-                <Link href="/how-it-works">How It Works</Link>
-              </Button>
-            </div>
+      <section className="relative py-20 px-4 bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-500 text-white overflow-hidden">
+        <div className="absolute inset-0 opacity-10 bg-[url('/pattern.svg')] bg-repeat"></div>
+        <div className="container mx-auto relative z-10 text-center">
+          <h1 className="text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-lg animate-fadeInUp">
+            Comprehensive Welfare Programs
+          </h1>
+          <p className="text-xl mb-8 max-w-3xl mx-auto opacity-90">
+            From emergency assistance to long-term empowerment, our 12 specialized programs address every aspect of
+            community welfare and individual development.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 rounded-lg shadow-lg" asChild>
+              <Link href="/signup">Apply for Assistance</Link>
+            </Button>
+            <Button size="lg" variant="outline" className="rounded-lg border-white text-white hover:text-white hover:bg-transparent bg-transparent" asChild>
+              <Link href="/how-it-works">How It Works</Link>
+            </Button>
           </div>
         </div>
       </section>
@@ -264,16 +267,19 @@ export default function ServicesPage() {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8">
-            {services.map((service, index) => {
+            {services.map((service) => {
               const colorClasses = getColorClasses(service.color)
               const [gradientClasses, badgeClasses] = colorClasses.split(" bg-")
 
               return (
-                <Card key={service.id} className="hover:shadow-xl transition-all duration-300 border-0 shadow-lg">
+                <Card
+                  key={service.id}
+                  className="group hover:shadow-2xl transition-all duration-300 border-0 shadow-lg rounded-2xl overflow-hidden hover:-translate-y-2"
+                >
                   <CardHeader>
                     <div className="flex items-start justify-between mb-4">
                       <div
-                        className={`w-16 h-16 bg-gradient-to-br ${gradientClasses} rounded-2xl flex items-center justify-center`}
+                        className={`w-16 h-16 bg-gradient-to-br ${gradientClasses} rounded-full flex items-center justify-center shadow-md`}
                       >
                         <service.icon className="h-8 w-8 text-white" />
                       </div>
@@ -282,7 +288,9 @@ export default function ServicesPage() {
                         <div className="text-sm text-gray-600">{service.successRate} success rate</div>
                       </div>
                     </div>
-                    <CardTitle className="text-gray-900 text-xl">{service.title}</CardTitle>
+                    <CardTitle className="text-gray-900 text-xl group-hover:text-blue-600 transition-colors">
+                      {service.title}
+                    </CardTitle>
                     <CardDescription className="text-gray-600">{service.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -294,7 +302,7 @@ export default function ServicesPage() {
                         </div>
                       ))}
                     </div>
-                    <Button className="w-full" asChild>
+                    <Button className="w-full rounded-full" asChild>
                       <Link href={`/signup?service=${service.id}`}>
                         Apply for {service.title}
                         <ArrowRight className="ml-2 h-4 w-4" />
@@ -308,7 +316,7 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* Process Overview */}
+      {/* How to Apply */}
       <section className="py-16 px-4 bg-gray-50">
         <div className="container mx-auto">
           <div className="text-center mb-12">
@@ -316,53 +324,40 @@ export default function ServicesPage() {
             <p className="text-xl text-gray-600">Simple steps to access our services</p>
           </div>
           <div className="grid md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-white">1</span>
+            {[
+              { step: "1", title: "Choose Service", desc: "Select the program that matches your needs", color: "from-blue-500 to-blue-600" },
+              { step: "2", title: "Submit Application", desc: "Fill out the online application form", color: "from-green-500 to-green-600" },
+              { step: "3", title: "Review Process", desc: "Our team reviews your application", color: "from-purple-500 to-purple-600" },
+              { step: "4", title: "Receive Support", desc: "Get approved and receive assistance", color: "from-orange-500 to-orange-600" },
+            ].map((item, idx) => (
+              <div key={idx} className="text-center relative">
+                <div className={`w-16 h-16 bg-gradient-to-br ${item.color} rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg`}>
+                  <span className="text-2xl font-bold text-white">{item.step}</span>
+                </div>
+                <h3 className="font-semibold mb-2 text-gray-900">{item.title}</h3>
+                <p className="text-sm text-gray-600">{item.desc}</p>
               </div>
-              <h3 className="font-semibold mb-2 text-gray-900">Choose Service</h3>
-              <p className="text-sm text-gray-600">Select the program that matches your needs</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-white">2</span>
-              </div>
-              <h3 className="font-semibold mb-2 text-gray-900">Submit Application</h3>
-              <p className="text-sm text-gray-600">Fill out the online application form</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-white">3</span>
-              </div>
-              <h3 className="font-semibold mb-2 text-gray-900">Review Process</h3>
-              <p className="text-sm text-gray-600">Our team reviews your application</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-white">4</span>
-              </div>
-              <h3 className="font-semibold mb-2 text-gray-900">Receive Support</h3>
-              <p className="text-sm text-gray-600">Get approved and receive assistance</p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 px-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white">
-        <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-4">Ready to Get Started?</h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Don't let financial challenges hold you back. Our comprehensive programs are designed to help you succeed.
+      {/* CTA */}
+      <section className="py-20 px-4 bg-gradient-to-r from-blue-700 via-blue-600 to-cyan-500 text-white relative">
+        <div className="absolute inset-0 opacity-10 bg-[url('/pattern.svg')] bg-repeat"></div>
+        <div className="container mx-auto text-center relative z-10">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">Ready to Change Your Life?</h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90">
+            Don’t let financial challenges hold you back. Together, we can build a brighter future.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100" asChild>
-              <Link href="/apply">Apply Now</Link>
+            <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 rounded-lg" asChild>
+              <Link href="/signup">Apply Now</Link>
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="border-white text-white hover:bg-white hover:text-blue-600 bg-transparent"
+              className="border-white bg-transparent text-white hover:bg-transparent hover:text-white rounded-lg"
               asChild
             >
               <Link href="/contact">Need Help Choosing?</Link>
@@ -370,6 +365,15 @@ export default function ServicesPage() {
           </div>
         </div>
       </section>
+
+      {/* Animation Styles */}
+      <style jsx>{`
+        @keyframes fadeInUp {
+          0% { opacity: 0; transform: translateY(20px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeInUp { animation: fadeInUp 1s ease-out; }
+      `}</style>
     </div>
   )
 }

@@ -55,30 +55,49 @@ export async function GET(request: NextRequest) {
     `) as any[]
 
     const formattedRequests = (requests as any[]).map((r) => ({
+      // Frontend-expected fields
       id: r.id,
-      // exact snake_case fields required for cards
-      user_id: r.user_id,
+      userId: r.user_id,
       type: r.type,
-      description: r.description ?? null,
+      reason: r.reason ?? "",
       status: (r.status ?? '').toString().toLowerCase(),
+      submittedAt: r.created_at,
+      currentAddress: r.user_address ?? "",
+      amount: r.monthly_income ?? null,
+      cnicImage: r.cnic_front ?? null,
+
+      // Preserve originals for detail view
       created_at: r.created_at,
       updated_at: r.updated_at,
       rejection_reason: r.rejection_reason ?? null,
-      adult_member: r.adult_member ?? null,
-      cnic_back: r.cnic_back ?? null,
-      cnic_front: r.cnic_front ?? null,
-      cnic_number: r.cnic_number ?? null,
-      document: r.document ?? null,
-      family_count: r.family_count ?? null,
-      father_name: r.father_name ?? null,
-      fridge: r.fridge ?? null,
-      full_name: r.full_name ?? null,
-      home_rent: r.home_rent ?? null,
-      marital_status: r.marital_status ?? null,
-      matric_member: r.matric_member ?? null,
-      monthly_income: r.monthly_income ?? null,
-      reason: r.reason ?? null,
-      repayment_time: r.repayment_time ?? null,
+
+      // Nested user object for UI
+      user: {
+        fullName: r.full_name ?? r.user_name ?? '',
+        cnic: r.user_cnic ?? r.cnic_number ?? '',
+        address: r.user_address ?? '',
+      },
+
+      // Group all extra fields for View Details
+      additionalData: {
+        description: r.description ?? null,
+        father_name: r.father_name ?? null,
+        marital_status: r.marital_status ?? null,
+        family_count: r.family_count ?? null,
+        adult_member: r.adult_member ?? null,
+        matric_member: r.matric_member ?? null,
+        home_rent: r.home_rent ?? null,
+        fridge: r.fridge ?? null,
+        monthly_income: r.monthly_income ?? null,
+        repayment_time: r.repayment_time ?? null,
+        cnic_number: r.cnic_number ?? null,
+        cnic_front: r.cnic_front ?? null,
+        cnic_back: r.cnic_back ?? null,
+        document: r.document ?? null,
+        user_email: r.user_email ?? null,
+        user_phone: r.user_phone ?? null,
+        user_name: r.user_name ?? null,
+      },
     }))
 
     return NextResponse.json({

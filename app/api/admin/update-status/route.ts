@@ -28,7 +28,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ 
       success: true, 
       message: `Request ${status} successfully`,
-      request: updatedRequest
+      request: updatedRequest,
+      updatedAt: updatedRequest.updated_at
     })
 
   } catch (error) {

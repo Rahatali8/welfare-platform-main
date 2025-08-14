@@ -1,8 +1,11 @@
+"use client"
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { CheckCircle, TrendingUp, Users, Heart, ArrowRight } from "lucide-react"
 import Link from "next/link"
+import { motion } from "framer-motion"
 
 const successStories = [
   {
@@ -145,13 +148,22 @@ export default function SuccessStoriesPage() {
       {/* Hero Section */}
       <section className="py-20 px-4 bg-gradient-to-br from-green-50 to-blue-50">
         <div className="container mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Success Stories from Our <span className="text-green-600">Community</span>
-          </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Discover how the Khair Welfare Program by Idara Al-Khair has transformed lives across Pakistan. These are
-            real stories of hope, determination, and success.
-          </p>
+          <motion.h1
+            className="text-4xl md:text-5xl font-bold text-gray-900 mb-6"
+            animate={{ scale: [1, 1.03, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            Success Stories from Our{" "}
+            <span className="text-green-600">Community</span>
+          </motion.h1>
+          <motion.p
+            className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            Discover how the Khair Welfare Program by Idara Al-Khair has transformed lives across Pakistan. These are real stories of hope, determination, and success.
+          </motion.p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Button size="lg" className="bg-green-600 hover:bg-green-700" asChild>
               <Link href="/apply">
@@ -169,22 +181,22 @@ export default function SuccessStoriesPage() {
       <section className="py-16 px-4 bg-white">
         <div className="container mx-auto">
           <div className="grid md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-3xl font-bold text-green-600 mb-2">10,000+</div>
-              <p className="text-gray-600">Success Stories</p>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-blue-600 mb-2">PKR 50M+</div>
-              <p className="text-gray-600">Lives Transformed</p>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-purple-600 mb-2">95%</div>
-              <p className="text-gray-600">Success Rate</p>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-orange-600 mb-2">150+</div>
-              <p className="text-gray-600">Cities Covered</p>
-            </div>
+            {[
+              { value: "10,000+", label: "Success Stories", color: "text-green-600" },
+              { value: "PKR 50M+", label: "Lives Transformed", color: "text-blue-600" },
+              { value: "95%", label: "Success Rate", color: "text-purple-600" },
+              { value: "150+", label: "Cities Covered", color: "text-orange-600" },
+            ].map((stat, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+              >
+                <div className={`text-3xl font-bold mb-2 ${stat.color}`}>{stat.value}</div>
+                <p className="text-gray-600">{stat.label}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -200,44 +212,49 @@ export default function SuccessStoriesPage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {successStories.map((story) => (
-              <Card key={story.id} className="hover:shadow-lg transition-shadow overflow-hidden">
-                <div className="aspect-video overflow-hidden">
-                  <img
-                    src={story.image || "/placeholder.svg"}
-                    alt={`Success story of ${story.name}`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <CardHeader>
-                  <div className="flex items-center justify-between mb-2">
-                    <Badge className="bg-green-100 text-green-800">{story.program}</Badge>
-                    {story.verified && (
-                      <div className="flex items-center text-green-600">
-                        <CheckCircle className="h-4 w-4 mr-1" />
-                        <span className="text-xs">Verified</span>
+            {successStories.map((story, i) => (
+              <motion.div
+                key={story.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: i * 0.05 }}
+              >
+                <Card className="hover:shadow-xl transition-all overflow-hidden rounded-xl">
+                  <div className="aspect-video overflow-hidden">
+                    <img
+                      src={story.image}
+                      alt={`Success story of ${story.name}`}
+                      className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                  <CardHeader>
+                    <div className="flex items-center justify-between mb-2">
+                      <Badge className="bg-green-100 text-green-800">{story.program}</Badge>
+                      {story.verified && (
+                        <div className="flex items-center text-green-600">
+                          <CheckCircle className="h-4 w-4 mr-1" />
+                          <span className="text-xs">Verified</span>
+                        </div>
+                      )}
+                    </div>
+                    <CardTitle className="text-lg">{story.name}</CardTitle>
+                    <CardDescription>{story.location}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <div className="bg-blue-50 p-3 rounded-lg">
+                        <p className="text-sm font-medium text-blue-900">Assistance Provided:</p>
+                        <p className="text-sm text-blue-700">{story.amount}</p>
                       </div>
-                    )}
-                  </div>
-                  <CardTitle className="text-lg">{story.name}</CardTitle>
-                  <CardDescription className="flex items-center">
-                    <span>{story.location}</span>
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="bg-blue-50 p-3 rounded-lg">
-                      <p className="text-sm font-medium text-blue-900">Assistance Provided:</p>
-                      <p className="text-sm text-blue-700">{story.amount}</p>
+                      <div className="bg-green-50 p-3 rounded-lg">
+                        <p className="text-sm font-medium text-green-900">Outcome:</p>
+                        <p className="text-sm text-green-700">{story.outcome}</p>
+                      </div>
+                      <p className="text-sm text-gray-600 italic">"{story.story}"</p>
                     </div>
-                    <div className="bg-green-50 p-3 rounded-lg">
-                      <p className="text-sm font-medium text-green-900">Outcome:</p>
-                      <p className="text-sm text-green-700">{story.outcome}</p>
-                    </div>
-                    <p className="text-sm text-gray-600 italic">"{story.story}"</p>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -248,61 +265,58 @@ export default function SuccessStoriesPage() {
         <div className="container mx-auto">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Impact by Program</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <Card className="text-center">
-              <CardHeader>
-                <TrendingUp className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                <CardTitle>Business Development</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="text-2xl font-bold text-blue-600">3,500+</div>
-                  <p className="text-sm text-gray-600">Businesses Started</p>
-                  <div className="text-lg font-semibold">Average Growth: 200%</div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center">
-              <CardHeader>
-                <Heart className="h-12 w-12 text-red-600 mx-auto mb-4" />
-                <CardTitle>Healthcare Support</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="text-2xl font-bold text-red-600">2,800+</div>
-                  <p className="text-sm text-gray-600">Lives Saved</p>
-                  <div className="text-lg font-semibold">98% Recovery Rate</div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center">
-              <CardHeader>
-                <Users className="h-12 w-12 text-green-600 mx-auto mb-4" />
-                <CardTitle>Education Programs</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="text-2xl font-bold text-green-600">1,200+</div>
-                  <p className="text-sm text-gray-600">Degrees Completed</p>
-                  <div className="text-lg font-semibold">85% Job Placement</div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center">
-              <CardHeader>
-                <CheckCircle className="h-12 w-12 text-purple-600 mx-auto mb-4" />
-                <CardTitle>Skills Development</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="text-2xl font-bold text-purple-600">4,100+</div>
-                  <p className="text-sm text-gray-600">People Trained</p>
-                  <div className="text-lg font-semibold">92% Employment Rate</div>
-                </div>
-              </CardContent>
-            </Card>
+            {[
+              {
+                icon: <TrendingUp className="h-12 w-12 text-blue-600 mx-auto mb-4" />,
+                title: "Business Development",
+                value: "3,500+",
+                sub: "Businesses Started",
+                extra: "Average Growth: 200%",
+                color: "text-blue-600",
+              },
+              {
+                icon: <Heart className="h-12 w-12 text-red-600 mx-auto mb-4" />,
+                title: "Healthcare Support",
+                value: "2,800+",
+                sub: "Lives Saved",
+                extra: "98% Recovery Rate",
+                color: "text-red-600",
+              },
+              {
+                icon: <Users className="h-12 w-12 text-green-600 mx-auto mb-4" />,
+                title: "Education Programs",
+                value: "1,200+",
+                sub: "Degrees Completed",
+                extra: "85% Job Placement",
+                color: "text-green-600",
+              },
+              {
+                icon: <CheckCircle className="h-12 w-12 text-purple-600 mx-auto mb-4" />,
+                title: "Skills Development",
+                value: "4,100+",
+                sub: "People Trained",
+                extra: "92% Employment Rate",
+                color: "text-purple-600",
+              },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: i * 0.1 }}
+              >
+                <Card className="text-center hover:shadow-lg transition-shadow">
+                  <CardHeader>{item.icon}<CardTitle>{item.title}</CardTitle></CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <div className={`text-2xl font-bold ${item.color}`}>{item.value}</div>
+                      <p className="text-sm text-gray-600">{item.sub}</p>
+                      <div className="text-lg font-semibold">{item.extra}</div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>

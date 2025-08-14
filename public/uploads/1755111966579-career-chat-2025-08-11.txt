@@ -1,0 +1,7 @@
+ASSISTANT: Hello! I'm your AI Career Coach. I'm here to help you advance your career with personalized guidance, course recommendations, and professional roadmaps.
+
+How can I assist you today?
+
+USER: tf
+
+USER: hy
