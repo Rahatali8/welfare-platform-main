@@ -59,7 +59,7 @@ export function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-  <nav className="hidden md:flex items-center gap-10 font-semibold text-lg">
+        <nav className="hidden md:flex items-center gap-10 font-semibold text-lg">
           <Link href="/about" className="text-blue-900 hover:text-blue-600 transition-colors px-2 py-1 rounded-md hover:bg-blue-50">About</Link>
           <Link href="/success-stories" className="text-blue-900 hover:text-blue-600 transition-colors px-2 py-1 rounded-md hover:bg-blue-50">Success Stories</Link>
           <div className="relative">
@@ -84,29 +84,12 @@ export function Header() {
           {user && (
             <>
               <Link href="/apply" className="text-blue-900 hover:text-blue-600 transition-colors px-2 py-1 rounded-md hover:bg-blue-50">Apply</Link>
-              {/* Dashboard Dropdown */}
-              <div className="relative">
-                <button
-                  className="text-blue-900 hover:text-blue-600 transition-colors flex items-center gap-1 px-2 py-1 rounded-md hover:bg-blue-50"
-                  onClick={() => setDashboardOpen((prev) => !prev)}
-                  aria-expanded={dashboardOpen}
-                >
-                  Dashboard <ChevronDown className="w-4 h-4" />
-                </button>
-                {dashboardOpen && (
-                  <div ref={dashboardRef} className="absolute bg-white shadow-xl rounded-xl mt-2 w-56 z-50 border border-blue-100">
-                    <Link href="/dashboard/user" className="flex items-center gap-2 px-5 py-3 text-base text-blue-900 hover:bg-blue-50 rounded-t-xl">
-                      <User className="w-5 h-5 text-blue-500" /> User Dashboard
-                    </Link>
-                    <button onClick={() => handleDashboardClick("dashboard/donor")} className="flex items-center gap-2 w-full text-left px-5 py-3 text-base text-blue-900 hover:bg-blue-50">
-                      <HeartHandshake className="w-5 h-5 text-green-500" /> Donor Dashboard
-                    </button>
-                    <Link href="/dashboard/admin" className="flex items-center gap-2 px-5 py-3 text-base text-blue-900 hover:bg-blue-50 rounded-b-xl">
-                      <ShieldCheck className="w-5 h-5 text-blue-700" /> Admin Dashboard
-                    </Link>
-                  </div>
-                )}
-              </div>
+              <Link href="/dashboard/user" className="flex items-center gap-2 px-5 py-3 text-base text-blue-900 hover:bg-blue-50 rounded-t-xl">
+              User Dashboard
+              </Link>
+              <Link href="/donor/signup" className="flex items-center gap-2 px-5 py-3 text-base text-blue-900 hover:bg-blue-50 rounded-t-xl">
+              Donor Signup
+              </Link>
             </>
           )}
         </nav>
@@ -163,36 +146,22 @@ export function Header() {
             <Link href="/services" className="block text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Services</Link>
             <Link href="/success-stories" className="block text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Success Stories</Link>
             <Link href="/how-it-works" className="block text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>How It Works</Link>
-          {!user && (
-            <Link href="/stats-sec" className="text-gray-700 hover:text-blue-600 transition-colors">stats</Link>
-          )}
+            {!user && (
+              <Link href="/stats-sec" className="text-gray-700 hover:text-blue-600 transition-colors">stats</Link>
+            )}
 
             {user && !isAdminArea && (
               <>
                 <Link href="/apply" className="block text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Apply</Link>
 
 
-                <details className="border rounded-md">
-                  <summary className="px-4 py-2 text-gray-700 cursor-pointer">Dashboard</summary>
-                  <div className="pl-4 pb-2 flex flex-col space-y-1">
-                    <Link
-                      href="/dashboard/user"
-                      className="text-left text-sm text-gray-700 hover:text-blue-600"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      User Dashboard
-                    </Link>
-                    <button
-                      onClick={() => { handleDashboardClick("dashboard/donor"); setIsMenuOpen(false); }}
-                      className="text-left text-sm text-gray-700 hover:text-blue-600"
-                    >
-                      Donor Dashboard
-                    </button>
-                  </div>
-                  {/* ✅ Donor Signup in Mobile view */}
-                  {/* <Link href="/donor/signup" className="block text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Donor Signup</Link> */}
+                <Link href="/dashboard/user" className="flex items-center gap-2 px-5 py-3 text-base text-blue-900 hover:bg-blue-50 rounded-t-xl">
+                  <User className="w-5 h-5 text-blue-500" /> User Dashboard
+                </Link>
 
-                </details>
+                {/* ✅ Donor Signup in Mobile view */}
+                <Link href="/donor/signup" className="block text-gray-700 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Donor Signup</Link>
+
               </>
             )}
 
@@ -212,12 +181,12 @@ export function Header() {
                   </details>
                   {/* Signup Dropdown */}
                   <div className="relative group">
-              <Link href="/signup"><Button
-                  className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-semibold px-4 py-2 rounded-lg shadow-md flex items-center gap-1">
-                  Sign Up
-                </Button>
-                </Link>
-              </div>
+                    <Link href="/signup"><Button
+                      className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-semibold px-4 py-2 rounded-lg shadow-md flex items-center gap-1">
+                      Sign Up
+                    </Button>
+                    </Link>
+                  </div>
                 </>
               )}
             </div>
@@ -226,5 +195,5 @@ export function Header() {
       )}
     </header>
   );
-// ...existing code...
+  // ...existing code...
 }
