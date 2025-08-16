@@ -49,7 +49,7 @@ export default function AboutPage() {
     {
       icon: Target,
       title: "Impact",
-      description: "Focused on creating measurable, long-term positive impact in people's lives.",
+      description: "Focused on creating measurable, long-term positive impact in people's lives. positive impact in people's lives.",
     },
   ]
 
@@ -74,25 +74,25 @@ export default function AboutPage() {
     },
   ]
 
-  
+
 
   return (
     <div className="min-h-screen bg-white">
 
 
-<main className="relative min-h-[60vh] bg-background">
-      <ArcGalleryHero
-        images={images}
-        startAngle={20}
-        endAngle={160}
-        radiusLg={480}
-        radiusMd={360}
-        radiusSm={260}
-        cardSizeLg={120}
-        cardSizeMd={100}
-        cardSizeSm={80}
-      />
-    </main>
+      <main className="relative min-h-[60vh] bg-background">
+        <ArcGalleryHero
+          images={images}
+          startAngle={20}
+          endAngle={160}
+          radiusLg={480}
+          radiusMd={360}
+          radiusSm={260}
+          cardSizeLg={120}
+          cardSizeMd={100}
+          cardSizeSm={80}
+        />
+      </main>
 
 
       {/* Mission & Vision */}
@@ -100,7 +100,7 @@ export default function AboutPage() {
         <div className="container mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">Our Core Mission</h2>
+              <h2 className="mb-6 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">Our Core <span className="text-[#00A5E0]">Mission</span></h2>
               <p className="text-lg text-gray-600 mb-6 leading-relaxed">
                 To provide comprehensive welfare services that empower individuals and families to achieve
                 self-sufficiency, dignity, and prosperity. We believe in creating sustainable solutions that address
@@ -148,21 +148,22 @@ export default function AboutPage() {
       <section className="py-16 px-4 bg-gray-50 m-5">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Core Values</h2>
+            <h2 className="mb-6 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">Our Core <span className="text-[#00A5E0]">Values</span></h2>
             <p className="text-xl text-gray-600">The principles that guide everything we do</p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
             {values.map((value, index) => (
-              <Card key={index} className="text-center hover:shadow-lg transition-shadow border-0 shadow-md">
-                <CardHeader>
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <value.icon className="h-8 w-8 text-white" />
+              <Card key={index} className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
+                <CardHeader className="h-auto relative rounded-2xl bg-white/80 backdrop-blur-xl p-6 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+                  <div className="absolute -top-3 -right-3 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center shadow-sm">
+                    <value.icon className="h-8 w-8 text-[#00A5E0]" />
                   </div>
-                  <CardTitle className="text-gray-900">{value.title}</CardTitle>
+                  <CardTitle className="text-4xl font-extrabold tracking-tight text-blue-900 mb-1">{value.title}</CardTitle>
+                  <CardContent>
+                    <p className="text-gray-600 text-sm">{value.description}</p>
+                  </CardContent>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 text-sm">{value.description}</p>
-                </CardContent>
+
               </Card>
             ))}
           </div>
@@ -173,7 +174,7 @@ export default function AboutPage() {
       <section className="py-16 px-4">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Journey</h2>
+            <h2 className="mb-6 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">Our <span className="text-[#00A5E0]">Journey</span></h2>
             <p className="text-xl text-gray-600">Key milestones in our mission to serve humanity</p>
           </div>
           <div className="max-w-4xl mx-auto">
@@ -200,12 +201,12 @@ export default function AboutPage() {
       <section className="py-16 px-4 bg-gray-50 m-5">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-5xl font-bold text-gray-900 mb-4">Meet Our Team</h2>
+            <h2 className="mb-6 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">Meet  <span className="text-[#00A5E0]">Our Team</span></h2>
             <p className="text-xl text-gray-600">Dedicated professionals working to make a difference</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {team.map((member, index) => (
-              <Card key={index} className="text-center hover:shadow-lg transition-shadow border-0 shadow-md">
+              <Card key={index} className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
                 <CardHeader>
                   <img
                     src={member.image || "/placeholder.svg"}
@@ -228,7 +229,7 @@ export default function AboutPage() {
       <section className="py-16 px-4 m-5">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Impact in Numbers</h2>
+            <h2 className="mb-6 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">Our Impact in <span className="text-[#00A5E0]">Numbers</span></h2>
             <p className="text-xl text-gray-600">Measurable results of our commitment to social welfare</p>
           </div>
           <div className="grid md:grid-cols-4 gap-8 text-center">
@@ -255,7 +256,7 @@ export default function AboutPage() {
       {/* CTA */}
       <section className="py-16 px-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white">
         <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-4">Join Our Mission</h2>
+          <h2 className="mb-6 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">Join Our  <span className="text-[#00A5E0]">Mission</span></h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Whether you need assistance or want to help others, there's a place for you in our community.
           </p>
