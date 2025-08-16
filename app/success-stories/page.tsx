@@ -178,9 +178,9 @@ export default function SuccessStoriesPage() {
       </section>
 
       {/* Impact Stats */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-16 px-4 bg-gray-50 m-5">
         <div className="container mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 text-center">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               { value: "10,000+", label: "Success Stories", color: "text-green-600" },
               { value: "PKR 50M+", label: "Lives Transformed", color: "text-blue-600" },
@@ -192,9 +192,13 @@ export default function SuccessStoriesPage() {
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
+                viewport={{ once: true }}
+                className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow"
               >
-                <div className={`text-3xl font-bold mb-2 ${stat.color}`}>{stat.value}</div>
-                <p className="text-gray-600">{stat.label}</p>
+                <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-8 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+                  <div className={`text-3xl sm:text-4xl font-extrabold mb-2 ${stat.color}`}>{stat.value}</div>
+                  <p className="text-gray-600 font-medium">{stat.label}</p>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -218,8 +222,10 @@ export default function SuccessStoriesPage() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: i * 0.05 }}
+                viewport={{ once: true }}
+                className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow"
               >
-                <Card className="hover:shadow-xl transition-all overflow-hidden rounded-xl">
+                <Card className="relative rounded-2xl bg-white/80 backdrop-blur-xl overflow-hidden transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
                   <div className="aspect-video overflow-hidden">
                     <img
                       src={story.image}
@@ -260,14 +266,21 @@ export default function SuccessStoriesPage() {
         </div>
       </section>
 
+
       {/* Program Impact */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-16 px-4 bg-gray-50 m-5">
         <div className="container mx-auto">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Impact by Program</h2>
+          <div className="text-center mb-12">
+            <h2 className="mb-6 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">
+              Impact by <span className="text-[#00A5E0]">Program</span>
+            </h2>
+            <p className="text-xl text-gray-600">How our initiatives are transforming lives</p>
+          </div>
+
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
-                icon: <TrendingUp className="h-12 w-12 text-blue-600 mx-auto mb-4" />,
+                icon: <TrendingUp className="h-6 w-6 text-blue-600" />,
                 title: "Business Development",
                 value: "3,500+",
                 sub: "Businesses Started",
@@ -275,7 +288,7 @@ export default function SuccessStoriesPage() {
                 color: "text-blue-600",
               },
               {
-                icon: <Heart className="h-12 w-12 text-red-600 mx-auto mb-4" />,
+                icon: <Heart className="h-6 w-6 text-red-600" />,
                 title: "Healthcare Support",
                 value: "2,800+",
                 sub: "Lives Saved",
@@ -283,7 +296,7 @@ export default function SuccessStoriesPage() {
                 color: "text-red-600",
               },
               {
-                icon: <Users className="h-12 w-12 text-green-600 mx-auto mb-4" />,
+                icon: <Users className="h-6 w-6 text-green-600" />,
                 title: "Education Programs",
                 value: "1,200+",
                 sub: "Degrees Completed",
@@ -291,7 +304,7 @@ export default function SuccessStoriesPage() {
                 color: "text-green-600",
               },
               {
-                icon: <CheckCircle className="h-12 w-12 text-purple-600 mx-auto mb-4" />,
+                icon: <CheckCircle className="h-6 w-6 text-purple-600" />,
                 title: "Skills Development",
                 value: "4,100+",
                 sub: "People Trained",
@@ -304,22 +317,36 @@ export default function SuccessStoriesPage() {
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: i * 0.1 }}
+                viewport={{ once: true }}
+                className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow"
               >
-                <Card className="text-center hover:shadow-lg transition-shadow">
-                  <CardHeader>{item.icon}<CardTitle>{item.title}</CardTitle></CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      <div className={`text-2xl font-bold ${item.color}`}>{item.value}</div>
-                      <p className="text-sm text-gray-600">{item.sub}</p>
-                      <div className="text-lg font-semibold">{item.extra}</div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-8 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+
+                  {/* Floating Icon Box (same as achievements section) */}
+                  <div className="absolute -top-3 -right-3 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center shadow-sm">
+                    {item.icon}
+                  </div>
+
+                  {/* Content */}
+                  <h3 className="text-xl font-extrabold text-gray-900 mb-4">{item.title}</h3>
+                  <div className="space-y-2">
+                    <div className={`text-2xl font-bold ${item.color}`}>{item.value}</div>
+                    <p className="text-sm text-gray-600">{item.sub}</p>
+                    <div className="text-lg font-semibold text-gray-800">{item.extra}</div>
+                  </div>
+
+                  {/* Hover Shine Effect */}
+                  <div className="absolute inset-0 rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-tr from-transparent via-white/40 to-transparent animate-pulse [mask-image:linear-gradient(90deg,transparent,black,transparent)]"></div>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
+
+
 
       {/* Call to Action */}
       <section className="py-16 px-4 bg-gradient-to-r from-green-600 to-blue-600 text-white">

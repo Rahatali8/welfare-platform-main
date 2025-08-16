@@ -282,33 +282,52 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="py-16 px-4 m-5">
-        <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="mb-6 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">Our Impact in <span className="text-[#00A5E0]">Numbers</span></h2>
-            <p className="text-xl text-gray-600">Measurable results of our commitment to social welfare</p>
-          </div>
-          <div className="grid md:grid-cols-4 gap-8 text-center">
-            <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
-              <div className="text-4xl font-bold text-blue-600 mb-2">500+</div>
-              <p className="text-gray-600 font-medium">Families Helped By Us</p>
-            </div>
-            <div className="bg-white p-8 rounded-2xl shadow-lg">
-              <div className="text-4xl font-bold text-green-600 mb-2">PKR 500M+</div>
-              <p className="text-gray-600 font-medium">Total Assistance</p>
-            </div>
-            <div className="bg-white p-8 rounded-2xl shadow-lg">
-              <div className="text-4xl font-bold text-purple-600 mb-2">12</div>
-              <p className="text-gray-600 font-medium">Welfare Programs</p>
-            </div>
-            <div className="bg-white p-8 rounded-2xl shadow-lg">
-              <div className="text-4xl font-bold text-orange-600 mb-2">94%</div>
-              <p className="text-gray-600 font-medium">Success Rate</p>
-            </div>
-          </div>
+{/* Stats */}
+<section className="py-16 px-4 bg-gray-50 m-5">
+  <div className="container mx-auto">
+    <div className="text-center mb-12">
+      <h2 className="mb-6 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">
+        Our Impact in <span className="text-[#00A5E0]">Numbers</span>
+      </h2>
+      <p className="text-xl text-gray-600">Measurable results of our commitment to social welfare</p>
+    </div>
+
+    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+      {/* Families Helped */}
+      <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
+        <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-10 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+          <div className="text-4xl font-extrabold text-blue-600 mb-2">500+</div>
+          <p className="text-gray-600 font-medium">Families Helped By Us in all over Pakistan</p>
         </div>
-      </section>
+      </div>
+
+      {/* Total Assistance */}
+      <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
+        <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-8 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+          <div className="text-4xl font-extrabold text-green-600 mb-2">PKR 500M+</div>
+          <p className="text-gray-600 font-medium">Total Assistance</p>
+        </div>
+      </div>
+
+      {/* Welfare Programs */}
+      <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
+        <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-10 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+          <div className="text-4xl font-extrabold text-purple-600 mb-2">12</div>
+          <p className="text-gray-600 font-medium">Welfare Programs in all over Pakistan</p>
+        </div>
+      </div>
+
+      {/* Success Rate */}
+      <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
+        <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-10 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+          <div className="text-4xl font-extrabold text-orange-600 mb-2">94%</div>
+          <p className="text-gray-600 font-medium">Success Rate in all over Pakistan</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
       {/* CTA */}
       <CallToAction/>
