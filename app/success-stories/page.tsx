@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { CheckCircle, TrendingUp, Users, Heart, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
+import CallToAction from "@/components/CTA-section"
 
 const successStories = [
   {
@@ -322,28 +323,9 @@ export default function SuccessStoriesPage() {
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 px-4 bg-gradient-to-r from-green-600 to-blue-600 text-white">
-        <div className="container mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-6">Your Success Story Starts Here</h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Join thousands of individuals who have transformed their lives through our comprehensive welfare programs.
-            Your journey to success begins with a single step.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Button size="lg" className="bg-white text-green-600 hover:bg-gray-100" asChild>
-              <Link href="/apply">Apply Now</Link>
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-white text-white hover:bg-white hover:text-green-600 bg-transparent"
-              asChild
-            >
-              <Link href="/contact">Learn More</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      
+      <CallToAction />
+
     </div>
   )
 }
