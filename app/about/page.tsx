@@ -154,11 +154,11 @@ export default function AboutPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
             {values.map((value, index) => (
               <Card key={index} className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
-                <CardHeader className="h-auto relative rounded-2xl bg-white/80 backdrop-blur-xl p-6 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+                <CardHeader className=" relative rounded-2xl bg-white/80 backdrop-blur-xl p-6 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
                   <div className="absolute -top-3 -right-3 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center shadow-sm">
                     <value.icon className="h-8 w-8 text-[#00A5E0]" />
                   </div>
-                  <CardTitle className="text-4xl font-extrabold tracking-tight text-blue-900 mb-1">{value.title}</CardTitle>
+                  <CardTitle className="text-2xl font-extrabold tracking-tight text-blue-900 mb-1">{value.title}</CardTitle>
                   <CardContent>
                     <p className="text-gray-600 text-sm">{value.description}</p>
                   </CardContent>
@@ -207,18 +207,19 @@ export default function AboutPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {team.map((member, index) => (
               <Card key={index} className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
-                <CardHeader>
+                <CardHeader className="h-auto relative rounded-2xl bg-white/80 backdrop-blur-xl p-6 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
                   <img
                     src={member.image || "/placeholder.svg"}
                     alt={member.name}
                     className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
                   />
-                  <CardTitle className="text-gray-900">{member.name}</CardTitle>
+                  <CardTitle className="text-2xl font-extrabold tracking-tight text-blue-900 mb-1">{member.name}</CardTitle>
                   <CardDescription className="text-blue-600 font-medium">{member.role}</CardDescription>
+                  <CardContent>
+                    <p className="text-gray-600 text-sm">{member.description}</p>
+                  </CardContent>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 text-sm">{member.description}</p>
-                </CardContent>
+
               </Card>
             ))}
           </div>
@@ -233,7 +234,7 @@ export default function AboutPage() {
             <p className="text-xl text-gray-600">Measurable results of our commitment to social welfare</p>
           </div>
           <div className="grid md:grid-cols-4 gap-8 text-center">
-            <div className="bg-white p-8 rounded-2xl shadow-lg">
+            <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
               <div className="text-4xl font-bold text-blue-600 mb-2">500+</div>
               <p className="text-gray-600 font-medium">Families Helped By Us</p>
             </div>
