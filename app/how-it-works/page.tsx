@@ -1,6 +1,7 @@
+'use client'
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { FileText, Search, Users, CheckCircle, Clock, Shield, Phone, Mail, AlertCircle, Info } from "lucide-react"
+import { motion } from "framer-motion"
 import Link from "next/link"
 
 export default function HowItWorksPage() {
@@ -122,26 +123,61 @@ export default function HowItWorksPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-blue-50 to-white">
-        <div className="container mx-auto">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">Simple 4-Step Process</h1>
-            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-              Getting assistance has never been easier. Our streamlined process ensures quick, fair, and transparent
+            {/* Hero Section */}
+            <section
+              className="relative py-20 px-4 bg-cover bg-center bg-fixed"
+              style={{
+                backgroundImage:
+                  "url('https://png.pngtree.com/background/20210711/original/pngtree-caring-for-the-elderly-public-welfare-design-psd-layering-picture-image_1125477.jpg')",
+              }}
+            >
+              {/* Overlay for opacity */}
+              <div className="absolute inset-0 bg-black/40"></div>
+      
+              <div className="container mx-auto text-center relative z-10">
+                {/* Heading */}
+                <motion.h1
+                  className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-lg"
+                  animate={{ scale: [1, 1.03, 1] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <span className="text-[#1B0073]">Simple </span>{" "}
+                  <span className="text-[#00A5E0]">4-Step Process</span>
+                </motion.h1>
+      
+                {/* Subtext */}
+                <motion.p
+                  className="text-base xs:text-lg sm:text-xl mb-8 max-w-3xl mx-auto text-gray-100 opacity-90"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                >
+                    Getting assistance has never been easier. Our streamlined process ensures quick, fair, and transparent
               evaluation of every application.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700" asChild>
-                <Link href="/apply">Start Application</Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild>
-                <Link href="/services">View Services</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+                </motion.p>
+      
+                {/* Buttons */}
+                <div className="flex flex-col sm:flex-row justify-center gap-4">
+                  <Button
+                    size="lg"
+                    className="bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white"
+                    asChild
+                  >
+                    <Link href="/apply">Start Application</Link>
+                  </Button>
+      
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-2  text-[#1B0073] hover:bg-[#00A5E0] hover:text-white"
+                    asChild
+                  >
+                    <Link href="/services">View Services</Link>
+                  </Button>
+                </div>
+              </div>
+            </section>
+
 
       {/* Process Steps */}
       <section className="py-20 px-4">

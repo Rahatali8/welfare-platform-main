@@ -23,10 +23,10 @@ const statusColors: Record<string, string> = {
 };
 
 export default function DashboardAnalytics() {
-  const [dailyRequests, setDailyRequests] = useState<{date: string, count: number}[]>([]);
+  const [dailyRequests, setDailyRequests] = useState<{ date: string, count: number }[]>([]);
   const [dailyByType, setDailyByType] = useState<any[]>([]);
   const [requestTypes, setRequestTypes] = useState<string[]>([]);
-  const [signupsDaily, setSignupsDaily] = useState<{date: string, count: number}[]>([]);
+  const [signupsDaily, setSignupsDaily] = useState<{ date: string, count: number }[]>([]);
   useEffect(() => {
     async function fetchDaily() {
       const res = await fetch('/api/stats/requests-daily');
@@ -87,185 +87,184 @@ export default function DashboardAnalytics() {
   return (
     <>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
-      {/* Hero Banner Section */}
-      <section className="relative overflow-hidden rounded-b-3xl shadow-xl mb-10">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-900 via-blue-700 to-cyan-600 opacity-80 z-0" />
-        <div className="relative z-10 max-w-7xl mx-auto px-6 py-16 flex flex-col md:flex-row items-center gap-10">
-          <div className="flex-1 text-white space-y-6">
-            <h1 className="text-4xl md:text-5xl font-extrabold leading-tight drop-shadow-lg">
-              <span className="bg-gradient-to-r from-yellow-300 via-white to-blue-200 bg-clip-text text-transparent">Live Welfare Platform</span>
-              <br />
-              <span className="text-white">Stats & Analytics Dashboard</span>
-            </h1>
-            <p className="text-lg md:text-2xl font-medium opacity-90 max-w-2xl">
-              Get real-time insights into all welfare requests, user signups, and platform activity. Visualize trends, monitor impact, and make data-driven decisions for a better tomorrow.
-            </p>
-            <div className="flex gap-4 mt-4">
-              <span className="inline-block bg-white/20 px-4 py-2 rounded-full text-base font-semibold shadow text-white border border-white/30">Auto-updating Live Data</span>
-              <span className="inline-block bg-white/20 px-4 py-2 rounded-full text-base font-semibold shadow text-white border border-white/30">VIP Analytics</span>
+        {/* Hero Banner Section */}
+        <section className="relative overflow-hidden rounded-b-3xl shadow-xl mb-10">
+          <div className="absolute inset-0 bg-white" />
+          <div className="relative z-10 max-w-7xl mx-auto px-6 py-16 flex flex-col md:flex-row items-center gap-10">
+            <div className="flex-1 text-white space-y-6">
+              <h1 className="text-4xl md:text-5xl font-extrabold leading-tight drop-shadow-lg">
+                <span className="text-[#1B0073]">Live </span>{" "}
+                <span className="text-[#00A5E0]">Welfare Programs</span>
+                <br />
+              </h1>
+              <span className="text-[#1B0073] font-bold text-4xl">Stats & Analytics Dashboard</span>
+              <p className="text-gray-600">
+                Get real-time insights into all welfare requests, user signups, and platform activity. Visualize trends, monitor impact, and make data-driven decisions for a better tomorrow.
+              </p>
+              <div className="flex gap-4 mt-4">
+                <span className="inline-block bg-white/20 px-4 py-2 rounded-lg text-base font-semibold shadow bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white">Auto-updating Live Data</span>
+                <span className="inline-block bg-white/20 px-4 py-2 rounded-lg text-base font-semibold shadow border-2  text-[#1B0073] hover:bg-[#00A5E0] hover:text-white">VIP Analytics</span>
+              </div>
+            </div>
+            <div className="flex-1 flex justify-center items-center">
+              <img src="/welfare-work.png" alt="Welfare Analytics" className="w-[340px] h-[340px] object-cover rounded-3xl shadow-2xl border-4 border-white/30 bg-white/10" />
             </div>
           </div>
-          <div className="flex-1 flex justify-center items-center">
-            <img src="/welfare-work.png" alt="Welfare Analytics" className="w-[340px] h-[340px] object-cover rounded-3xl shadow-2xl border-4 border-white/30 bg-white/10" />
+          <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 w-[120vw] h-40 bg-gradient-to-t from-blue-100/60 to-transparent rounded-b-3xl z-0" />
+        </section>
+
+        {/* Intro Section */}
+        <section className="max-w-4xl mx-auto px-4 mb-10">
+          <div className="bg-white/80 rounded-2xl shadow p-6 text-center">
+            <h2 className="text-2xl font-bold text-blue-900 mb-2">Welcome to the Welfare Platform Analytics</h2>
+            <p className="text-gray-700 text-lg mb-2">Track every request, every user, and every impact—live and in detail. Our dashboard empowers you to see the real difference your organization is making, with beautiful charts and up-to-the-minute data.</p>
+            <p className="text-blue-700 font-semibold">All stats update automatically. No refresh needed!</p>
+          </div>
+        </section>
+        {/* Key Metrics Section */}
+        <section className="max-w-7xl mx-auto px-4 mb-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[{
+              label: 'Total Requests',
+              value: totalRequests.toLocaleString?.() ?? totalRequests,
+            }, {
+              label: 'Approved',
+              value: approvedCount.toLocaleString?.() ?? approvedCount,
+            }, {
+              label: 'Pending',
+              value: pendingCount.toLocaleString?.() ?? pendingCount,
+            }, {
+              label: 'Total Signups',
+              value: totalSignups.toLocaleString?.() ?? totalSignups,
+            }].map((m, idx) => (
+              <div key={idx} className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/50 via-blue-500/40 to-indigo-600/50 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
+                <div className="rounded-2xl bg-white/80 backdrop-blur-xl p-5">
+                  <div className="text-xs uppercase tracking-wide text-blue-700/80 mb-1">{m.label}</div>
+                  <div className="text-3xl font-extrabold text-blue-900">{m.value}</div>
+                  <div className="mt-3 h-[3px] w-0 bg-gradient-to-r from-blue-600 to-cyan-500 group-hover:w-full transition-all duration-700"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Chart Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 max-w-7xl mx-auto px-4">
+          {/* Day-wise Request Type Distribution (Stacked Bar) */}
+          <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/40 via-blue-500/30 to-indigo-600/40 shadow hover:shadow-lg transition-shadow">
+            <div className="rounded-2xl bg-white/80 backdrop-blur p-4">
+              <h2 className="text-lg font-semibold mb-4 text-center text-blue-900">Request Type Distribution (Day-wise)</h2>
+              <DayResponsiveContainer width="100%" height={250}>
+                <DayBarChart data={dailyByType.map(row => {
+                  // flatten types array to keys
+                  const out: any = { date: row.date };
+                  row.types.forEach((t: any) => { out[t.type] = t.count });
+                  return out;
+                })}>
+                  <DayXAxis dataKey="date" tick={{ fontSize: 12 }} />
+                  <DayYAxis allowDecimals={false} />
+                  <DayTooltip />
+                  <DayLegend />
+                  {requestTypes.map((type, idx) => (
+                    <DayBar key={type} dataKey={type} stackId="a" fill={COLORS[idx % COLORS.length]} />
+                  ))}
+                </DayBarChart>
+              </DayResponsiveContainer>
+            </div>
+          </div>
+          {/* Day-wise Requests Bar Chart */}
+          <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/40 via-blue-500/30 to-indigo-600/40 shadow hover:shadow-lg transition-shadow">
+            <div className="rounded-2xl bg-white/80 backdrop-blur p-4">
+              <h2 className="text-lg font-semibold mb-4 text-center text-blue-900">Requests per Day (Last 14 Days)</h2>
+              <DayResponsiveContainer width="100%" height={250}>
+                <DayBarChart data={dailyRequests}>
+                  <DayXAxis dataKey="date" tick={{ fontSize: 12 }} />
+                  <DayYAxis allowDecimals={false} />
+                  <DayTooltip />
+                  <DayBar dataKey="count" fill="#38bdf8" radius={[10, 10, 0, 0]} />
+                </DayBarChart>
+              </DayResponsiveContainer>
+            </div>
+          </div>
+          {/* Day-wise User Signups Line Chart */}
+          <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/40 via-blue-500/30 to-indigo-600/40 shadow hover:shadow-lg transition-shadow">
+            <div className="rounded-2xl bg-white/80 backdrop-blur p-4">
+              <h2 className="text-lg font-semibold mb-4 text-center text-blue-900">User Signups per Day</h2>
+              <DayResponsiveContainer width="100%" height={250}>
+                <SignupLineChart data={signupsDaily}>
+                  <DayXAxis dataKey="date" tick={{ fontSize: 12 }} />
+                  <DayYAxis allowDecimals={false} />
+                  <DayTooltip />
+                  <DayLegend />
+                  <SignupLine type="monotone" dataKey="count" stroke="#06b6d4" strokeWidth={3} dot={{ r: 5 }} />
+                </SignupLineChart>
+              </DayResponsiveContainer>
+            </div>
           </div>
         </div>
-        <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 w-[120vw] h-40 bg-gradient-to-t from-blue-100/60 to-transparent rounded-b-3xl z-0" />
-      </section>
 
-      {/* Intro Section */}
-      <section className="max-w-4xl mx-auto px-4 mb-10">
-        <div className="bg-white/80 rounded-2xl shadow p-6 text-center">
-          <h2 className="text-2xl font-bold text-blue-900 mb-2">Welcome to the Welfare Platform Analytics</h2>
-          <p className="text-gray-700 text-lg mb-2">Track every request, every user, and every impact—live and in detail. Our dashboard empowers you to see the real difference your organization is making, with beautiful charts and up-to-the-minute data.</p>
-          <p className="text-blue-700 font-semibold">All stats update automatically. No refresh needed!</p>
-        </div>
-      </section>
-  {/* Key Metrics Section */}
-  <section className="max-w-7xl mx-auto px-4 mb-10">
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-      {[{
-        label: 'Total Requests',
-        value: totalRequests.toLocaleString?.() ?? totalRequests,
-      },{
-        label: 'Approved',
-        value: approvedCount.toLocaleString?.() ?? approvedCount,
-      },{
-        label: 'Pending',
-        value: pendingCount.toLocaleString?.() ?? pendingCount,
-      },{
-        label: 'Total Signups',
-        value: totalSignups.toLocaleString?.() ?? totalSignups,
-      }].map((m, idx) => (
-        <div key={idx} className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/50 via-blue-500/40 to-indigo-600/50 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
-          <div className="rounded-2xl bg-white/80 backdrop-blur-xl p-5">
-            <div className="text-xs uppercase tracking-wide text-blue-700/80 mb-1">{m.label}</div>
-            <div className="text-3xl font-extrabold text-blue-900">{m.value}</div>
-            <div className="mt-3 h-[3px] w-0 bg-gradient-to-r from-blue-600 to-cyan-500 group-hover:w-full transition-all duration-700"></div>
+        {/* Filter & Request Cards Section */}
+        <div className="bg-white/60 backdrop-blur-xl shadow-xl rounded-2xl p-8 max-w-7xl mx-auto mt-10">
+          <div className="flex flex-wrap gap-2 justify-center mb-6">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                className={`px-4 py-2 rounded-full transition shadow-sm hover:shadow ${selectedCategory === cat
+                    ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white'
+                    : 'bg-white/80 text-blue-900 border border-blue-100'
+                  }`}
+                onClick={() => setSelectedCategory(cat)}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
-        </div>
-      ))}
-    </div>
-  </section>
 
-  {/* Chart Section */}
-  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 max-w-7xl mx-auto px-4">
-    {/* Day-wise Request Type Distribution (Stacked Bar) */}
-    <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/40 via-blue-500/30 to-indigo-600/40 shadow hover:shadow-lg transition-shadow">
-      <div className="rounded-2xl bg-white/80 backdrop-blur p-4">
-        <h2 className="text-lg font-semibold mb-4 text-center text-blue-900">Request Type Distribution (Day-wise)</h2>
-        <DayResponsiveContainer width="100%" height={250}>
-        <DayBarChart data={dailyByType.map(row => {
-          // flatten types array to keys
-          const out: any = { date: row.date };
-          row.types.forEach((t: any) => { out[t.type] = t.count });
-          return out;
-        })}>
-          <DayXAxis dataKey="date" tick={{fontSize: 12}}/>
-          <DayYAxis allowDecimals={false} />
-          <DayTooltip />
-          <DayLegend />
-          {requestTypes.map((type, idx) => (
-            <DayBar key={type} dataKey={type} stackId="a" fill={COLORS[idx % COLORS.length]} />
-          ))}
-        </DayBarChart>
-        </DayResponsiveContainer>
-      </div>
-    </div>
-    {/* Day-wise Requests Bar Chart */}
-    <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/40 via-blue-500/30 to-indigo-600/40 shadow hover:shadow-lg transition-shadow">
-      <div className="rounded-2xl bg-white/80 backdrop-blur p-4">
-        <h2 className="text-lg font-semibold mb-4 text-center text-blue-900">Requests per Day (Last 14 Days)</h2>
-        <DayResponsiveContainer width="100%" height={250}>
-        <DayBarChart data={dailyRequests}>
-          <DayXAxis dataKey="date" tick={{fontSize: 12}}/>
-          <DayYAxis allowDecimals={false} />
-          <DayTooltip />
-          <DayBar dataKey="count" fill="#38bdf8" radius={[10, 10, 0, 0]} />
-        </DayBarChart>
-        </DayResponsiveContainer>
-      </div>
-    </div>
-    {/* Day-wise User Signups Line Chart */}
-    <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/40 via-blue-500/30 to-indigo-600/40 shadow hover:shadow-lg transition-shadow">
-      <div className="rounded-2xl bg-white/80 backdrop-blur p-4">
-        <h2 className="text-lg font-semibold mb-4 text-center text-blue-900">User Signups per Day</h2>
-        <DayResponsiveContainer width="100%" height={250}>
-        <SignupLineChart data={signupsDaily}>
-          <DayXAxis dataKey="date" tick={{fontSize: 12}}/>
-          <DayYAxis allowDecimals={false} />
-          <DayTooltip />
-          <DayLegend />
-          <SignupLine type="monotone" dataKey="count" stroke="#06b6d4" strokeWidth={3} dot={{ r: 5 }} />
-        </SignupLineChart>
-        </DayResponsiveContainer>
-      </div>
-    </div>
-      </div>
-
-  {/* Filter & Request Cards Section */}
-  <div className="bg-white/60 backdrop-blur-xl shadow-xl rounded-2xl p-8 max-w-7xl mx-auto mt-10">
-        <div className="flex flex-wrap gap-2 justify-center mb-6">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              className={`px-4 py-2 rounded-full transition shadow-sm hover:shadow ${
-                selectedCategory === cat
-                  ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white'
-                  : 'bg-white/80 text-blue-900 border border-blue-100'
-              }`}
-              onClick={() => setSelectedCategory(cat)}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-  <h3 className="text-2xl font-bold mb-6 text-center text-blue-900 tracking-wide drop-shadow">{selectedCategory} Requests</h3>
-        {filteredRequests.length === 0 ? (
-          <p className="text-center text-gray-500">No requests found for this category.</p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-            {filteredRequests.map((req: any, index: number) => {
-              const genderImg = req.gender === 'female' ? '/user-female.jpg' : '/user-male.png';
-              return (
-                <div key={index} className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/50 via-blue-500/40 to-indigo-600/50 shadow hover:shadow-lg transition-shadow">
-                  <div className="flex items-center gap-5 rounded-2xl bg-white/80 backdrop-blur-xl p-6">
-                    <div className="relative">
-                      <img
-                        src={genderImg}
-                        className="w-16 h-16 rounded-full object-cover ring-4 ring-blue-200/80 group-hover:scale-105 transition-transform bg-white"
-                        alt={req.full_name || 'User'}
-                      />
-                      <div className="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_0_4px_rgba(34,211,238,0.25)] opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-lg font-extrabold text-blue-900 truncate flex items-center gap-2">
-                        <Users className="inline w-5 h-5 text-blue-400" /> {req.full_name}
-                      </h4>
-                      <div className="flex flex-wrap gap-2 text-xs text-gray-500 mt-1 mb-1">
-                        <span className="flex items-center gap-1"><MapPin className="w-4 h-4" />{req.user?.city || 'No city'}</span>
-                        <span className="flex items-center gap-1"><Phone className="w-4 h-4" />{req.user?.phone || 'No phone'}</span>
-                        {req.material && <span className="flex items-center gap-1"><BookOpen className="w-4 h-4" />{req.material}</span>}
+          <h3 className="text-2xl font-bold mb-6 text-center text-blue-900 tracking-wide drop-shadow">{selectedCategory} Requests</h3>
+          {filteredRequests.length === 0 ? (
+            <p className="text-center text-gray-500">No requests found for this category.</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+              {filteredRequests.map((req: any, index: number) => {
+                const genderImg = req.gender === 'female' ? '/user-female.jpg' : '/user-male.png';
+                return (
+                  <div key={index} className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/50 via-blue-500/40 to-indigo-600/50 shadow hover:shadow-lg transition-shadow">
+                    <div className="flex items-center gap-5 rounded-2xl bg-white/80 backdrop-blur-xl p-6">
+                      <div className="relative">
+                        <img
+                          src={genderImg}
+                          className="w-16 h-16 rounded-full object-cover ring-4 ring-blue-200/80 group-hover:scale-105 transition-transform bg-white"
+                          alt={req.full_name || 'User'}
+                        />
+                        <div className="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_0_4px_rgba(34,211,238,0.25)] opacity-0 group-hover:opacity-100 transition-opacity"></div>
                       </div>
-                      <p className="text-sm text-gray-600 truncate">
-                        {req.user?.address || 'No address'} <span className="font-semibold text-blue-700">– PKR {req.monthly_income?.toLocaleString?.() ?? req.monthly_income}</span>
-                      </p>
-                      <span
-                        className={`inline-block mt-2 text-xs px-3 py-1 rounded-full font-semibold shadow ${
-                          statusColors[req.status?.toLowerCase?.() || 'pending']
-                        }`}
-                      >
-                        {req.status}
-                      </span>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-lg font-extrabold text-blue-900 truncate flex items-center gap-2">
+                          <Users className="inline w-5 h-5 text-blue-400" /> {req.full_name}
+                        </h4>
+                        <div className="flex flex-wrap gap-2 text-xs text-gray-500 mt-1 mb-1">
+                          <span className="flex items-center gap-1"><MapPin className="w-4 h-4" />{req.user?.city || 'No city'}</span>
+                          <span className="flex items-center gap-1"><Phone className="w-4 h-4" />{req.user?.phone || 'No phone'}</span>
+                          {req.material && <span className="flex items-center gap-1"><BookOpen className="w-4 h-4" />{req.material}</span>}
+                        </div>
+                        <p className="text-sm text-gray-600 truncate">
+                          {req.user?.address || 'No address'} <span className="font-semibold text-blue-700">– PKR {req.monthly_income?.toLocaleString?.() ?? req.monthly_income}</span>
+                        </p>
+                        <span
+                          className={`inline-block mt-2 text-xs px-3 py-1 rounded-full font-semibold shadow ${statusColors[req.status?.toLowerCase?.() || 'pending']
+                            }`}
+                        >
+                          {req.status}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
       {/* Platform Highlights Cards Section */}
       <div className="max-w-7xl mx-auto px-4 mt-16 mb-10">
         <div className="relative mb-8">

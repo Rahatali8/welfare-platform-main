@@ -20,6 +20,7 @@ import {
   CheckCircle,
 } from "lucide-react"
 import Link from "next/link"
+import { motion } from "framer-motion"
 import CallToAction from "@/components/CTA-section"
 
 export default function ServicesPage() {
@@ -238,26 +239,62 @@ export default function ServicesPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative py-14 px-2 sm:py-20 sm:px-4 bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-500 text-white overflow-hidden">
-        <div className="absolute inset-0 opacity-10 bg-[url('/pattern.svg')] bg-repeat"></div>
-        <div className="container mx-auto relative z-10 text-center">
-          <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4 sm:mb-6 drop-shadow-lg animate-fadeInUp">
-            Comprehensive Welfare Programs
-          </h1>
-          <p className="text-base xs:text-lg sm:text-xl mb-6 sm:mb-8 max-w-3xl mx-auto opacity-90">
-            From emergency assistance to long-term empowerment, our 12 specialized programs address every aspect of
-            community welfare and individual development.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full max-w-md mx-auto">
-            <Button size="lg" className="w-full sm:w-auto bg-white text-blue-600 hover:bg-gray-100 rounded-lg shadow-lg" asChild>
+      <section
+        className="relative py-20 px-4 bg-cover bg-center bg-fixed"
+        style={{
+          backgroundImage:
+            "url('https://png.pngtree.com/background/20210711/original/pngtree-caring-for-the-elderly-public-welfare-design-psd-layering-picture-image_1125477.jpg')",
+        }}
+      >
+        {/* Overlay for opacity */}
+        <div className="absolute inset-0 bg-black/40"></div>
+
+        <div className="container mx-auto text-center relative z-10">
+          {/* Heading */}
+          <motion.h1
+            className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-lg"
+            animate={{ scale: [1, 1.03, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <span className="text-[#1B0073]">Comprehensive</span>{" "}
+            <span className="text-[#00A5E0]">Welfare Programs</span>
+          </motion.h1>
+
+          {/* Subtext */}
+          <motion.p
+            className="text-base xs:text-lg sm:text-xl mb-8 max-w-3xl mx-auto text-gray-100 opacity-90"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            From emergency assistance to long-term empowerment, our 12 specialized
+            programs address every aspect of community welfare and individual
+            development.
+          </motion.p>
+
+          {/* Buttons */}
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Button
+              size="lg"
+              className="bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white"
+              asChild
+            >
               <Link href="/signup">Apply for Assistance</Link>
             </Button>
-            <Button size="lg" variant="outline" className="w-full sm:w-auto rounded-lg border-white text-white hover:text-white hover:bg-transparent bg-transparent" asChild>
+
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-2  text-[#1B0073] hover:bg-[#00A5E0] hover:text-white"
+              asChild
+            >
               <Link href="/how-it-works">How It Works</Link>
             </Button>
           </div>
         </div>
       </section>
+
+
 
       {/* Services Grid */}
       <section className="py-10 px-2 sm:py-16 sm:px-4">

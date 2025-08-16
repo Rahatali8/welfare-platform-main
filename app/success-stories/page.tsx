@@ -147,36 +147,66 @@ export default function SuccessStoriesPage() {
   return (
     <div className="bg-white">
       {/* Hero Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-green-50 to-blue-50">
-        <div className="container mx-auto text-center">
+      <section
+        className="relative py-20 px-4 bg-cover bg-center bg-fixed"
+        style={{
+          backgroundImage:
+            "url('https://png.pngtree.com/background/20210711/original/pngtree-caring-for-the-elderly-public-welfare-design-psd-layering-picture-image_1125477.jpg')",
+        }}
+      >
+        {/* Overlay for opacity */}
+        <div className="absolute inset-0 bg-black/40"></div>
+
+        <div className="container mx-auto text-center relative z-10">
           <motion.h1
-            className="text-4xl md:text-5xl font-bold text-gray-900 mb-6"
+            className="text-4xl md:text-5xl font-bold mb-6"
             animate={{ scale: [1, 1.03, 1] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           >
-            Success Stories from Our{" "}
-            <span className="text-green-600">Community</span>
+            
+            <span className="text-[#1B0073]">Success Stories from </span>
+            <span className="text-[#00A5E0]">Our Community</span>
           </motion.h1>
+
           <motion.p
-            className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto"
+            className="text-xl text-gray-100 mb-8 max-w-3xl mx-auto"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            Discover how the Khair Welfare Program by Idara Al-Khair has transformed lives across Pakistan. These are real stories of hope, determination, and success.
+            Discover how the Khair Welfare Program by Idara Al-Khair has transformed
+            lives across Pakistan. These are real stories of hope, determination, and
+            success.
           </motion.p>
+
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Button size="lg" className="bg-green-600 hover:bg-green-700" asChild>
+            {/* Gradient Button */}
+            <Button
+              size="lg"
+              className="bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white"
+              asChild
+            >
               <Link href="/apply">
                 Start Your Journey <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" asChild>
+
+            {/* Outline Gradient Button */}
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-2  text-[#1B0073] hover:bg-[#00A5E0] hover:text-white"
+              asChild
+            >
               <Link href="/dashboard-preview">View Dashboard</Link>
             </Button>
           </div>
         </div>
       </section>
+
+
+
+
 
       {/* Impact Stats */}
       <section className="py-16 px-4 bg-gray-50 m-5">
@@ -350,7 +380,7 @@ export default function SuccessStoriesPage() {
 
 
       {/* Call to Action */}
-      
+
       <CallToAction />
 
     </div>
