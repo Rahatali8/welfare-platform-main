@@ -167,12 +167,12 @@ export default function SuccessStoriesPage() {
           </motion.p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Button size="lg" className="bg-green-600 hover:bg-green-700" asChild>
-              <Link href="/apply">
+              <Link href="/signup">
                 Start Your Journey <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <Link href="/dashboard-preview">View Dashboard</Link>
+              <Link href="/stats-sec">View Dashboard</Link>
             </Button>
           </div>
         </div>
@@ -347,10 +347,7 @@ export default function SuccessStoriesPage() {
         </div>
       </section>
 
-
-
       {/* Call to Action */}
-      
       <CallToAction />
 
     </div>
