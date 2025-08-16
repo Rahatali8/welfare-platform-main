@@ -115,23 +115,25 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-white">
 
-      <CompleteHeroSection />
+      <div className="px-0 xs:px-2 sm:px-4 pt-2 sm:pt-6">
+        <CompleteHeroSection />
+      </div>
 
       {/* Why Choose Us */}
-      <section className="relative py-24 bg-gradient-to-b from-[#F8FAFF] via-white to-[#F5F7FF] overflow-hidden">
+      <section className="relative py-10 px-2 sm:py-16 sm:px-4 bg-gradient-to-b from-[#F8FAFF] via-white to-[#F5F7FF] overflow-hidden">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-gradient-to-br from-blue-500/10 to-cyan-500/10 blur-3xl"></div>
-          <div className="absolute -bottom-28 -right-40 w-[28rem] h-[28rem] rounded-full bg-gradient-to-tr from-indigo-600/10 to-blue-500/10 blur-3xl"></div>
+          <div className="absolute -top-24 -left-24 w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-gradient-to-br from-blue-500/10 to-cyan-500/10 blur-3xl"></div>
+          <div className="absolute -bottom-28 -right-20 w-72 h-72 sm:w-[28rem] sm:h-[28rem] rounded-full bg-gradient-to-tr from-indigo-600/10 to-blue-500/10 blur-3xl"></div>
         </div>
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
-          <div className="relative mb-8">
-            <div className="flex items-center justify-center">
+        <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 relative">
+          <div className="relative mb-6 sm:mb-8">
+            <div className="flex flex-col lg:flex-row items-center justify-center">
               <div className="hidden lg:block flex-1 mr-8">
                 <div className="h-0.5 bg-gradient-to-l from-blue-600 via-cyan-500 to-transparent"></div>
               </div>
-              <div className="text-center px-8">
-                <h2 className="text-5xl md:text-5xl font-bold mb-3 text-[#1B0073]">Trusted Excellence <span className="text-[#00A5E0]">in Welfare</span></h2>
-                <p className="text-lg text-[#5F5F5F] max-w-3xl mx-auto">
+              <div className="text-center px-2 sm:px-8">
+                <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-3 text-[#1B0073]">Trusted Excellence <span className="text-[#00A5E0]">in Welfare</span></h2>
+                <p className="text-base sm:text-lg text-[#5F5F5F] max-w-2xl sm:max-w-3xl mx-auto">
                   Together, we can create lasting change in the lives of those who need it most. Your support makes a real
                   difference in our community.
                 </p>
@@ -142,19 +144,18 @@ export default function HomePage() {
             </div>
           </div>
 
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-10 sm:mb-16">
             {achievements.map((achievement, index) => (
               <div
                 key={index}
                 className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow"
               >
-                <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-6 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
-                  <div className="absolute -top-3 -right-3 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center shadow-sm">
-                    <achievement.icon className="h-6 w-6 text-blue-600" />
+                <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-4 sm:p-6 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+                  <div className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center shadow-sm">
+                    <achievement.icon className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
                   </div>
-                  <div className="text-4xl font-extrabold tracking-tight text-blue-900 mb-1">{achievement.number}</div>
-                  <div className="text-sm font-medium text-gray-600">{achievement.label}</div>
+                  <div className="text-2xl sm:text-4xl font-extrabold tracking-tight text-blue-900 mb-1">{achievement.number}</div>
+                  <div className="text-xs sm:text-sm font-medium text-gray-600">{achievement.label}</div>
                   <div className="absolute inset-0 rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
                     <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-tr from-transparent via-white/40 to-transparent animate-pulse [mask-image:linear-gradient(90deg,transparent,black,transparent)]"></div>
                   </div>

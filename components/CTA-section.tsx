@@ -82,7 +82,7 @@ export default function CallToAction() {
               transition={{ duration: 0.2 }}
             >
               <Link
-                href="/volunteers"
+                href="/donor/signup"
                 className="inline-flex items-center bg-blue-600 text-white hover:bg-blue-600/90 px-6 py-2 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-xl text-sm group"
               >
                 Get Involved

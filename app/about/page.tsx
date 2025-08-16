@@ -83,50 +83,50 @@ export default function AboutPage() {
     <div className="min-h-screen bg-white">
 
 
-      <main className="relative min-h-[60vh] bg-background">
+      <main className="relative min-h-[40vh] sm:min-h-[50vh] bg-background px-0 xs:px-2 sm:px-4 pt-4 sm:pt-8">
         <ArcGalleryHero
           images={images}
           startAngle={20}
           endAngle={160}
           radiusLg={480}
-          radiusMd={360}
-          radiusSm={260}
+          radiusMd={320}
+          radiusSm={180}
           cardSizeLg={120}
-          cardSizeMd={100}
-          cardSizeSm={80}
+          cardSizeMd={90}
+          cardSizeSm={60}
         />
       </main>
 
 
       {/* Mission & Vision */}
-      <section className="py-16 px-4 m-5">
+      <section className="py-10 px-2 sm:py-16 sm:px-4 m-2 sm:m-5">
         <div className="container mx-auto">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
             <div>
-              <h2 className="mb-6 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">Our Core <span className="text-[#00A5E0]">Mission</span></h2>
-              <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+              <h2 className="mb-4 sm:mb-6 text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">Our Core <span className="text-[#00A5E0]">Mission</span></h2>
+              <p className="text-base sm:text-lg text-gray-600 mb-4 sm:mb-6 leading-relaxed">
                 To provide comprehensive welfare services that empower individuals and families to achieve
                 self-sufficiency, dignity, and prosperity. We believe in creating sustainable solutions that address
                 root causes of poverty and social challenges.
               </p>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+              <div className="space-y-3 sm:space-y-4">
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 bg-blue-100 rounded-full flex items-center justify-center">
                     <Target className="h-4 w-4 text-blue-600" />
                   </div>
-                  <span className="text-gray-700">Holistic approach to welfare</span>
+                  <span className="text-gray-700 text-sm sm:text-base">Holistic approach to welfare</span>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 bg-green-100 rounded-full flex items-center justify-center">
                     <Users className="h-4 w-4 text-green-600" />
                   </div>
-                  <span className="text-gray-700">Community-centered solutions</span>
+                  <span className="text-gray-700 text-sm sm:text-base">Community-centered solutions</span>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 bg-purple-100 rounded-full flex items-center justify-center">
                     <TrendingUp className="h-4 w-4 text-purple-600" />
                   </div>
-                  <span className="text-gray-700">Sustainable development focus</span>
+                  <span className="text-gray-700 text-sm sm:text-base">Sustainable development focus</span>
                 </div>
               </div>
             </div>
@@ -134,12 +134,12 @@ export default function AboutPage() {
               <img
                 src="/placeholder.svg?height=400&width=500&text=Mission"
                 alt="Our Mission"
-                className="rounded-2xl shadow-lg w-full h-96 object-cover"
+                className="rounded-2xl shadow-lg w-full h-56 xs:h-72 sm:h-80 md:h-96 object-cover"
               />
-              <div className="absolute -bottom-6 -right-6 bg-white p-4 rounded-lg shadow-lg">
+              <div className="absolute -bottom-4 sm:-bottom-6 -right-2 sm:-right-6 bg-white p-2 sm:p-4 rounded-lg shadow-lg">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">500+</div>
-                  <div className="text-sm text-gray-600">GOT HELPED</div>
+                  <div className="text-lg sm:text-2xl font-bold text-blue-600">500+</div>
+                  <div className="text-xs sm:text-sm text-gray-600">GOT HELPED</div>
                 </div>
               </div>
             </div>
@@ -148,25 +148,24 @@ export default function AboutPage() {
       </section>
 
       {/* Values */}
-      <section className="py-16 px-4 bg-gray-50 m-5">
+      <section className="py-10 px-2 sm:py-16 sm:px-4 bg-gray-50 m-2 sm:m-5">
         <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="mb-6 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">Our Core <span className="text-[#00A5E0]">Values</span></h2>
-            <p className="text-xl text-gray-600">The principles that guide everything we do</p>
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="mb-4 sm:mb-6 text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">Our Core <span className="text-[#00A5E0]">Values</span></h2>
+            <p className="text-base sm:text-xl text-gray-600">The principles that guide everything we do</p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-10 sm:mb-16">
             {values.map((value, index) => (
               <Card key={index} className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
-                <CardHeader className=" relative rounded-2xl bg-white/80 backdrop-blur-xl p-6 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
-                  <div className="absolute -top-3 -right-3 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center shadow-sm">
-                    <value.icon className="h-8 w-8 text-[#00A5E0]" />
+                <CardHeader className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-4 sm:p-6 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+                  <div className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center shadow-sm">
+                    <value.icon className="h-7 w-7 sm:h-8 sm:w-8 text-[#00A5E0]" />
                   </div>
-                  <CardTitle className="text-2xl font-extrabold tracking-tight text-blue-900 mb-1">{value.title}</CardTitle>
+                  <CardTitle className="text-lg sm:text-2xl font-extrabold tracking-tight text-blue-900 mb-1">{value.title}</CardTitle>
                   <CardContent>
-                    <p className="text-gray-600 text-sm">{value.description}</p>
+                    <p className="text-gray-600 text-xs sm:text-sm">{value.description}</p>
                   </CardContent>
                 </CardHeader>
-
               </Card>
             ))}
           </div>

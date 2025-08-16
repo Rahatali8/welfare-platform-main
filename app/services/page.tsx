@@ -20,6 +20,7 @@ import {
   CheckCircle,
 } from "lucide-react"
 import Link from "next/link"
+import CallToAction from "@/components/CTA-section"
 
 export default function ServicesPage() {
   const services = [
@@ -237,21 +238,21 @@ export default function ServicesPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative py-20 px-4 bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-500 text-white overflow-hidden">
+      <section className="relative py-14 px-2 sm:py-20 sm:px-4 bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-500 text-white overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[url('/pattern.svg')] bg-repeat"></div>
         <div className="container mx-auto relative z-10 text-center">
-          <h1 className="text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-lg animate-fadeInUp">
+          <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4 sm:mb-6 drop-shadow-lg animate-fadeInUp">
             Comprehensive Welfare Programs
           </h1>
-          <p className="text-xl mb-8 max-w-3xl mx-auto opacity-90">
+          <p className="text-base xs:text-lg sm:text-xl mb-6 sm:mb-8 max-w-3xl mx-auto opacity-90">
             From emergency assistance to long-term empowerment, our 12 specialized programs address every aspect of
             community welfare and individual development.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 rounded-lg shadow-lg" asChild>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full max-w-md mx-auto">
+            <Button size="lg" className="w-full sm:w-auto bg-white text-blue-600 hover:bg-gray-100 rounded-lg shadow-lg" asChild>
               <Link href="/signup">Apply for Assistance</Link>
             </Button>
-            <Button size="lg" variant="outline" className="rounded-lg border-white text-white hover:text-white hover:bg-transparent bg-transparent" asChild>
+            <Button size="lg" variant="outline" className="w-full sm:w-auto rounded-lg border-white text-white hover:text-white hover:bg-transparent bg-transparent" asChild>
               <Link href="/how-it-works">How It Works</Link>
             </Button>
           </div>
@@ -259,14 +260,14 @@ export default function ServicesPage() {
       </section>
 
       {/* Services Grid */}
-      <section className="py-16 px-4">
+      <section className="py-10 px-2 sm:py-16 sm:px-4">
         <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">All Welfare Programs</h2>
-            <p className="text-xl text-gray-600">Choose the program that best fits your needs</p>
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl xs:text-3xl sm:text-4xl font-bold text-gray-900 mb-2 sm:mb-4">All Welfare Programs</h2>
+            <p className="text-base xs:text-lg sm:text-xl text-gray-600">Choose the program that best fits your needs</p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
             {services.map((service) => {
               const colorClasses = getColorClasses(service.color)
               const [gradientClasses, badgeClasses] = colorClasses.split(" bg-")
@@ -277,32 +278,32 @@ export default function ServicesPage() {
                   className="group hover:shadow-2xl transition-all duration-300 border-0 shadow-lg rounded-2xl overflow-hidden hover:-translate-y-2"
                 >
                   <CardHeader>
-                    <div className="flex items-start justify-between mb-4">
+                    <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between mb-4 gap-2 xs:gap-0">
                       <div
-                        className={`w-16 h-16 bg-gradient-to-br ${gradientClasses} rounded-full flex items-center justify-center shadow-md`}
+                        className={`w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br ${gradientClasses} rounded-full flex items-center justify-center shadow-md`}
                       >
-                        <service.icon className="h-8 w-8 text-white" />
+                        <service.icon className="h-7 w-7 sm:h-8 sm:w-8 text-white" />
                       </div>
-                      <div className="text-right">
+                      <div className="text-left xs:text-right mt-2 xs:mt-0">
                         <Badge className={`bg-${badgeClasses} mb-2`}>{service.beneficiaries} helped</Badge>
-                        <div className="text-sm text-gray-600">{service.successRate} success rate</div>
+                        <div className="text-xs sm:text-sm text-gray-600">{service.successRate} success rate</div>
                       </div>
                     </div>
-                    <CardTitle className="text-gray-900 text-xl group-hover:text-blue-600 transition-colors">
+                    <CardTitle className="text-gray-900 text-lg sm:text-xl group-hover:text-blue-600 transition-colors">
                       {service.title}
                     </CardTitle>
-                    <CardDescription className="text-gray-600">{service.description}</CardDescription>
+                    <CardDescription className="text-gray-600 text-sm sm:text-base">{service.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-3 mb-6">
+                    <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
                       {service.details.map((detail, idx) => (
-                        <div key={idx} className="flex items-start space-x-3">
+                        <div key={idx} className="flex items-start space-x-2 sm:space-x-3">
                           <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                          <span className="text-sm text-gray-600">{detail}</span>
+                          <span className="text-xs sm:text-sm text-gray-600">{detail}</span>
                         </div>
                       ))}
                     </div>
-                    <Button className="w-full rounded-full" asChild>
+                    <Button className="w-full rounded-full mt-2" asChild>
                       <Link href={`/signup?service=${service.id}`}>
                         Apply for {service.title}
                         <ArrowRight className="ml-2 h-4 w-4" />
@@ -317,13 +318,13 @@ export default function ServicesPage() {
       </section>
 
       {/* How to Apply */}
-      <section className="py-16 px-4 bg-gray-50">
+      <section className="py-10 px-2 sm:py-16 sm:px-4 bg-gray-50">
         <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">How to Apply</h2>
-            <p className="text-xl text-gray-600">Simple steps to access our services</p>
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl xs:text-3xl sm:text-4xl font-bold text-gray-900 mb-2 sm:mb-4">How to Apply</h2>
+            <p className="text-base xs:text-lg sm:text-xl text-gray-600">Simple steps to access our services</p>
           </div>
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
             {[
               { step: "1", title: "Choose Service", desc: "Select the program that matches your needs", color: "from-blue-500 to-blue-600" },
               { step: "2", title: "Submit Application", desc: "Fill out the online application form", color: "from-green-500 to-green-600" },
@@ -331,40 +332,19 @@ export default function ServicesPage() {
               { step: "4", title: "Receive Support", desc: "Get approved and receive assistance", color: "from-orange-500 to-orange-600" },
             ].map((item, idx) => (
               <div key={idx} className="text-center relative">
-                <div className={`w-16 h-16 bg-gradient-to-br ${item.color} rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg`}>
-                  <span className="text-2xl font-bold text-white">{item.step}</span>
+                <div className={`w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br ${item.color} rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg`}>
+                  <span className="text-xl sm:text-2xl font-bold text-white">{item.step}</span>
                 </div>
-                <h3 className="font-semibold mb-2 text-gray-900">{item.title}</h3>
-                <p className="text-sm text-gray-600">{item.desc}</p>
+                <h3 className="font-semibold mb-1 sm:mb-2 text-gray-900 text-sm sm:text-base">{item.title}</h3>
+                <p className="text-xs sm:text-sm text-gray-600">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 px-4 bg-gradient-to-r from-blue-700 via-blue-600 to-cyan-500 text-white relative">
-        <div className="absolute inset-0 opacity-10 bg-[url('/pattern.svg')] bg-repeat"></div>
-        <div className="container mx-auto text-center relative z-10">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">Ready to Change Your Life?</h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90">
-            Don’t let financial challenges hold you back. Together, we can build a brighter future.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 rounded-lg" asChild>
-              <Link href="/signup">Apply Now</Link>
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-white bg-transparent text-white hover:bg-transparent hover:text-white rounded-lg"
-              asChild
-            >
-              <Link href="/contact">Need Help Choosing?</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      {/* Call to Action Section */}
+      <CallToAction />
 
       {/* Animation Styles */}
       <style jsx>{`
