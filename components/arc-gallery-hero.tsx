@@ -211,7 +211,6 @@ const ArcGalleryHero: React.FC<ArcGalleryHeroProps> = ({
                     <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">
                         Empowering Lives Through <span className="text-[#00A5E0]">Support and Skills</span>
                     </h1>
-                    <p className="text-white font-medium">Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate nesciunt earum laborum, assumenda tenetur commodi labore nisi quibusdam neque illum iste, eos voluptatibus reiciendis facere ducimus incidunt odit saepe soluta rerum fugiat maxime consequuntur eveniet. Saepe optio voluptatibus consectetur tempore!</p>
                 </div>
             </div>
 

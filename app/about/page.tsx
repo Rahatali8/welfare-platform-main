@@ -1,9 +1,10 @@
 'use client'
 import { Button } from "@/components/ui/button"
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Heart, Users, Target, TrendingUp, Shield } from "lucide-react"
-import Link from "next/link"
 import ArcGalleryHero from "@/components/arc-gallery-hero";
+import CallToAction from "@/components/CTA-section"
 
 export default function AboutPage() {
   const milestones = [
@@ -75,6 +76,8 @@ export default function AboutPage() {
   ]
 
 
+
+  const [showFullJourney, setShowFullJourney] = useState(false);
 
   return (
     <div className="min-h-screen bg-white">
@@ -170,28 +173,81 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Timeline */}
-      <section className="py-16 px-4">
+
+      {/* Timeline - Horizontal Revealable Journey */}
+      <section className="py-20 px-4 bg-gradient-to-b from-blue-50 via-white to-cyan-50">
         <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="mb-6 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">Our <span className="text-[#00A5E0]">Journey</span></h2>
-            <p className="text-xl text-gray-600">Key milestones in our mission to serve humanity</p>
+          <div className="text-center mb-16">
+            <h2 className="mb-6 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#1B0073] drop-shadow-2xl">Our <span className="text-[#00A5E0]">Journey</span></h2>
+            <p className="text-2xl text-gray-700">A timeline of our growth, innovation, and impact</p>
           </div>
-          <div className="max-w-4xl mx-auto">
-            <div className="space-y-8">
-              {milestones.map((milestone, index) => (
-                <div key={index} className="flex items-center space-x-6">
-                  <div className="flex-shrink-0">
-                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold">{milestone.year}</span>
-                    </div>
-                  </div>
-                  <div className="flex-grow">
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">{milestone.title}</h3>
-                    <p className="text-gray-600">{milestone.description}</p>
-                  </div>
+          <div className="relative w-full max-w-6xl mx-auto">
+            <div className="flex items-center justify-center gap-8 relative overflow-x-auto pb-8">
+              {/* First milestone */}
+              <div className="flex flex-col items-center min-w-[260px]">
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-full flex items-center justify-center shadow-xl border-4 border-white mb-4">
+                  <span className="text-white text-2xl font-extrabold drop-shadow-lg">{milestones[0].year}</span>
                 </div>
-              ))}
+                <div className="bg-white rounded-2xl shadow-xl p-6 border border-blue-100 w-full max-w-xs">
+                  <h3 className="text-xl font-bold text-blue-900 mb-2 flex items-center gap-2">
+                    <span className="inline-block w-2 h-2 rounded-full bg-blue-400 mr-2"></span>
+                    {milestones[0].title}
+                  </h3>
+                  <p className="text-gray-700 text-base leading-relaxed">{milestones[0].description}</p>
+                </div>
+              </div>
+
+              {/* Connecting line or button */}
+              {!showFullJourney && (
+                <div className="flex flex-col items-center">
+                  <div className="h-1 w-16 bg-gradient-to-r from-blue-300 to-cyan-300 rounded-full mb-4 mt-10" />
+                  <Button
+                    size="lg"
+                    className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white px-8 py-4 rounded-full shadow-lg hover:scale-105 transition-all font-bold text-xl whitespace-nowrap"
+                    onClick={() => setShowFullJourney(true)}
+                  >
+                    View Full Journey
+                  </Button>
+                  <div className="h-1 w-16 bg-gradient-to-r from-blue-300 to-cyan-300 rounded-full mt-4" />
+                </div>
+              )}
+
+              {showFullJourney && (
+                <>
+                  {milestones.slice(1, -1).map((milestone, index) => (
+                    <>
+                      <div className="h-1 w-16 bg-gradient-to-r from-blue-300 to-cyan-300 rounded-full" />
+                      <div key={index} className="flex flex-col items-center min-w-[260px]">
+                        <div className="w-20 h-20 bg-gradient-to-br from-blue-400 to-cyan-300 rounded-full flex items-center justify-center shadow-xl border-4 border-white mb-4">
+                          <span className="text-white text-2xl font-extrabold drop-shadow-lg">{milestone.year}</span>
+                        </div>
+                        <div className="bg-white rounded-2xl shadow-xl p-6 border border-blue-100 w-full max-w-xs">
+                          <h3 className="text-xl font-bold text-blue-900 mb-2 flex items-center gap-2">
+                            <span className="inline-block w-2 h-2 rounded-full bg-blue-400 mr-2"></span>
+                            {milestone.title}
+                          </h3>
+                          <p className="text-gray-700 text-base leading-relaxed">{milestone.description}</p>
+                        </div>
+                      </div>
+                    </>
+                  ))}
+                </>
+              )}
+
+              {/* Last milestone always at the end */}
+              <div className="h-1 w-16 bg-gradient-to-r from-blue-300 to-cyan-300 rounded-full" />
+              <div className="flex flex-col items-center min-w-[260px]">
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-full flex items-center justify-center shadow-xl border-4 border-white mb-4">
+                  <span className="text-white text-2xl font-extrabold drop-shadow-lg">{milestones[milestones.length-1].year}</span>
+                </div>
+                <div className="bg-white rounded-2xl shadow-xl p-6 border border-blue-100 w-full max-w-xs">
+                  <h3 className="text-xl font-bold text-blue-900 mb-2 flex items-center gap-2">
+                    <span className="inline-block w-2 h-2 rounded-full bg-blue-400 mr-2"></span>
+                    {milestones[milestones.length-1].title}
+                  </h3>
+                  <p className="text-gray-700 text-base leading-relaxed">{milestones[milestones.length-1].description}</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -254,27 +310,7 @@ export default function AboutPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 px-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white">
-        <div className="container mx-auto text-center">
-          <h2 className="mb-6 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">Join Our  <span className="text-[#00A5E0]">Mission</span></h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Whether you need assistance or want to help others, there's a place for you in our community.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100" asChild>
-              <Link href="/apply">Apply for Assistance</Link>
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-white text-white hover:bg-white hover:text-blue-600 bg-transparent"
-              asChild
-            >
-              <Link href="/contact">Become a Volunteer</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <CallToAction/>
     </div>
   )
 }

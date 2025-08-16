@@ -149,6 +149,45 @@ const CompleteHeroSection: React.FC = () => {
     }
   }, [activeImageIndex, currentContent.paragraph])
 
+
+
+  // Carousel auto-move every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => {
+        const maxSlide = Math.max(0, images.length - 3);
+        return prev >= maxSlide ? 0 : prev + 1;
+      });
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [images.length]);
+
+  // Sync background and content with currentSlide
+  useEffect(() => {
+    setActiveImageIndex(currentSlide);
+    setBackgroundImage(images[currentSlide]);
+  }, [currentSlide, images]);
+
+  // Carousel navigation handlers (sync background)
+  const handlePrev = () => {
+    setCurrentSlide((prev) => {
+      const maxSlide = Math.max(0, images.length - 3);
+      const next = prev <= 0 ? maxSlide : prev - 1;
+      setActiveImageIndex(next);
+      setBackgroundImage(images[next]);
+      return next;
+    });
+  };
+  const handleNext = () => {
+    setCurrentSlide((prev) => {
+      const maxSlide = Math.max(0, images.length - 3);
+      const next = prev >= maxSlide ? 0 : prev + 1;
+      setActiveImageIndex(next);
+      setBackgroundImage(images[next]);
+      return next;
+    });
+  };
+
   // Background style object
   const backgroundStyle = backgroundImage
     ? {
@@ -158,11 +197,10 @@ const CompleteHeroSection: React.FC = () => {
       backgroundRepeat: "no-repeat",
     }
     : {
-      // backgroundImage: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
       backgroundSize: "cover",
       backgroundPosition: "center",
       backgroundRepeat: "no-repeat",
-    }
+    };
 
   return (
     <>
@@ -390,6 +428,24 @@ const CompleteHeroSection: React.FC = () => {
             <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/40 to-transparent"></div>
             <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
 
+            {/* Carousel navigation buttons */}
+            <button
+              onClick={handlePrev}
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-30 bg-white/20 hover:bg-white/40 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-md transition-all duration-200"
+              style={{ marginLeft: '-18px' }}
+              aria-label="Previous"
+            >
+              <span className="text-xl">&#8592;</span>
+            </button>
+            <button
+              onClick={handleNext}
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-30 bg-white/20 hover:bg-white/40 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-md transition-all duration-200"
+              style={{ marginRight: '-18px' }}
+              aria-label="Next"
+            >
+              <span className="text-xl">&#8594;</span>
+            </button>
+
             {/* Carousel container */}
             <div className="relative overflow-hidden rounded-xl" style={{ width: `${dimensions.cardSize * 3.5}px` }}>
               <div
@@ -399,14 +455,13 @@ const CompleteHeroSection: React.FC = () => {
                 }}
               >
                 {images.map((src, i) => {
-                  const isActive = activeImageIndex === i
-                  const isVisible = i >= currentSlide && i < currentSlide + 3
+                  const isActive = activeImageIndex === i;
+                  const isVisible = i >= currentSlide && i < currentSlide + 3;
 
                   return (
                     <div
                       key={i}
-                      className={`opacity-0 animate-slide-in cursor-pointer group relative flex-shrink-0 ${isVisible ? "z-10" : "z-0"
-                        }`}
+                      className={`opacity-0 animate-slide-in cursor-pointer group relative flex-shrink-0 ${isVisible ? "z-10" : "z-0"}`}
                       style={{
                         width: dimensions.cardSize * 0.8,
                         height: dimensions.cardSize * 0.8,
@@ -415,13 +470,11 @@ const CompleteHeroSection: React.FC = () => {
                       }}
                       onClick={(e) => handleImageClick(src, i, e)}
                     >
-
-
                       <div
                         className={`relative rounded-xl shadow-2xl overflow-hidden ring-1 transition-all duration-700 ease-out w-full h-full ${isActive
-                            ? "ring-2 ring-white/70 shadow-white/30 scale-105 brightness-110"
-                            : "ring-white/30 bg-white/5 hover:ring-white/50 hover:scale-110 hover:shadow-2xl hover:shadow-white/20"
-                          }`}
+                          ? "ring-2 ring-white/70 shadow-white/30 scale-105 brightness-110"
+                          : "ring-white/30 bg-white/5 hover:ring-white/50 hover:scale-110 hover:shadow-2xl hover:shadow-white/20"
+                        }`}
                         style={{
                           transition: "all 0.7s cubic-bezier(0.4, 0, 0.2, 1)",
                         }}
@@ -430,27 +483,22 @@ const CompleteHeroSection: React.FC = () => {
                           src={src || "/placeholder.svg"}
                           alt=""
                           className={`block w-full h-full object-cover transition-all duration-700 ${isActive
-                              ? "brightness-110 contrast-110 saturate-120"
-                              : "group-hover:brightness-105 group-hover:scale-110"
-                            }`}
+                            ? "brightness-110 contrast-110 saturate-120"
+                            : "group-hover:brightness-105 group-hover:scale-110"
+                          }`}
                           draggable={false}
                         />
-
                         {/* Professional overlay gradients */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-white/10 opacity-0 group-hover:opacity-100 transition-all duration-500" />
-
                         {/* Active state indicator */}
                         {isActive && (
                           <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-blue/20" />
                         )}
-
                         {/* Professional corner accent */}
                         <div className="absolute top-2 right-2 w-3 h-3 bg-gradient-to-br from-white/60 to-transparent rounded-full opacity-80" />
                       </div>
-
-
                     </div>
-                  )
+                  );
                 })}
               </div>
             </div>
