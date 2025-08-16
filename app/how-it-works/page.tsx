@@ -11,7 +11,7 @@ export default function HowItWorksPage() {
       title: "Submit Application",
       description: "Fill out our comprehensive online application form",
       icon: FileText,
-      image: "/hero1.jpg",
+      image: "/how-work-1.png",
       details: [
         "Complete personal and family information",
         "Upload required documents (CNIC, income proof, etc.)",
@@ -26,7 +26,7 @@ export default function HowItWorksPage() {
       title: "Initial Review",
       description: "Our team conducts preliminary verification",
       icon: Search,
-      image: "/welfare-work.png",
+      image: "/how-work-2.png",
       details: [
         "Document verification and authenticity check",
         "Basic eligibility criteria assessment",
@@ -41,7 +41,7 @@ export default function HowItWorksPage() {
       title: "Field Investigation",
       description: "On-ground verification by our field team",
       icon: Users,
-      image: "/disaster_relief_clean.jpg",
+      image: "/",
       details: [
         "Home visit by certified field officer",
         "Neighbor and community verification",
@@ -204,9 +204,9 @@ export default function HowItWorksPage() {
                 className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow"
               >
                 <Link
-                  href="/apply"
+                  href="/signup"
                   aria-label={step.title}
-                  className="block relative h-80 rounded-2xl overflow-hidden bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.01]"
+                  className="block relative h-96 rounded-2xl overflow-hidden bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.01]"
                 >
                   <div className="absolute inset-0">
                     <img src={step.image} alt={step.title} className="w-full h-full object-cover transition-[transform,filter] duration-1000 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover:scale-[1.06] group-hover:translate-y-[-2px] group-hover:blur-[2px] [will-change:transform,filter]" />

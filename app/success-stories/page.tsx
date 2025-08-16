@@ -180,6 +180,7 @@ export default function SuccessStoriesPage() {
           </motion.p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4">
+<<<<<<< HEAD
             {/* Gradient Button */}
             <Button
               size="lg"
@@ -199,6 +200,15 @@ export default function SuccessStoriesPage() {
               asChild
             >
               <Link href="/dashboard-preview">View Dashboard</Link>
+=======
+            <Button size="lg" className="bg-green-600 hover:bg-green-700" asChild>
+              <Link href="/signup">
+                Start Your Journey <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <Link href="/stats-sec">View Dashboard</Link>
+>>>>>>> f871b7207cace305d0ab3e88b2442ec73647bc19
             </Button>
           </div>
         </div>
@@ -377,10 +387,11 @@ export default function SuccessStoriesPage() {
         </div>
       </section>
 
-
-
       {/* Call to Action */}
+<<<<<<< HEAD
 
+=======
+>>>>>>> f871b7207cace305d0ab3e88b2442ec73647bc19
       <CallToAction />
 
     </div>

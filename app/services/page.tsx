@@ -355,8 +355,18 @@ export default function ServicesPage() {
       </section>
 
       {/* How to Apply */}
-      <section className="py-10 px-2 sm:py-16 sm:px-4 bg-gray-50">
-        <div className="container mx-auto">
+      <section
+        className="relative py-10 px-2 sm:py-16 sm:px-4 bg-gray-50 overflow-hidden"
+        style={{
+          backgroundImage: "url('/hero1.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed',
+        }}
+      >
+  <div className="absolute inset-0 bg-white/40 sm:bg-white/30 pointer-events-none z-0"></div>
+        <div className="container mx-auto relative z-10">
           <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-2xl xs:text-3xl sm:text-4xl font-bold text-gray-900 mb-2 sm:mb-4">How to Apply</h2>
             <p className="text-base xs:text-lg sm:text-xl text-gray-600">Simple steps to access our services</p>
