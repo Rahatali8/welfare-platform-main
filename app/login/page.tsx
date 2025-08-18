@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Eye, EyeOff, Heart } from "lucide-react"
 import Link from "next/link"
-import { useAuth } from "@/components/providers/auth-provider" // ✅ import useAuth
+import { useAuth } from "@/components/providers/auth-provider"
 
 export default function LoginPage() {
   const [cnic, setCnic] = useState("")
@@ -19,7 +19,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const router = useRouter()
-  const { login } = useAuth() // ✅ context se login function lo
+  const { login } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -29,31 +29,19 @@ export default function LoginPage() {
     try {
       const response = await fetch("/api/auth/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          cnic: cnic.replace(/\D/g, ""),
-          password,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cnic: cnic.replace(/\D/g, ""), password }),
       })
 
       const data = await response.json()
-
       if (response.ok) {
-        login(data.user) // ✅ context ko update karo
-
-        // ✅ redirect user based on role
-        if (data.message === "Login successfu") {
-          router.push("/")
-        } else {
-          router.push("/")
-        }
+        login(data.user)
+        router.push("/")
       } else {
         setError(data.message || "Login failed. Please try again.")
       }
-    } catch (error) {
-      setError("Network error. Please check your connection and try again.")
+    } catch {
+      setError("Network error. Please try again.")
     } finally {
       setIsLoading(false)
     }
@@ -76,6 +64,7 @@ export default function LoginPage() {
   }
 
   return (
+<<<<<<< HEAD
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
@@ -86,17 +75,28 @@ export default function LoginPage() {
             Welcome  <span className="text-[#00A5E0]">  Back</span>
           </h2>
           <p className="mt-2 text-gray-600">Sign in to your Khair Welfare account</p>
+=======
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 flex items-center justify-center px-6 py-12">
+      <div className="w-full max-w-lg">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-gradient-to-r from-blue-700 to-cyan-500 rounded-full flex items-center justify-center mx-auto shadow-lg">
+            <Heart className="h-8 w-8 text-white" />
+          </div>
+          <h2 className="mt-4 text-3xl font-extrabold text-gray-800">Welcome Back</h2>
+          <p className="mt-2 text-gray-600">Sign in to continue supporting <span className="font-semibold text-blue-700">Khair Welfare</span></p>
+>>>>>>> 6bcb690ccb1452cec37be8c7c390fb87f741076e
         </div>
 
-        <Card className="border-0 shadow-lg">
+        {/* Card */}
+        <Card className="rounded-2xl shadow-xl border border-gray-100 backdrop-blur bg-white/90">
           <CardHeader>
-            <CardTitle className="text-center text-[#1e3a8a]">Sign In</CardTitle>
-            <CardDescription className="text-center">
-              Enter your credentials to access your dashboard
-            </CardDescription>
+            <CardTitle className="text-center text-xl text-blue-700">Sign In</CardTitle>
+            <CardDescription className="text-center text-gray-500">Access your donor dashboard</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* CNIC */}
               <div className="space-y-2">
                 <Label htmlFor="cnic">CNIC Number</Label>
                 <Input
@@ -107,10 +107,11 @@ export default function LoginPage() {
                   value={cnic}
                   onChange={handleCnicChange}
                   required
-                  className="text-center text-lg tracking-wider"
+                  className="text-center text-lg tracking-wider border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-400"
                 />
               </div>
 
+              {/* Password */}
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <div className="relative">
@@ -121,7 +122,7 @@ export default function LoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="pr-10"
+                    className="pr-10 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-400"
                   />
                   <button
                     type="button"
@@ -129,47 +130,48 @@ export default function LoginPage() {
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-gray-400" />
+                      <EyeOff className="h-5 w-5 text-gray-400" />
                     ) : (
-                      <Eye className="h-4 w-4 text-gray-400" />
+                      <Eye className="h-5 w-5 text-gray-400" />
                     )}
                   </button>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
-                <div className="text-sm">
-                  <Link
-                    href="/forgot-password"
-                    className="text-[#1e3a8a] hover:text-[#1e40af] font-medium"
-                  >
-                    Forgot your password?
-                  </Link>
-                </div>
+              {/* Forgot password */}
+              <div className="flex items-center justify-end">
+                <Link href="/forgot-password" className="text-sm text-blue-700 hover:underline">
+                  Forgot password?
+                </Link>
               </div>
 
+              {/* Error */}
               {error && (
                 <Alert className="border-red-200 bg-red-50">
                   <AlertDescription className="text-red-800">{error}</AlertDescription>
                 </Alert>
               )}
 
+              {/* Button */}
               <Button
                 type="submit"
+<<<<<<< HEAD
                 className="w-full bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white"
+=======
+                className="w-full bg-gradient-to-r from-blue-700 to-cyan-500 hover:from-cyan-500 hover:to-blue-700 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+>>>>>>> 6bcb690ccb1452cec37be8c7c390fb87f741076e
                 disabled={isLoading || cnic.replace(/\D/g, "").length !== 13}
               >
                 {isLoading ? "Signing in..." : "Sign In"}
               </Button>
             </form>
 
-            <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
-                Don't have an account?{" "}
-                <Link href="/signup" className="text-[#1e3a8a] hover:text-[#1e40af] font-medium">
-                  Sign up here
-                </Link>
-              </p>
+            {/* Signup link */}
+            <div className="mt-6 text-center text-gray-600">
+              Don't have an account?{" "}
+              <Link href="/signup" className="text-blue-700 hover:underline font-medium">
+                Sign up here
+              </Link>
             </div>
           </CardContent>
         </Card>
