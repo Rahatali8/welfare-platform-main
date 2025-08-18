@@ -79,10 +79,12 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <div className="w-16 h-16 bg-[#1e3a8a] rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white rounded-full flex items-center justify-center mx-auto mb-4">
             <Heart className="h-8 w-8 text-white" />
           </div>
-          <h2 className="text-3xl font-bold text-[#1e3a8a]">Welcome Back</h2>
+          <h2 className="mb-2 sm:mb-6 text-xl sm:text-2xl lg:text-4xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">
+            Welcome  <span className="text-[#00A5E0]">  Back</span>
+          </h2>
           <p className="mt-2 text-gray-600">Sign in to your Khair Welfare account</p>
         </div>
 
@@ -123,7 +125,7 @@ export default function LoginPage() {
                   />
                   <button
                     type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center "
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
@@ -154,7 +156,7 @@ export default function LoginPage() {
 
               <Button
                 type="submit"
-                className="w-full bg-[#1e3a8a] hover:bg-[#1e40af]"
+                className="w-full bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white"
                 disabled={isLoading || cnic.replace(/\D/g, "").length !== 13}
               >
                 {isLoading ? "Signing in..." : "Sign In"}

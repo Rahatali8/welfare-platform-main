@@ -1,5 +1,6 @@
 "use client"
-
+import { motion } from "framer-motion"
+import Link from "next/link"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -218,28 +219,51 @@ export default function FAQPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-900 to-blue-700 py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl lg:text-5xl font-bold text-white mb-6">Frequently Asked Questions</h1>
-            <p className="text-xl text-blue-100 max-w-3xl mx-auto mb-8">
-              Find answers to common questions about our welfare programs, application process, and services.
-            </p>
+            {/* Hero Section */}
+      <section
+        className="relative py-20 px-4 bg-cover bg-center bg-fixed h-[60vh] flex flex-col items-center justify-center text-center"
+        style={{
+          backgroundImage:
+            "url('https://png.pngtree.com/background/20210711/original/pngtree-caring-for-the-elderly-public-welfare-design-psd-layering-picture-image_1125477.jpg')",
+        }}
+      >
+        {/* Overlay for opacity */}
+        <div className="absolute inset-0 bg-black/40"></div>
 
-            {/* Search Bar */}
+        <div className="container mx-auto text-center relative z-10">
+          {/* Heading */}
+          <motion.h1
+            className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-lg"
+            animate={{ scale: [1, 1.03, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <span className="text-[#1B0073]">Frequently Asked</span>{" "}
+            <span className="text-[#00A5E0]"> Questions</span>
+          </motion.h1>
+
+          {/* Subtext */}
+          <motion.p
+            className="text-base xs:text-lg sm:text-xl mb-8 max-w-3xl mx-auto text-gray-100 opacity-90"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            Find answers to common questions about our welfare programs, application process, and services.
+          </motion.p>
+                        {/* Search Bar */}
             <div className="max-w-2xl mx-auto relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <Input
                 placeholder="Search for answers..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12 py-4 text-lg bg-white/10 border-white/20 text-white placeholder:text-blue-200"
+                className="pl-12 py-4 text-lg bg-white border-white/20 text-white placeholder:text-blue-900"
               />
             </div>
-          </div>
+
         </div>
       </section>
+
 
       {/* FAQ Content */}
       <section className="py-20">
@@ -249,7 +273,7 @@ export default function FAQPage() {
             <div className="lg:col-span-1">
               <Card className="border-0 shadow-lg sticky top-8">
                 <CardHeader>
-                  <CardTitle className="text-blue-900">Categories</CardTitle>
+                  <CardTitle className="text-[#1B0073]">Categories</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
                   {categories.map((category) => (
@@ -257,7 +281,7 @@ export default function FAQPage() {
                       key={category.id}
                       variant={activeCategory === category.id ? "default" : "ghost"}
                       className={`w-full justify-start ${
-                        activeCategory === category.id ? "bg-blue-600 text-white" : "text-gray-600 hover:text-blue-600"
+                        activeCategory === category.id ? "bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white" : "text-gray-600 hover:text-blue-600"
                       }`}
                       onClick={() => setActiveCategory(category.id)}
                     >
@@ -280,7 +304,7 @@ export default function FAQPage() {
                   <p className="text-gray-600 mb-4">
                     Can't find what you're looking for? Our support team is here to help.
                   </p>
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                  <Button className="w-full bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white">
                     <Phone className="h-4 w-4 mr-2" />
                     Contact Support
                   </Button>

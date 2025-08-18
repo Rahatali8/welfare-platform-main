@@ -135,16 +135,18 @@ export default function SignupPage() {
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-[#1e3a8a] rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white rounded-full flex items-center justify-center mx-auto mb-4">
             <Heart className="h-8 w-8 text-white" />
           </div>
-          <h2 className="text-3xl font-bold text-[#1e3a8a]">Join Khair Welfare</h2>
-          <p className="mt-2 text-gray-600">Create your account to access our services</p>
+          <h2 className="mb-2 sm:mb-6 text-xl sm:text-2xl lg:text-4xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">
+        Join Al Khair  <span className="text-[#00A5E0]">  Welfare</span>
+          </h2>
+          <p className="text-gray-600">Create your account to access our services</p>
         </div>
 
         <Card className="border-0 shadow-lg">
           <CardHeader>
-            <CardTitle className="text-center text-[#1e3a8a]">Create Account</CardTitle>
+            <CardTitle className="text-center text-[#1B0073]">Create Account</CardTitle>
             <CardDescription className="text-center">Fill in your information to get started</CardDescription>
           </CardHeader>
           <CardContent>
@@ -284,7 +286,7 @@ export default function SignupPage() {
                     />
                     <button
                       type="button"
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center "
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     >
                       {showConfirmPassword ? (
@@ -303,7 +305,7 @@ export default function SignupPage() {
                 </Alert>
               )}
 
-              <Button type="submit" className="w-full bg-[#1e3a8a] hover:bg-[#1e40af]" disabled={isLoading}>
+              <Button type="submit" className="w-full bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white" disabled={isLoading}>
                 {isLoading ? "Creating Account..." : "Create Account"}
               </Button>
             </form>
