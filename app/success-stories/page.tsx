@@ -238,7 +238,7 @@ export default function SuccessStoriesPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
             {successStories.map((story, i) => (
               <motion.div
                 key={story.id}
@@ -246,9 +246,11 @@ export default function SuccessStoriesPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: i * 0.05 }}
                 viewport={{ once: true }}
-                className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow"
+                className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow h-full"
               >
-                <Card className="relative rounded-2xl bg-white/80 backdrop-blur-xl overflow-hidden transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+                <Card className="relative rounded-2xl bg-white/80 backdrop-blur-xl overflow-hidden transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60 h-full flex flex-col">
+
+                  {/* Image fix aspect ratio */}
                   <div className="aspect-video overflow-hidden">
                     <img
                       src={story.image}
@@ -256,7 +258,9 @@ export default function SuccessStoriesPage() {
                       className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500"
                     />
                   </div>
-                  <CardHeader>
+
+                  {/* Header */}
+                  <CardHeader className="flex-grow">
                     <div className="flex items-center justify-between mb-2">
                       <Badge className="bg-green-100 text-green-800">{story.program}</Badge>
                       {story.verified && (
@@ -269,7 +273,9 @@ export default function SuccessStoriesPage() {
                     <CardTitle className="text-lg">{story.name}</CardTitle>
                     <CardDescription>{story.location}</CardDescription>
                   </CardHeader>
-                  <CardContent>
+
+                  {/* Content */}
+                  <CardContent className="flex flex-col justify-between flex-grow">
                     <div className="space-y-3">
                       <div className="bg-blue-50 p-3 rounded-lg">
                         <p className="text-sm font-medium text-blue-900">Assistance Provided:</p>
@@ -279,7 +285,7 @@ export default function SuccessStoriesPage() {
                         <p className="text-sm font-medium text-green-900">Outcome:</p>
                         <p className="text-sm text-green-700">{story.outcome}</p>
                       </div>
-                      <p className="text-sm text-gray-600 italic">"{story.story}"</p>
+                      <p className="text-sm text-gray-600 italic mt-auto">"{story.story}"</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -300,7 +306,8 @@ export default function SuccessStoriesPage() {
             <p className="text-xl text-gray-600">How our initiatives are transforming lives</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Equal height cards */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 items-stretch">
             {[
               {
                 icon: <TrendingUp className="h-6 w-6 text-blue-600" />,
@@ -341,21 +348,23 @@ export default function SuccessStoriesPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: i * 0.1 }}
                 viewport={{ once: true }}
-                className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow"
+                className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow h-full"
               >
-                <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-8 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+                <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-8 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60 h-full flex flex-col justify-between">
 
-                  {/* Floating Icon Box (same as achievements section) */}
+                  {/* Floating Icon */}
                   <div className="absolute -top-3 -right-3 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center shadow-sm">
                     {item.icon}
                   </div>
 
                   {/* Content */}
-                  <h3 className="text-xl font-extrabold text-gray-900 mb-4">{item.title}</h3>
-                  <div className="space-y-2">
-                    <div className={`text-2xl font-bold ${item.color}`}>{item.value}</div>
-                    <p className="text-sm text-gray-600">{item.sub}</p>
-                    <div className="text-lg font-semibold text-gray-800">{item.extra}</div>
+                  <div>
+                    <h3 className="text-xl font-extrabold text-gray-900 mb-4">{item.title}</h3>
+                    <div className="space-y-2">
+                      <div className={`text-2xl font-bold ${item.color}`}>{item.value}</div>
+                      <p className="text-sm text-gray-600">{item.sub}</p>
+                      <div className="text-lg font-semibold text-gray-800">{item.extra}</div>
+                    </div>
                   </div>
 
                   {/* Hover Shine Effect */}
@@ -368,6 +377,7 @@ export default function SuccessStoriesPage() {
           </div>
         </div>
       </section>
+
 
       {/* Call to Action */}
       <CallToAction />

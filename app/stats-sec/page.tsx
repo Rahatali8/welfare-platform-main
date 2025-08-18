@@ -2,17 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { MapPin, Phone, Users, Home, BookOpen } from 'lucide-react';
-import {
-  BarChart as DayBarChart,
-  Bar as DayBar,
-  XAxis as DayXAxis,
-  YAxis as DayYAxis,
-  Tooltip as DayTooltip,
-  ResponsiveContainer as DayResponsiveContainer,
-  Legend as DayLegend,
-  LineChart as SignupLineChart,
-  Line as SignupLine
-} from 'recharts';
+import { BarChart as DayBarChart, Bar as DayBar, XAxis as DayXAxis, YAxis as DayYAxis, Tooltip as DayTooltip, ResponsiveContainer as DayResponsiveContainer, Legend as DayLegend, LineChart as SignupLineChart, Line as SignupLine } from 'recharts';
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+
 
 const COLORS = ['#38bdf8', '#06b6d4', '#fbbf24', '#f472b6', '#a3e635', '#f87171'];
 
@@ -21,6 +13,13 @@ const statusColors: Record<string, string> = {
   pending: 'bg-yellow-100 text-yellow-700',
   rejected: 'bg-red-100 text-red-700',
 };
+
+const data = [
+  { name: "Jan", requests: 400 },
+  { name: "Feb", requests: 800 },
+  { name: "Mar", requests: 1200 },
+  { name: "Apr", requests: 1000 },
+];
 
 export default function DashboardAnalytics() {
   const [dailyRequests, setDailyRequests] = useState<{ date: string, count: number }[]>([]);
@@ -82,7 +81,14 @@ export default function DashboardAnalytics() {
   const totalSignups = signups.total || 0;
 
 
-  if (loading) return <div className="text-center py-12">Loading stats...</div>;
+  if (loading)
+    return (
+      <div className="flex flex-col items-center justify-center py-12">
+        <div className="w-10 h-10 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
+        <p className="mt-4 text-blue-600 font-medium animate-pulse">Loading stats...</p>
+      </div>
+    );
+
 
   return (
     <>
@@ -106,8 +112,17 @@ export default function DashboardAnalytics() {
                 <span className="inline-block bg-white/20 px-4 py-2 rounded-lg text-base font-semibold shadow border-2  text-[#1B0073] hover:bg-[#00A5E0] hover:text-white">VIP Analytics</span>
               </div>
             </div>
-            <div className="flex-1 flex justify-center items-center">
-              <img src="/welfare-work.png" alt="Welfare Analytics" className="w-[340px] h-[340px] object-cover rounded-3xl shadow-2xl border-4 border-white/30 bg-white/10" />
+            <div className="flex-1 bg-white rounded-2xl shadow-md p-6">
+              <h3 className="text-lg font-semibold text-[#1B0073] mb-4">Monthly Requests</h3>
+              <ResponsiveContainer width="100%" height={250}>
+                <LineChart data={data}>
+                  <Line type="monotone" dataKey="requests" stroke="#00A5E0" strokeWidth={3} />
+                  <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </div>
           <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 w-[120vw] h-40 bg-gradient-to-t from-blue-100/60 to-transparent rounded-b-3xl z-0" />
@@ -210,8 +225,8 @@ export default function DashboardAnalytics() {
               <button
                 key={cat}
                 className={`px-4 py-2 rounded-full transition shadow-sm hover:shadow ${selectedCategory === cat
-                    ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white'
-                    : 'bg-white/80 text-blue-900 border border-blue-100'
+                  ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white'
+                  : 'bg-white/80 text-blue-900 border border-blue-100'
                   }`}
                 onClick={() => setSelectedCategory(cat)}
               >

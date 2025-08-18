@@ -39,13 +39,13 @@ const CompleteHeroSection: React.FC = () => {
       buttons: ["Apply for Assistance", "What We have Served"],
     },
     {
-      heading: `Har Hunar Ko Moka`,
+      heading: `Har Hunar Ko Milyga Moka`,
       paragraph:
         "Aapke skills ko unke sahi muqaam tak pohanchana hamara mission hai – training, support aur employment ke sath.",
       buttons: ["Apply for Assistance", "What We have Served"],
     },
     {
-      heading: "Madad Jo Badle Zindagi",
+      heading: "Madad Jo Badle Gi Zindagi",
       paragraph:
         "Free of cost support aur employment solutions jo aapki zindagi ko ek nayi raah par le jayein.",
       buttons: ["Apply for Assistance", "What We have Served"],
@@ -57,7 +57,7 @@ const CompleteHeroSection: React.FC = () => {
       buttons: ["Apply for Assistance", "What We have Served"],
     },
     {
-      heading: "Rozgar Se Mily Khudmukhtari",
+      heading: "Rozgar Se Mily Gi Khudmukhtari",
       paragraph:
         "Financial independence aur self-respect ka safar yahin se shuru hota hai.",
       buttons: ["Apply for Assistance", "What We have Served"],
