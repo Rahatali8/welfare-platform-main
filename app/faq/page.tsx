@@ -219,7 +219,7 @@ export default function FAQPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-            {/* Hero Section */}
+      {/* Hero Section */}
       <section
         className="relative py-20 px-4 bg-cover bg-center bg-fixed h-[60vh] flex flex-col items-center justify-center text-center"
         style={{

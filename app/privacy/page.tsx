@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { motion } from "framer-motion"
 import { Shield, Eye, Lock, Users, FileText, Phone, Mail, Calendar } from "lucide-react"
 import Link from "next/link"
 import { Footer } from "@/components/layout/footer"
@@ -76,20 +77,43 @@ export default function PrivacyPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-900 to-blue-700 py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl lg:text-5xl font-bold text-white mb-6">Your Privacy Matters</h1>
-            <p className="text-xl text-blue-100 max-w-3xl mx-auto mb-4">
-              We are committed to protecting your personal information and being transparent about how we collect, use,
+            {/* Hero Section */}
+      <section
+        className="relative py-20 px-4 bg-cover bg-center bg-fixed h-[60vh] flex flex-col items-center justify-center text-center"
+        style={{
+          backgroundImage:
+            "url('https://png.pngtree.com/background/20210711/original/pngtree-caring-for-the-elderly-public-welfare-design-psd-layering-picture-image_1125477.jpg')",
+        }}
+      >
+        {/* Overlay for opacity */}
+        <div className="absolute inset-0 bg-black/40"></div>
+
+        <div className="container mx-auto text-center relative z-10">
+          {/* Heading */}
+          <motion.h1
+            className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-lg"
+            animate={{ scale: [1, 1.03, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <span className="text-[#1B0073]">Your Privacy</span>{" "}
+            <span className="text-[#00A5E0]"> Matters</span>
+          </motion.h1>
+
+          {/* Subtext */}
+          <motion.p
+            className="text-base xs:text-lg sm:text-xl mb-8 max-w-3xl mx-auto text-gray-100 opacity-90"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+           We are committed to protecting your personal information and being transparent about how we collect, use,
               and safeguard your data.
-            </p>
-            <p className="text-blue-200">
+          </motion.p>
+            <p className="text-blue-800">
               <Calendar className="inline h-4 w-4 mr-2" />
               Last updated: {lastUpdated}
             </p>
-          </div>
+
         </div>
       </section>
 
@@ -196,7 +220,7 @@ export default function PrivacyPage() {
                   </div>
                 </div>
                 <div className="space-y-3">
-                  <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
+                  <Button asChild className="w-full bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white">
                     <Link href="/contact">Contact Privacy Team</Link>
                   </Button>
                 </div>

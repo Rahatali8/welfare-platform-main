@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -133,124 +134,155 @@ export default function HelpPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-900 to-blue-700 py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl lg:text-5xl font-bold text-white mb-6">How Can We Help You?</h1>
-            <p className="text-xl text-blue-100 max-w-3xl mx-auto mb-8">
-              Find answers to your questions, learn how to use our platform, and get the support you need.
-            </p>
+      <section
+        className="relative py-20 px-4 bg-cover bg-center bg-fixed h-[60vh] flex flex-col items-center justify-center text-center"
+        style={{
+          backgroundImage:
+            "url('https://png.pngtree.com/background/20210711/original/pngtree-caring-for-the-elderly-public-welfare-design-psd-layering-picture-image_1125477.jpg')",
+        }}
+      >
+        {/* Overlay for opacity */}
+        <div className="absolute inset-0 bg-black/40"></div>
 
-            {/* Search Bar */}
-            <div className="max-w-2xl mx-auto relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-              <Input
-                placeholder="Search for help articles, guides, and FAQs..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12 py-4 text-lg bg-white/10 border-white/20 text-white placeholder:text-blue-200"
-              />
-            </div>
+        <div className="container mx-auto text-center relative z-10">
+          {/* Heading */}
+          <motion.h1
+            className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-lg"
+            animate={{ scale: [1, 1.03, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <span className="text-[#1B0073]">How Can We</span>{" "}
+            <span className="text-[#00A5E0]"> Help You?</span>
+          </motion.h1>
+
+          {/* Subtext */}
+          <motion.p
+            className="text-base xs:text-lg sm:text-xl mb-8 max-w-3xl mx-auto text-gray-100 opacity-90"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            Find answers to your questions, learn how to use our platform, and get the support you need.
+          </motion.p>
+          {/* Search Bar */}
+          <div className="max-w-2xl mx-auto relative">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Input
+              placeholder="Search for answers..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-12 py-4 text-lg bg-white border-white/20 text-white placeholder:text-blue-900"
+            />
           </div>
+
         </div>
       </section>
-
       {/* Quick Help */}
       <section className="py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          {/* Heading */}
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-blue-900 mb-4">Quick Help</h2>
+            <h2 className="mb-4 sm:mb-6 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">
+              Quick <span className="text-[#00A5E0]">Help</span>
+            </h2>
             <p className="text-xl text-gray-600">Get started with these popular help articles</p>
           </div>
 
+          {/* Quick Help Cards */}
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
             {quickHelp.map((item, index) => (
-              <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-shadow group">
-                <CardContent className="p-6">
-                  <h3 className="font-semibold text-blue-900 mb-2 group-hover:text-blue-700">{item.title}</h3>
+              <div
+                key={index}
+                className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60
+            shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow"
+              >
+                <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-6 h-full transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+                  <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-blue-600">{item.title}</h3>
                   <p className="text-gray-600 text-sm mb-4">{item.description}</p>
                   <div className="flex items-center justify-between">
-                    <Badge variant="secondary" className="text-xs">
-                      {item.time}
-                    </Badge>
+                    <Badge variant="secondary" className="text-xs">{item.time}</Badge>
                     <Button variant="ghost" size="sm" asChild className="text-blue-600 hover:text-blue-800">
                       <Link href={item.link}>
                         Read More <ArrowRight className="h-4 w-4 ml-1" />
                       </Link>
                     </Button>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
           </div>
 
           {/* Help Categories */}
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-blue-900 mb-4">Browse by Category</h2>
+            <h2 className="mb-4 sm:mb-6 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">
+              Browse by<span className="text-[#00A5E0]"> Category</span>
+            </h2>
             <p className="text-xl text-gray-600">Find detailed information organized by topic</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
             {helpCategories.map((category) => (
-              <Card
+              <div
                 key={category.id}
-                className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 group"
+                className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60
+            shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow"
               >
-                <CardHeader className="pb-4">
-                  <div
-                    className={`w-16 h-16 ${category.color} rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
-                  >
-                    <category.icon className="h-8 w-8" />
+                <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-6 h-full text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                    <category.icon className="h-8 w-8 text-white" />
                   </div>
-                  <CardTitle className="text-xl text-blue-900">{category.title}</CardTitle>
-                  <Badge variant="secondary" className="w-fit">
-                    {category.articles} articles
-                  </Badge>
-                </CardHeader>
-                <CardContent>
+                  <CardTitle className="text-xl text-gray-900 group-hover:text-blue-600">{category.title}</CardTitle>
+                  <Badge variant="secondary" className="w-fit my-2">{category.articles} articles</Badge>
                   <p className="text-gray-600 mb-4">{category.description}</p>
                   <Button variant="ghost" className="text-blue-600 hover:text-blue-800 p-0">
                     Browse Articles <ArrowRight className="h-4 w-4 ml-1" />
                   </Button>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
           </div>
 
           {/* Support Options */}
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-blue-900 mb-4">Need Personal Assistance?</h2>
+            <h2 className="mb-4 sm:mb-6 text-xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">
+              Need Personal <span className="text-[#00A5E0]">Assistance?</span>
+            </h2>
             <p className="text-xl text-gray-600">Our support team is here to help you directly</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {supportOptions.map((option, index) => (
-              <Card key={index} className="border-0 shadow-lg text-center">
-                <CardHeader className="pb-4">
-                  <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <option.icon className="h-8 w-8 text-gray-600" />
+              <div
+                key={index}
+                className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60
+            shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow"
+              >
+                <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-6 h-full text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <option.icon className="h-8 w-8 text-white" />
                   </div>
-                  <CardTitle className="text-xl text-blue-900">{option.title}</CardTitle>
-                  <p className="text-gray-600">{option.description}</p>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-center">
+                  <CardTitle className="text-xl text-gray-900 group-hover:text-blue-600">{option.title}</CardTitle>
+                  <p className="text-gray-600 mb-4">{option.description}</p>
+                  <div className="flex items-center justify-center mb-3">
                     <Clock className="h-4 w-4 text-green-600 mr-2" />
                     <span className="text-sm text-green-600">{option.availability}</span>
                   </div>
-                  <Button className={`w-full ${option.color}`}>{option.action}</Button>
-                </CardContent>
-              </Card>
+                  <Button className="w-full rounded-full bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white">{option.action}</Button>
+                </div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
+
       {/* FAQ Preview */}
       <section className="py-20 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-blue-900 mb-4">Frequently Asked Questions</h2>
+            <h2 className="mb-4 sm:mb-6 text-xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">
+              Frequently Asked <span className="text-[#00A5E0]">Questions</span>
+            </h2>
             <p className="text-xl text-gray-600">Quick answers to common questions</p>
           </div>
 
@@ -317,7 +349,7 @@ export default function HelpPage() {
           </div>
 
           <div className="text-center">
-            <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">
+            <Button asChild size="lg" className="bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white">
               <Link href="/faq">
                 View All FAQs
                 <ArrowRight className="h-5 w-5 ml-2" />
