@@ -31,7 +31,7 @@ export default function CallToAction() {
             transition={{ duration: 0.3 }}
           >
             <div 
-              className="w-12 h-12 bg-blue-600/80 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4 border border-white/20 group-hover:rotate-[360deg] transition-transform duration-700"
+              className="w-12 h-12  bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4 border border-white/20 group-hover:rotate-[360deg] transition-transform duration-700"
             >
               <Heart className="w-6 h-6 text-bold text-white" />
             </div>
@@ -47,7 +47,7 @@ export default function CallToAction() {
             >
               <Link
                 href="/donate"
-                className="inline-flex items-center bg-blue-600 text-white hover:bg-blue-600/90 px-6 py-2 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-xl text-sm group"
+                className="inline-flex items-center  bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white px-6 py-2 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-xl text-sm group"
               >
                 Donate Now
                 <motion.div
@@ -68,7 +68,7 @@ export default function CallToAction() {
             transition={{ duration: 0.3 }}
           >
             <div 
-              className="w-12 h-12 bg-blue-600/80 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4 border border-white/20 group-hover:rotate-[360deg] transition-transform duration-700"
+              className="w-12 h-12  bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4 border border-white/20 group-hover:rotate-[360deg] transition-transform duration-700"
             >
               <Users className="w-6 h-6 text-bold text-white" />
             </div>
@@ -83,7 +83,7 @@ export default function CallToAction() {
             >
               <Link
                 href="/donor/signup"
-                className="inline-flex items-center bg-blue-600 text-white hover:bg-blue-600/90 px-6 py-2 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-xl text-sm group"
+                className="inline-flex items-center  bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white px-6 py-2 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-xl text-sm group"
               >
                 Get Involved
                 <motion.div

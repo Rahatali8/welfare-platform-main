@@ -102,8 +102,12 @@ export default function AboutPage() {
       <section className="py-10 px-2 sm:py-16 sm:px-4 m-2 sm:m-5">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+
+            {/* Left Side Text */}
             <div>
-              <h2 className="mb-4 sm:mb-6 text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">Our Core <span className="text-[#00A5E0]">Mission</span></h2>
+              <h2 className="mb-4 sm:mb-6 text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">
+                Our Core <span className="text-[#00A5E0]">Mission</span>
+              </h2>
               <p className="text-base sm:text-lg text-gray-600 mb-4 sm:mb-6 leading-relaxed">
                 To provide comprehensive welfare services that empower individuals and families to achieve
                 self-sufficiency, dignity, and prosperity. We believe in creating sustainable solutions that address
@@ -130,22 +134,67 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
-            <div className="relative">
-              <img
-                src="/placeholder.svg?height=400&width=500&text=Mission"
-                alt="Our Mission"
-                className="rounded-2xl shadow-lg w-full h-56 xs:h-72 sm:h-80 md:h-96 object-cover"
-              />
-              <div className="absolute -bottom-4 sm:-bottom-6 -right-2 sm:-right-6 bg-white p-2 sm:p-4 rounded-lg shadow-lg">
-                <div className="text-center">
-                  <div className="text-lg sm:text-2xl font-bold text-blue-600">500+</div>
-                  <div className="text-xs sm:text-sm text-gray-600">GOT HELPED</div>
+
+            {/* Right Side Image Gallery */}
+            <div className="grid grid-cols-2 gap-4">
+
+              {/* Image 1 → Small */}
+              <div className="relative group overflow-hidden rounded-xl shadow-lg">
+                <img
+                  src="/images/mission1.jpg"
+                  alt="Mission Image 1"
+                  className="w-full h-28 sm:h-32 md:h-36 object-cover transform transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <span className="text-white font-semibold">Support</span>
                 </div>
               </div>
+
+              {/* Image 2 → Large */}
+              <div className="relative group overflow-hidden rounded-xl shadow-lg">
+                <img
+                  src="/images/welfare-aged.png"
+                  alt="Welfare of Aged"
+                  className="w-full h-40 sm:h-48 md:h-52 object-cover transform transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <span className="text-white font-semibold">Welfare</span>
+                </div>
+              </div>
+
+              {/* Image 3 → Large */}
+              <div className="relative group overflow-hidden rounded-xl shadow-lg">
+                <img
+                  src="/images/mission3.jpg"
+                  alt="Mission Image 3"
+                  className="w-full h-40 sm:h-48 md:h-52 object-cover transform transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <span className="text-white font-semibold">Growth</span>
+                </div>
+              </div>
+
+              {/* Image 4 → Small */}
+              <div className="relative group overflow-hidden rounded-xl shadow-lg">
+                <img
+                  src="/images/mission4.jpg"
+                  alt="Mission Image 4"
+                  className="w-full h-28 sm:h-32 md:h-36 object-cover transform transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <span className="text-white font-semibold">Hope</span>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
       </section>
+
+
+
+
+
 
       {/* Values */}
       <section className="py-10 px-2 sm:py-16 sm:px-4 bg-gray-50 m-2 sm:m-5">
@@ -275,30 +324,55 @@ export default function AboutPage() {
       <section className="py-16 px-4 bg-gray-50 m-5">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="mb-6 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">Meet  <span className="text-[#00A5E0]">Our Team</span></h2>
-            <p className="text-xl text-gray-600">Dedicated professionals working to make a difference</p>
+            <h2 className="mb-6 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">
+              Meet <span className="text-[#00A5E0]">Our Team</span>
+            </h2>
+            <p className="text-xl text-gray-600">
+              Dedicated professionals working to make a difference
+            </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {team.map((member, index) => (
-              <Card key={index} className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
-                <CardHeader className="h-auto relative rounded-2xl bg-white/80 backdrop-blur-xl p-6 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
-                  <img
-                    src={member.image || "/placeholder.svg"}
-                    alt={member.name}
-                    className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
-                  />
-                  <CardTitle className="text-2xl font-extrabold tracking-tight text-blue-900 mb-1">{member.name}</CardTitle>
-                  <CardDescription className="text-blue-600 font-medium">{member.role}</CardDescription>
-                  <CardContent>
+              <Card
+                key={index}
+                className="group relative rounded-2xl p-[1px] 
+          bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 
+          shadow-[0_10px_30px_rgba(17,24,39,0.08)] 
+          hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] 
+          transition-shadow h-full"
+              >
+                {/* h-full important for equal height */}
+                <CardHeader
+                  className="h-full flex flex-col justify-between relative rounded-2xl 
+            bg-white/80 backdrop-blur-xl p-6 text-center 
+            transition-transform duration-300 group-hover:-translate-y-1 
+            group-hover:scale-[1.01] ring-1 ring-transparent 
+            group-hover:ring-blue-200/60"
+                >
+                  <div>
+                    <img
+                      src={member.image || "/placeholder.svg"}
+                      alt={member.name}
+                      className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+                    />
+                    <CardTitle className="text-2xl font-extrabold tracking-tight text-blue-900 mb-1">
+                      {member.name}
+                    </CardTitle>
+                    <CardDescription className="text-blue-600 font-medium">
+                      {member.role}
+                    </CardDescription>
+                  </div>
+
+                  <CardContent className="mt-4">
                     <p className="text-gray-600 text-sm">{member.description}</p>
                   </CardContent>
                 </CardHeader>
-
               </Card>
             ))}
           </div>
         </div>
       </section>
+
 
       {/* Stats */}
       <section className="py-16 px-4 bg-gray-50 m-5">
@@ -307,44 +381,85 @@ export default function AboutPage() {
             <h2 className="mb-6 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">
               Our Impact in <span className="text-[#00A5E0]">Numbers</span>
             </h2>
-            <p className="text-xl text-gray-600">Measurable results of our commitment to social welfare</p>
+            <p className="text-xl text-gray-600">
+              Measurable results of our commitment to social welfare
+            </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Families Helped */}
-            <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
-              <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-10 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+            <div className="group relative rounded-2xl p-[1px] h-full 
+        bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 
+        shadow-[0_10px_30px_rgba(17,24,39,0.08)] 
+        hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] 
+        transition-shadow">
+              <div className="h-full flex flex-col justify-between relative rounded-2xl 
+          bg-white/80 backdrop-blur-xl p-10 text-center 
+          transition-transform duration-300 group-hover:-translate-y-1 
+          group-hover:scale-[1.01] ring-1 ring-transparent 
+          group-hover:ring-blue-200/60">
                 <div className="text-4xl font-extrabold text-blue-600 mb-2">500+</div>
-                <p className="text-gray-600 font-medium">Families Helped By Us in all over Pakistan</p>
+                <p className="text-gray-600 font-medium">
+                  Families Helped By Us in all over Pakistan
+                </p>
               </div>
             </div>
 
             {/* Total Assistance */}
-            <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
-              <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-8 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+            <div className="group relative rounded-2xl p-[1px] h-full 
+        bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 
+        shadow-[0_10px_30px_rgba(17,24,39,0.08)] 
+        hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] 
+        transition-shadow">
+              <div className="h-full flex flex-col justify-between relative rounded-2xl 
+          bg-white/80 backdrop-blur-xl p-10 text-center 
+          transition-transform duration-300 group-hover:-translate-y-1 
+          group-hover:scale-[1.01] ring-1 ring-transparent 
+          group-hover:ring-blue-200/60">
                 <div className="text-4xl font-extrabold text-green-600 mb-2">PKR 500M+</div>
                 <p className="text-gray-600 font-medium">Total Assistance</p>
               </div>
             </div>
 
             {/* Welfare Programs */}
-            <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
-              <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-10 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+            <div className="group relative rounded-2xl p-[1px] h-full 
+        bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 
+        shadow-[0_10px_30px_rgba(17,24,39,0.08)] 
+        hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] 
+        transition-shadow">
+              <div className="h-full flex flex-col justify-between relative rounded-2xl 
+          bg-white/80 backdrop-blur-xl p-10 text-center 
+          transition-transform duration-300 group-hover:-translate-y-1 
+          group-hover:scale-[1.01] ring-1 ring-transparent 
+          group-hover:ring-blue-200/60">
                 <div className="text-4xl font-extrabold text-purple-600 mb-2">12</div>
-                <p className="text-gray-600 font-medium">Welfare Programs in all over Pakistan</p>
+                <p className="text-gray-600 font-medium">
+                  Welfare Programs in all over Pakistan
+                </p>
               </div>
             </div>
 
             {/* Success Rate */}
-            <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
-              <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-10 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+            <div className="group relative rounded-2xl p-[1px] h-full 
+        bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 
+        shadow-[0_10px_30px_rgba(17,24,39,0.08)] 
+        hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] 
+        transition-shadow">
+              <div className="h-full flex flex-col justify-between relative rounded-2xl 
+          bg-white/80 backdrop-blur-xl p-10 text-center 
+          transition-transform duration-300 group-hover:-translate-y-1 
+          group-hover:scale-[1.01] ring-1 ring-transparent 
+          group-hover:ring-blue-200/60">
                 <div className="text-4xl font-extrabold text-orange-600 mb-2">94%</div>
-                <p className="text-gray-600 font-medium">Success Rate in all over Pakistan</p>
+                <p className="text-gray-600 font-medium">
+                  Success Rate in all over Pakistan
+                </p>
               </div>
             </div>
           </div>
         </div>
       </section>
+
 
 
       {/* CTA */}

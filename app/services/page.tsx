@@ -240,7 +240,7 @@ export default function ServicesPage() {
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <section
-        className="relative py-20 px-4 bg-cover bg-center bg-fixed"
+        className="relative py-20 px-4 bg-cover bg-center bg-fixed h-[70vh] flex flex-col items-center justify-center text-center"
         style={{
           backgroundImage:
             "url('https://png.pngtree.com/background/20210711/original/pngtree-caring-for-the-elderly-public-welfare-design-psd-layering-picture-image_1125477.jpg')",
@@ -300,59 +300,85 @@ export default function ServicesPage() {
       <section className="py-10 px-2 sm:py-16 sm:px-4">
         <div className="container mx-auto">
           <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl xs:text-3xl sm:text-4xl font-bold text-gray-900 mb-2 sm:mb-4">All Welfare Programs</h2>
-            <p className="text-base xs:text-lg sm:text-xl text-gray-600">Choose the program that best fits your needs</p>
+            <h2 className="mb-4 sm:mb-6 text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">
+              All Walfare <span className="text-[#00A5E0]"> Programs</span>
+            </h2>
+            {/* <h2 className="text-2xl xs:text-3xl sm:text-4xl font-bold text-gray-900 mb-2 sm:mb-4">
+              All Welfare Programs
+            </h2> */}
+            <p className="text-base xs:text-lg sm:text-xl text-gray-600">
+              Choose the program that best fits your needs
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-            {services.map((service) => {
-              const colorClasses = getColorClasses(service.color)
-              const [gradientClasses, badgeClasses] = colorClasses.split(" bg-")
+            {services.map((service, i) => (
+              <motion.div
+                key={service.id}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                viewport={{ once: true }}
+                className="group relative rounded-2xl p-[1px] 
+                     bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 
+                     shadow-[0_10px_30px_rgba(17,24,39,0.08)] 
+                     hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] 
+                     transition-shadow"
+              >
+                <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl 
+                          p-6 sm:p-8 h-full 
+                          transition-transform duration-300 
+                          group-hover:-translate-y-1 group-hover:scale-[1.01] 
+                          ring-1 ring-transparent group-hover:ring-blue-200/60">
 
-              return (
-                <Card
-                  key={service.id}
-                  className="group hover:shadow-2xl transition-all duration-300 border-0 shadow-lg rounded-2xl overflow-hidden hover:-translate-y-2"
-                >
-                  <CardHeader>
-                    <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between mb-4 gap-2 xs:gap-0">
-                      <div
-                        className={`w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br ${gradientClasses} rounded-full flex items-center justify-center shadow-md`}
-                      >
-                        <service.icon className="h-7 w-7 sm:h-8 sm:w-8 text-white" />
-                      </div>
-                      <div className="text-left xs:text-right mt-2 xs:mt-0">
-                        <Badge className={`bg-${badgeClasses} mb-2`}>{service.beneficiaries} helped</Badge>
-                        <div className="text-xs sm:text-sm text-gray-600">{service.successRate} success rate</div>
+                  {/* Header */}
+                  <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between mb-4 gap-2 xs:gap-0">
+                    <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-cyan-500 to-blue-600 
+                              rounded-full flex items-center justify-center shadow-md">
+                      <service.icon className="h-7 w-7 sm:h-8 sm:w-8 text-white" />
+                    </div>
+                    <div className="text-left xs:text-right mt-2 xs:mt-0">
+                      <span className="inline-block text-xs px-3 py-1 rounded-full bg-blue-100 text-blue-700 font-medium mb-2">
+                        {service.beneficiaries} helped
+                      </span>
+                      <div className="text-xs sm:text-sm text-gray-600">
+                        {service.successRate} success rate
                       </div>
                     </div>
-                    <CardTitle className="text-gray-900 text-lg sm:text-xl group-hover:text-blue-600 transition-colors">
-                      {service.title}
-                    </CardTitle>
-                    <CardDescription className="text-gray-600 text-sm sm:text-base">{service.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
-                      {service.details.map((detail, idx) => (
-                        <div key={idx} className="flex items-start space-x-2 sm:space-x-3">
-                          <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                          <span className="text-xs sm:text-sm text-gray-600">{detail}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <Button className="w-full rounded-full mt-2" asChild>
-                      <Link href={`/signup?service=${service.id}`}>
-                        Apply for {service.title}
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Link>
-                    </Button>
-                  </CardContent>
-                </Card>
-              )
-            })}
+                  </div>
+
+                  {/* Title + Description */}
+                  <h3 className="text-gray-900 text-lg sm:text-xl font-semibold mb-2 group-hover:text-blue-600 transition-colors">
+                    {service.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm sm:text-base mb-4">
+                    {service.description}
+                  </p>
+
+                  {/* Details */}
+                  <div className="space-y-2 sm:space-y-3 mb-6">
+                    {service.details.map((detail, idx) => (
+                      <div key={idx} className="flex items-start space-x-2 sm:space-x-3">
+                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-xs sm:text-sm text-gray-600">{detail}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* CTA Button */}
+                  <Button className="w-full mt-auto bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white" asChild>
+                    <Link href={`/signup?service=${service.id}`}>
+                      Apply for {service.title}
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
+
 
       {/* How to Apply */}
       <section
@@ -365,30 +391,56 @@ export default function ServicesPage() {
           backgroundAttachment: 'fixed',
         }}
       >
-  <div className="absolute inset-0 bg-white/40 sm:bg-white/30 pointer-events-none z-0"></div>
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-white/40 sm:bg-white/30 pointer-events-none z-0"></div>
+
         <div className="container mx-auto relative z-10">
+          {/* Section Heading */}
           <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl xs:text-3xl sm:text-4xl font-bold text-gray-900 mb-2 sm:mb-4">How to Apply</h2>
-            <p className="text-base xs:text-lg sm:text-xl text-gray-600">Simple steps to access our services</p>
+            <h2 className="mb-4 sm:mb-6 text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">
+              How to  <span className="text-[#00A5E0]">  Apply</span>
+            </h2>
+            <p className="text-base xs:text-lg sm:text-xl text-gray-900">
+              Simple steps to access our services
+            </p>
           </div>
+
+          {/* Steps Grid */}
           <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
             {[
-              { step: "1", title: "Choose Service", desc: "Select the program that matches your needs", color: "from-blue-500 to-blue-600" },
-              { step: "2", title: "Submit Application", desc: "Fill out the online application form", color: "from-green-500 to-green-600" },
-              { step: "3", title: "Review Process", desc: "Our team reviews your application", color: "from-purple-500 to-purple-600" },
-              { step: "4", title: "Receive Support", desc: "Get approved and receive assistance", color: "from-orange-500 to-orange-600" },
+              { step: "1", title: "Choose Service", desc: "Select the program that matches your needs" },
+              { step: "2", title: "Submit Application", desc: "Fill out the online application form" },
+              { step: "3", title: "Review Process", desc: "Our team reviews your application" },
+              { step: "4", title: "Receive Support", desc: "Get approved and receive assistance" },
             ].map((item, idx) => (
-              <div key={idx} className="text-center relative">
-                <div className={`w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br ${item.color} rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg`}>
-                  <span className="text-xl sm:text-2xl font-bold text-white">{item.step}</span>
+              <div
+                key={idx}
+                className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60
+            shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow"
+              >
+                <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-3 sm:p-8 h-full text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+
+                  {/* Number Badge (Top Left) */}
+                  <div className="absolute -top-4 -left-4 w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
+                    <span className="text-lg sm:text-xl font-bold text-white">{item.step}</span>
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="font-semibold mb-2 text-[#1B0073] text-2xl sm:text-base mt-6">
+                    {item.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-xs sm:text-sm text-gray-600">
+                    {item.desc}
+                  </p>
                 </div>
-                <h3 className="font-semibold mb-1 sm:mb-2 text-gray-900 text-sm sm:text-base">{item.title}</h3>
-                <p className="text-xs sm:text-sm text-gray-600">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
+
 
       {/* Call to Action Section */}
       <CallToAction />
