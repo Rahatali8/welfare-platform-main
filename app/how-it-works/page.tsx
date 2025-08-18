@@ -1,6 +1,6 @@
 'use client'
 import { Button } from "@/components/ui/button"
-import { FileText, Search, Users, CheckCircle, Clock, Shield, Phone, Mail, AlertCircle, Info } from "lucide-react"
+import { FileText, Search, Users, CheckCircle, Clock, Shield, Phone, Mail, AlertCircle, Info, BookOpen, MapPin, RefreshCw } from "lucide-react"
 import { motion } from "framer-motion"
 import Link from "next/link"
 
@@ -13,10 +13,12 @@ export default function HowItWorksPage() {
       icon: FileText,
       image: "/how-work-1.png",
       details: [
-        "Complete personal and family information",
-        "Upload required documents (CNIC, income proof, etc.)",
-        "Select the type of assistance needed",
-        "Provide detailed explanation of your situation",
+        "Complete personal, family, and contact information",
+        "Upload required documents (CNIC, income proof, utility bills, etc.)",
+        "Select the exact type of assistance you are applying for",
+        "Provide a clear explanation of your financial condition",
+        "Attach any medical, educational, or other relevant certificates",
+        "Review and confirm your application before submitting",
       ],
       timeframe: "5-10 minutes",
       color: "blue",
@@ -28,10 +30,11 @@ export default function HowItWorksPage() {
       icon: Search,
       image: "/how-work-2.png",
       details: [
-        "Document verification and authenticity check",
-        "Basic eligibility criteria assessment",
-        "Contact information verification",
-        "Initial background screening",
+        "Verify authenticity of uploaded CNIC and documents",
+        "Assess eligibility against program requirements",
+        "Cross-check provided income and employment details",
+        "Contact applicant for clarification if needed",
+        "Prepare case file for field investigation",
       ],
       timeframe: "24-48 hours",
       color: "green",
@@ -41,12 +44,14 @@ export default function HowItWorksPage() {
       title: "Field Investigation",
       description: "On-ground verification by our field team",
       icon: Users,
-      image: "/",
+      image: "/how-work-3.png",
       details: [
         "Home visit by certified field officer",
-        "Neighbor and community verification",
-        "Income and asset assessment",
-        "Family situation evaluation",
+        "Interview with applicant and family members",
+        "Neighbor and community verification for credibility",
+        "Assessment of living conditions and assets",
+        "Collection of photographic evidence and reports",
+        "Submission of field report to committee",
       ],
       timeframe: "3-5 working days",
       color: "purple",
@@ -58,10 +63,12 @@ export default function HowItWorksPage() {
       icon: CheckCircle,
       image: "/hero2.jpg",
       details: [
-        "Case presentation to welfare committee",
-        "Thorough review of all documentation",
-        "Decision based on need and eligibility",
-        "Approval notification sent to applicant",
+        "Case presentation to welfare committee members",
+        "Review of application, documents, and field report",
+        "Evaluation based on urgency, need, and transparency",
+        "Approval, rejection, or conditional recommendation",
+        "Applicant notified via SMS, email, or phone call",
+        "Approved cases forwarded for disbursement",
       ],
       timeframe: "7-10 working days",
       color: "orange",
@@ -123,60 +130,60 @@ export default function HowItWorksPage() {
 
   return (
     <div className="min-h-screen bg-white">
-            {/* Hero Section */}
-            <section
-              className="relative py-20 px-4 bg-cover bg-center bg-fixed"
-              style={{
-                backgroundImage:
-                  "url('https://png.pngtree.com/background/20210711/original/pngtree-caring-for-the-elderly-public-welfare-design-psd-layering-picture-image_1125477.jpg')",
-              }}
+      {/* Hero Section */}
+      <section
+        className="relative py-20 px-4 bg-cover bg-center bg-fixed"
+        style={{
+          backgroundImage:
+            "url('https://png.pngtree.com/background/20210711/original/pngtree-caring-for-the-elderly-public-welfare-design-psd-layering-picture-image_1125477.jpg')",
+        }}
+      >
+        {/* Overlay for opacity */}
+        <div className="absolute inset-0 bg-black/40"></div>
+
+        <div className="container mx-auto text-center relative z-10">
+          {/* Heading */}
+          <motion.h1
+            className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-lg"
+            animate={{ scale: [1, 1.03, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <span className="text-[#1B0073]">Simple </span>{" "}
+            <span className="text-[#00A5E0]">4-Step Process</span>
+          </motion.h1>
+
+          {/* Subtext */}
+          <motion.p
+            className="text-base xs:text-lg sm:text-xl mb-8 max-w-3xl mx-auto text-gray-100 opacity-90"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            Getting assistance has never been easier. Our streamlined process ensures quick, fair, and transparent
+            evaluation of every application.
+          </motion.p>
+
+          {/* Buttons */}
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Button
+              size="lg"
+              className="bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white"
+              asChild
             >
-              {/* Overlay for opacity */}
-              <div className="absolute inset-0 bg-black/40"></div>
-      
-              <div className="container mx-auto text-center relative z-10">
-                {/* Heading */}
-                <motion.h1
-                  className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-lg"
-                  animate={{ scale: [1, 1.03, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  <span className="text-[#1B0073]">Simple </span>{" "}
-                  <span className="text-[#00A5E0]">4-Step Process</span>
-                </motion.h1>
-      
-                {/* Subtext */}
-                <motion.p
-                  className="text-base xs:text-lg sm:text-xl mb-8 max-w-3xl mx-auto text-gray-100 opacity-90"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6 }}
-                >
-                    Getting assistance has never been easier. Our streamlined process ensures quick, fair, and transparent
-              evaluation of every application.
-                </motion.p>
-      
-                {/* Buttons */}
-                <div className="flex flex-col sm:flex-row justify-center gap-4">
-                  <Button
-                    size="lg"
-                    className="bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white"
-                    asChild
-                  >
-                    <Link href="/apply">Start Application</Link>
-                  </Button>
-      
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="border-2  text-[#1B0073] hover:bg-[#00A5E0] hover:text-white"
-                    asChild
-                  >
-                    <Link href="/services">View Services</Link>
-                  </Button>
-                </div>
-              </div>
-            </section>
+              <Link href="/signup">Start Application</Link>
+            </Button>
+
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-2  text-[#1B0073] hover:bg-[#00A5E0] hover:text-white"
+              asChild
+            >
+              <Link href="/services">View Services</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
 
 
       {/* Process Steps */}
@@ -329,62 +336,129 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
-      
+
 
       {/* Contact Support */}
       <section className="py-20 px-4">
         <div className="container mx-auto">
           <div className="grid md:grid-cols-2 gap-8 items-stretch">
-            <div className="relative rounded-3xl p-[1px] bg-gradient-to-r from-blue-600 to-cyan-600 shadow-[0_20px_40px_rgba(17,24,39,0.12)]">
-              <div className="rounded-3xl bg-gradient-to-r from-blue-600 to-cyan-600 p-10 text-white h-full">
-                <h2 className="text-5xl font-bold mb-4">Need Help with Your Application?</h2>
-                <p className="text-lg mb-8 max-w-2xl">
-                  Our support team is here to help you through every step of the process.
-                </p>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <Phone className="h-5 w-5" />
-                    <span className="text-base">+92 42 111 786 786</span>
+            <div className="relative rounded-3xl p-[2px] bg-gradient-to-r from-[#1B0073] to-[#00A5E0] shadow-2xl">
+              <div className="rounded-3xl bg-gradient-to-r from-[#1B0073]/90 to-[#00A5E0]/90 p-12 sm:p-16 text-white h-full flex flex-col justify-between">
+
+                {/* Heading & Description */}
+                <div className="max-w-3xl">
+                  <h2 className="text-4xl sm:text-5xl font-extrabold mb-4 drop-shadow-lg">
+                    Need Help with Your Application?
+                  </h2>
+                  <p className="text-lg sm:text-xl mb-8 text-gray-100/90">
+                    Our dedicated support team is here to guide you through every step of the process. Reach out anytime for assistance.
+                  </p>
+                </div>
+
+                {/* Contact Info */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                  <div className="flex items-center gap-3 rounded-xl p-4">
+                    <Phone className="h-6 w-6 text-white" />
+                    <span className="text-base sm:text-md font-light">+92 42 111 786 786</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Mail className="h-5 w-5" />
-                    <span className="text-base">support@idaraalkhair.com</span>
+                  <div className="flex items-center gap-3 rounded-xl p-4">
+                    <Mail className="h-6 w-6 text-white" />
+                    <span className="text-base sm:text-md font-light">support@idaraalkhair.com</span>
                   </div>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-4 mt-10">
-                  <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100" asChild>
-                    <Link href="/apply">Start Your Application</Link>
+
+                {/* Buttons */}
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button
+                    size="lg"
+                    className="bg-white text-[#1B0073] font-semibold hover:bg-gray-100 shadow-lg transition"
+                    asChild
+                  >
+                    <Link href="/signup">Start Your Application</Link>
                   </Button>
                   <Button
                     size="lg"
                     variant="outline"
-                    className="border-white text-white hover:bg-white hover:text-blue-600 bg-transparent"
+                    className="border-white text-white hover:bg-white hover:text-[#1B0073] bg-transparent font-semibold shadow transition"
                     asChild
                   >
                     <Link href="/contact">Contact Support</Link>
                   </Button>
                 </div>
               </div>
+
+              {/* Optional Decorative Glow */}
+              <div className="absolute -bottom-10 -right-10 w-48 h-48 rounded-full bg-gradient-to-tr from-[#00A5E0]/50 to-[#1B0073]/50 blur-3xl pointer-events-none"></div>
+              <div className="absolute -top-10 -left-10 w-48 h-48 rounded-full bg-gradient-to-tr from-[#1B0073]/50 to-[#00A5E0]/50 blur-3xl pointer-events-none"></div>
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-6">
-              <div className="rounded-2xl p-6 bg-white/80 backdrop-blur-xl shadow-[0_10px_30px_rgba(17,24,39,0.08)]">
-                <h4 className="text-blue-900 font-semibold mb-2">Office Hours</h4>
-                <p className="text-sm text-gray-600">Mon–Sat, 9:00 AM – 6:00 PM</p>
-              </div>
-              <div className="rounded-2xl p-6 bg-white/80 backdrop-blur-xl shadow-[0_10px_30px_rgba(17,24,39,0.08)]">
-                <h4 className="text-blue-900 font-semibold mb-2">Response Time</h4>
-                <p className="text-sm text-gray-600">We usually respond within 24 hours</p>
-              </div>
-              <div className="rounded-2xl p-6 bg-white/80 backdrop-blur-xl shadow-[0_10px_30px_rgba(17,24,39,0.08)]">
-                <h4 className="text-blue-900 font-semibold mb-2">Visit Center</h4>
-                <p className="text-sm text-gray-600">Find your nearest welfare center</p>
-              </div>
-              <div className="rounded-2xl p-6 bg-white/80 backdrop-blur-xl shadow-[0_10px_30px_rgba(17,24,39,0.08)]">
-                <h4 className="text-blue-900 font-semibold mb-2">Guidelines</h4>
-                <p className="text-sm text-gray-600">Read the do’s and don’ts before applying</p>
-              </div>
+
+            <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-6">
+              {[
+                {
+                  title: "Office Hours",
+                  text: "Mon–Sat, 9:00 AM – 6:00 PM",
+                  image: "/how-work-1.png",
+                  extra: "Always available to assist you during working hours",
+                  color: "from-blue-400 to-blue-600",
+                  icon: Clock,
+                },
+                {
+                  title: "Response Time",
+                  text: "We usually respond within 24 hours",
+                  extra: "Fast, reliable responses for urgent inquiries",
+                  image: "/how-work-2.png",
+                  color: "from-green-400 to-green-600",
+                  icon: RefreshCw,
+                },
+                {
+                  title: "Visit Center",
+                  text: "Find your nearest welfare center",
+                  extra: "Locate centers easily with real-time directions",
+                  image: "/how-work-3.png",
+                  color: "from-purple-400 to-purple-600",
+                  icon: MapPin,
+                },
+                {
+                  title: "Guidelines",
+                  text: "Read the do’s and don’ts before applying",
+                  extra: "Ensure smooth application process by following instructions",
+                  image: "/how-work-4.png",
+                  color: "from-orange-400 to-orange-600",
+                  icon: BookOpen,
+                },
+              ].map((item, idx) => (
+                <div
+                  key={idx}
+                  className="relative group h-56 overflow-hidden rounded-2xl shadow-xl cursor-pointer"
+                >
+                  {/* Front Side */}
+                  <div className="absolute inset-0 bg-white/80 backdrop-blur-xl flex items-center transition-transform duration-500 group-hover:-translate-x-full">
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="w-1/3 h-full object-cover"
+                    />
+                    <div className="flex-1 p-6">
+                      <h4 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h4>
+                      <p className="text-gray-600">{item.text}</p>
+                    </div>
+                  </div>
+
+                  {/* Back Side */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-gray-900 via-gray-800 to-gray-900 text-white flex items-center transition-transform duration-500 group-hover:translate-x-0 translate-x-full p-6">
+                    <div className="flex-1">
+                      <h4 className="text-xl font-bold mb-2">{item.title}</h4>
+                      <p className="text-sm">{item.extra}</p>
+                    </div>
+                    <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center shadow-lg`}>
+                      <item.icon className="h-6 w-6 text-white" />
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
+
           </div>
         </div>
       </section>

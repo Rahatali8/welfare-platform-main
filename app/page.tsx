@@ -52,7 +52,8 @@ export default function HomePage() {
     {
       icon: DollarSign,
       title: "Financial Assistance",
-      description: "Emergency loans and microfinance for small businesses",
+      description:
+        "We provide emergency loans and microfinance solutions designed to uplift small businesses, support low-income families, and empower individuals to achieve financial stability. Our assistance ensures that people facing sudden financial crises can continue their livelihood with dignity and confidence.",
       color: "bg-green-100 text-green-600",
       cases: "2,400+ Cases",
       image: "/hero1.jpg",
@@ -61,7 +62,8 @@ export default function HomePage() {
     {
       icon: Stethoscope,
       title: "Medical Support",
-      description: "Healthcare assistance and medical emergency funds",
+      description:
+        "From covering hospital expenses to providing life-saving medicines, we ensure that patients receive timely healthcare assistance and financial support. Whether it is emergency surgery, chronic illness, or maternal care, our medical support programs bring relief to thousands of struggling families.",
       color: "bg-red-100 text-red-600",
       cases: "3,400+ Patients",
       image: "/disaster_relief_clean.jpg",
@@ -70,7 +72,8 @@ export default function HomePage() {
     {
       icon: GraduationCap,
       title: "Education Support",
-      description: "Scholarships and educational assistance programs",
+      description:
+        "We believe education is the key to breaking the cycle of poverty. Our scholarships, school supplies, and financial aid programs help deserving students continue their studies without interruptions. By investing in education, we open doors to brighter futures, better careers, and stronger communities.",
       color: "bg-blue-100 text-blue-600",
       cases: "1,200+ Students",
       image: "/hero2.jpg",
@@ -78,8 +81,9 @@ export default function HomePage() {
     },
     {
       icon: Home,
-      title: "Housing Assistance",
-      description: "Home construction and repair support",
+      title: "Marriage Support",
+      description:
+        "Through financial aid, household setup support, and dowry assistance, we help underprivileged families manage marriage expenses with dignity and ease. Our marriage support programs reduce financial stress and help young couples begin their new journey with hope and stability.",
       color: "bg-purple-100 text-purple-600",
       cases: "800+ Homes",
       image: "/welfare-work.png",
@@ -87,8 +91,9 @@ export default function HomePage() {
     },
     {
       icon: Utensils,
-      title: "Food Security",
-      description: "Monthly ration and emergency food supplies",
+      title: "Business Development",
+      description:
+        "We assist aspiring entrepreneurs by providing seed capital, guidance, and resources to help them start or expand small businesses. By promoting self-reliance and sustainable livelihoods, our business development programs create opportunities for long-term income growth and community development.",
       color: "bg-orange-100 text-orange-600",
       cases: "5,600+ Families",
       image: "/placeholder.jpg",
@@ -97,13 +102,15 @@ export default function HomePage() {
     {
       icon: BookOpen,
       title: "Skill Development",
-      description: "Vocational training and capacity building",
+      description:
+        "Our vocational training programs and workshops equip individuals with practical skills, enabling them to secure better jobs and earn independently. From technical skills to craftwork, we empower people with knowledge that helps them build sustainable careers and uplift their families.",
       color: "bg-cyan-100 text-cyan-600",
       cases: "900+ Trained",
       image: "/user-female.jpg",
       href: "/services",
     },
   ]
+
 
   const achievements = [
     { number: "15+", label: "Years of Service", icon: Clock },
@@ -165,85 +172,85 @@ export default function HomePage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
+            {/* Card 1 */}
             <Card className="group relative h-64 overflow-hidden border-0 shadow-lg rounded-2xl bg-white">
-              {/* Glow accent for VIP feel */}
-              <div className="pointer-events-none absolute w-64 h-64 rounded-full bg-gradient-to-tr from-cyan-400/30 to-blue-600/30 blur-2xl bottom-[-4rem] right-[-4rem] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-
-              {/* Base image fades out on hover */}
-              <div className="absolute inset-0">
-                <img src="/welfare-work.png" alt="Verified Applications" className="w-full h-full object-cover transition-opacity duration-700 ease-out group-hover:opacity-0" />
+              {/* Image slides right */}
+              <div className="absolute inset-0 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-full">
+                <img
+                  src="/welfare-work.png"
+                  alt="Verified Applications"
+                  className="w-full h-full object-cover"
+                />
               </div>
 
-              {/* Half-circle image at bottom-right on hover */}
-              <div className="absolute bottom-0 right-0 w-44 h-44 opacity-0 translate-x-4 translate-y-4 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]">
-                <div className="relative w-full h-full [mask-image:radial-gradient(closest-side,black_70%,transparent_100%)] [mask-repeat:no-repeat]">
-                  <img src="/welfare-work.png" alt="Verified Applications" className="w-full h-full object-cover object-center" />
-                </div>
+
+              {/* Text slides left */}
+              <div className="absolute inset-0 p-6 flex flex-col justify-center items-start translate-x-[-100%] opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]">
+                <h3 className="text-xl font-semibold text-blue-900 mb-2">100% Verified</h3>
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  Every application undergoes rigorous verification by our dedicated team.
+                  We review documents, conduct field validations, and cross-check references
+                  to ensure authenticity.
+                </p>
               </div>
 
-              {/* Minimal label */}
+              {/* Label */}
               <div className="absolute bottom-3 left-3 bg-black/50 text-white text-xs px-3 py-1 rounded-md">
                 100% Verified
               </div>
-
-              {/* Text appears on hover and wraps around the circular image */}
-              <div className="absolute inset-0 p-5 translate-y-[-6px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]">
-                <div className="float-right w-40 h-40 rounded-full [shape-outside:circle(50%)] [shape-margin:0.2rem] ml-0 mt-20"></div>
-                <h3 className="text-xl font-semibold text-blue-900 mb-2">100% Verified</h3>
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  Every application undergoes rigorous verification by our dedicated team. We review documents,
-                  conduct field validations, and cross-check references to ensure authenticity.
-                </p>
-              </div>
             </Card>
 
+            {/* Card 2 */}
             <Card className="group relative h-64 overflow-hidden border-0 shadow-lg rounded-2xl bg-white">
-              <div className="pointer-events-none absolute w-64 h-64 rounded-full bg-gradient-to-tr from-cyan-400/30 to-blue-600/30 blur-2xl bottom-[-4rem] right-[-4rem] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-              {/* Base image fades out on hover */}
-              <div className="absolute inset-0">
-                <img src="/user-female.jpg" alt="Fast Processing" className="w-full h-full object-cover transition-opacity duration-700 ease-out group-hover:opacity-0" />
+              {/* Image slides right */}
+              <div className="absolute inset-0 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-full">
+                <img
+                  src="/user-female.jpg"
+                  alt="Fast Processing"
+                  className="w-full h-full object-cover"
+                />
               </div>
-              {/* Half-circle image */}
-              <div className="absolute bottom-0 right-0 w-44 h-44 opacity-0 translate-x-4 translate-y-4 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]">
-                <div className="relative w-full h-full [mask-image:radial-gradient(closest-side,black_70%,transparent_100%)] [mask-repeat:no-repeat]">
-                  <img src="/user-female.jpg" alt="Fast Processing" className="w-full h-full object-cover object-center" />
-                </div>
+
+              {/* Text slides left */}
+              <div className="absolute inset-0 p-6 flex flex-col justify-center items-start translate-x-[-100%] opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]">
+                <h3 className="text-xl font-semibold text-blue-900 mb-2">Fast Processing</h3>
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  Priority triage ensures urgent cases are processed first. Emergency requests
+                  are handled within 24 hours, and standard applications within 48 hours.
+                  Automation plus expert review makes it quick and reliable.
+                </p>
               </div>
+
+              {/* Label */}
               <div className="absolute bottom-3 left-3 bg-black/50 text-white text-xs px-3 py-1 rounded-md">
                 Fast Processing
               </div>
-              <div className="absolute inset-0 p-5 translate-y-[-6px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]">
-                <div className="float-right w-40 h-40 rounded-full [shape-outside:circle(50%)] [shape-margin:0.5rem] ml-0 mt-20"></div>
-                <h3 className="text-xl font-semibold text-blue-900 mb-2">Fast Processing</h3>
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  Priority triage ensures urgent cases are processed first. Emergency requests are handled within
-                  24 hours, and standard applications within 48 hours Automation plus expert. 
-                </p>
-              </div>
             </Card>
 
+            {/* Card 3 */}
             <Card className="group relative h-64 overflow-hidden border-0 shadow-lg rounded-2xl bg-white">
-              <div className="pointer-events-none absolute w-64 h-64 rounded-full bg-gradient-to-tr from-cyan-400/30 to-blue-600/30 blur-2xl bottom-[-4rem] right-[-4rem] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-              {/* Base image fades out on hover */}
-              <div className="absolute inset-0">
-                <img src="/user-male.png" alt="Nationwide Network" className="w-full h-full object-cover transition-opacity duration-700 ease-out group-hover:opacity-0" />
+              {/* Image slides right */}
+              <div className="absolute inset-0 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-full">
+                <img
+                  src="/user-male.png"
+                  alt="Nationwide Network"
+                  className="w-full h-full object-cover"
+                />
               </div>
-              {/* Half-circle image */}
-              <div className="absolute bottom-0 right-0 w-44 h-44 opacity-0 translate-x-4 translate-y-4 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]">
-                <div className="relative w-full h-full [mask-image:radial-gradient(closest-side,black_70%,transparent_100%)] [mask-repeat:no-repeat]">
-                  <img src="/user-male.png" alt="Nationwide Network" className="w-full h-full object-cover object-center" />
-                </div>
-              </div>
-              <div className="absolute bottom-3 left-3 bg-black/50 text-white text-xs px-3 py-1 rounded-md">
-                Nationwide Network
-              </div>
-              <div className="absolute inset-0 p-5 translate-y-[-6px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]">
-                <div className="float-right w-40 h-40 rounded-full [shape-outside:circle(50%)] [shape-margin:0.5rem] ml-0 mt-20"></div>
+
+              {/* Text slides left */}
+              <div className="absolute inset-0 p-6 flex flex-col justify-center items-start translate-x-[-100%] opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]">
                 <h3 className="text-xl font-semibold text-blue-900 mb-2">Nationwide Network</h3>
                 <p className="text-sm text-gray-700 leading-relaxed">
-                  With 50+ offices and 200+ field coordinators, we maintain a strong presence across all provinces.
-                  Local teams understand local needs—enabling faster verification.
+                  With 50+ offices and 200+ field coordinators, we maintain a strong presence
+                  across all provinces. Local teams understand local needs—enabling faster
+                  verification and smoother assistance delivery.
                 </p>
+              </div>
+
+              {/* Label */}
+              <div className="absolute bottom-3 left-3 bg-black/50 text-white text-xs px-3 py-1 rounded-md">
+                Nationwide Network
               </div>
             </Card>
           </div>
@@ -284,7 +291,7 @@ export default function HomePage() {
                 </div>
                 <div className="relative z-10 h-full flex flex-col">
                   <div className="p-5 flex items-center gap-3">
-                    <div className={`w-12 h-12 ${service.color} rounded-xl flex items-center justify-center shadow-sm`}> 
+                    <div className={`w-12 h-12 ${service.color} rounded-xl flex items-center justify-center shadow-sm`}>
                       <service.icon className="h-6 w-6" />
                     </div>
                     <div>
@@ -305,7 +312,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      
+
 
       {/* How It Works */}
       <section className="py-24 bg-gradient-to-b from-white to-gray-50">
@@ -326,7 +333,7 @@ export default function HomePage() {
                 { step: "02", title: "Verification", desc: "Our team validates your documents and information.", icon: Clock },
                 { step: "03", title: "Review", desc: "Experts assess your case and finalize the assistance.", icon: Target },
                 { step: "04", title: "Disbursement", desc: "Funds or support are delivered quickly and safely.", icon: DollarSign },
-            ].map((item, index) => (
+              ].map((item, index) => (
                 <div key={index} className="relative">
                   <div
                     className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow"
@@ -350,7 +357,7 @@ export default function HomePage() {
                   </div>
                 </div>
               ))}
-              </div>
+            </div>
           </div>
         </div>
       </section>

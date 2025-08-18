@@ -151,26 +151,45 @@ export default function AboutPage() {
       <section className="py-10 px-2 sm:py-16 sm:px-4 bg-gray-50 m-2 sm:m-5">
         <div className="container mx-auto">
           <div className="text-center mb-8 sm:mb-12">
-            <h2 className="mb-4 sm:mb-6 text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">Our Core <span className="text-[#00A5E0]">Values</span></h2>
+            <h2 className="mb-4 sm:mb-6 text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">
+              Our Core <span className="text-[#00A5E0]">Values</span>
+            </h2>
             <p className="text-base sm:text-xl text-gray-600">The principles that guide everything we do</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-10 sm:mb-16">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-10 sm:mb-16 items-stretch">
             {values.map((value, index) => (
-              <Card key={index} className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
-                <CardHeader className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-4 sm:p-6 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
-                  <div className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center shadow-sm">
+              <Card
+                key={index}
+                className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 
+          shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] 
+          transition-shadow h-full"
+              >
+                <CardHeader
+                  className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-4 sm:p-6 text-center 
+            transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] 
+            ring-1 ring-transparent group-hover:ring-blue-200/60 h-full flex flex-col justify-between"
+                >
+                  <div className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 w-10 h-10 sm:w-12 sm:h-12 
+            rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center shadow-sm">
                     <value.icon className="h-7 w-7 sm:h-8 sm:w-8 text-[#00A5E0]" />
                   </div>
-                  <CardTitle className="text-lg sm:text-2xl font-extrabold tracking-tight text-blue-900 mb-1">{value.title}</CardTitle>
-                  <CardContent>
-                    <p className="text-gray-600 text-xs sm:text-sm">{value.description}</p>
-                  </CardContent>
+
+                  <div>
+                    <CardTitle className="text-lg sm:text-2xl font-extrabold tracking-tight text-blue-900 mb-2">
+                      {value.title}
+                    </CardTitle>
+                    <CardContent>
+                      <p className="text-gray-600 text-xs sm:text-sm">{value.description}</p>
+                    </CardContent>
+                  </div>
                 </CardHeader>
               </Card>
             ))}
           </div>
         </div>
       </section>
+
 
 
       {/* Timeline - Horizontal Revealable Journey */}
@@ -237,14 +256,14 @@ export default function AboutPage() {
               <div className="h-1 w-16 bg-gradient-to-r from-blue-300 to-cyan-300 rounded-full" />
               <div className="flex flex-col items-center min-w-[260px]">
                 <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-full flex items-center justify-center shadow-xl border-4 border-white mb-4">
-                  <span className="text-white text-2xl font-extrabold drop-shadow-lg">{milestones[milestones.length-1].year}</span>
+                  <span className="text-white text-2xl font-extrabold drop-shadow-lg">{milestones[milestones.length - 1].year}</span>
                 </div>
                 <div className="bg-white rounded-2xl shadow-xl p-6 border border-blue-100 w-full max-w-xs">
                   <h3 className="text-xl font-bold text-blue-900 mb-2 flex items-center gap-2">
                     <span className="inline-block w-2 h-2 rounded-full bg-blue-400 mr-2"></span>
-                    {milestones[milestones.length-1].title}
+                    {milestones[milestones.length - 1].title}
                   </h3>
-                  <p className="text-gray-700 text-base leading-relaxed">{milestones[milestones.length-1].description}</p>
+                  <p className="text-gray-700 text-base leading-relaxed">{milestones[milestones.length - 1].description}</p>
                 </div>
               </div>
             </div>
@@ -281,55 +300,55 @@ export default function AboutPage() {
         </div>
       </section>
 
-{/* Stats */}
-<section className="py-16 px-4 bg-gray-50 m-5">
-  <div className="container mx-auto">
-    <div className="text-center mb-12">
-      <h2 className="mb-6 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">
-        Our Impact in <span className="text-[#00A5E0]">Numbers</span>
-      </h2>
-      <p className="text-xl text-gray-600">Measurable results of our commitment to social welfare</p>
-    </div>
+      {/* Stats */}
+      <section className="py-16 px-4 bg-gray-50 m-5">
+        <div className="container mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="mb-6 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">
+              Our Impact in <span className="text-[#00A5E0]">Numbers</span>
+            </h2>
+            <p className="text-xl text-gray-600">Measurable results of our commitment to social welfare</p>
+          </div>
 
-    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-      {/* Families Helped */}
-      <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
-        <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-10 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
-          <div className="text-4xl font-extrabold text-blue-600 mb-2">500+</div>
-          <p className="text-gray-600 font-medium">Families Helped By Us in all over Pakistan</p>
-        </div>
-      </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Families Helped */}
+            <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
+              <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-10 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+                <div className="text-4xl font-extrabold text-blue-600 mb-2">500+</div>
+                <p className="text-gray-600 font-medium">Families Helped By Us in all over Pakistan</p>
+              </div>
+            </div>
 
-      {/* Total Assistance */}
-      <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
-        <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-8 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
-          <div className="text-4xl font-extrabold text-green-600 mb-2">PKR 500M+</div>
-          <p className="text-gray-600 font-medium">Total Assistance</p>
-        </div>
-      </div>
+            {/* Total Assistance */}
+            <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
+              <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-8 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+                <div className="text-4xl font-extrabold text-green-600 mb-2">PKR 500M+</div>
+                <p className="text-gray-600 font-medium">Total Assistance</p>
+              </div>
+            </div>
 
-      {/* Welfare Programs */}
-      <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
-        <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-10 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
-          <div className="text-4xl font-extrabold text-purple-600 mb-2">12</div>
-          <p className="text-gray-600 font-medium">Welfare Programs in all over Pakistan</p>
-        </div>
-      </div>
+            {/* Welfare Programs */}
+            <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
+              <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-10 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+                <div className="text-4xl font-extrabold text-purple-600 mb-2">12</div>
+                <p className="text-gray-600 font-medium">Welfare Programs in all over Pakistan</p>
+              </div>
+            </div>
 
-      {/* Success Rate */}
-      <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
-        <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-10 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
-          <div className="text-4xl font-extrabold text-orange-600 mb-2">94%</div>
-          <p className="text-gray-600 font-medium">Success Rate in all over Pakistan</p>
+            {/* Success Rate */}
+            <div className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] transition-shadow">
+              <div className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-10 text-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] ring-1 ring-transparent group-hover:ring-blue-200/60">
+                <div className="text-4xl font-extrabold text-orange-600 mb-2">94%</div>
+                <p className="text-gray-600 font-medium">Success Rate in all over Pakistan</p>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
+      </section>
 
 
       {/* CTA */}
-      <CallToAction/>
+      <CallToAction />
     </div>
   )
 }
