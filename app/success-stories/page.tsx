@@ -148,7 +148,7 @@ export default function SuccessStoriesPage() {
     <div className="bg-white">
       {/* Hero Section */}
       <section
-        className="relative py-20 px-4 bg-cover bg-center bg-fixed"
+        className="relative py-20 px-4 bg-cover bg-center bg-fixed h-[70vh] flex flex-col items-center justify-center text-center"
         style={{
           backgroundImage:
             "url('https://png.pngtree.com/background/20210711/original/pngtree-caring-for-the-elderly-public-welfare-design-psd-layering-picture-image_1125477.jpg')",

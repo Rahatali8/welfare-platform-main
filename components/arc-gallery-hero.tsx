@@ -80,7 +80,7 @@ const ArcGalleryHero: React.FC<ArcGalleryHeroProps> = ({
     const currentBackgroundImage = backgroundImage !== null ? backgroundImage : autoSlideIndex
 
     return (
-        <section className={`relative overflow-hidden min-h-screen flex flex-col ${className}`}>
+        <section className={`relative overflow-hidden h-[88vh] flex flex-col mt-[-35px] ${className}`}>
             {/* Full Background Image */}
             <div className="absolute inset-0 z-0">
                 <div

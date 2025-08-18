@@ -94,7 +94,7 @@ export default function DashboardAnalytics() {
     <>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
         {/* Hero Banner Section */}
-        <section className="relative overflow-hidden rounded-b-3xl shadow-xl mb-10">
+        <section className="relative overflow-hidden rounded-b-3xl shadow-xl mb-10 h-[70vh] flex flex-col items-center justify-center text-center">
           <div className="absolute inset-0 bg-white" />
           <div className="relative z-10 max-w-7xl mx-auto px-6 py-16 flex flex-col md:flex-row items-center gap-10">
             <div className="flex-1 text-white space-y-6">

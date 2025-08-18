@@ -309,7 +309,7 @@ const CompleteHeroSection: React.FC = () => {
       `}</style>
 
       <section
-        className="relative overflow-hidden min-h-[88vh] pt-12 pb-12 md:pt-16 md:pb-16 lg:pt-20 lg:pb-20"
+        className="relative overflow-hidden min-h-[88vh] pt-0 pb-12 md:pt-0 md:pb-16 lg:pt-0 lg:pb-20 lg:mt-[-25px] w-full"
         style={backgroundStyle}
       >
         {/* Animated background overlay */}
@@ -369,7 +369,7 @@ const CompleteHeroSection: React.FC = () => {
             </p>
 
             {/* Enhanced Buttons with better styling */}
-            <div className="flex flex-col sm:flex-row gap-4 md:gap-6 pt-2 md:pt-3">
+            <div className="flex flex-col sm:flex-row gap-4 md:gap-6 pt-2 md:pt-3 ">
               {currentContent.buttons.map((buttonText, index) => (
                 <button
                   key={index}
@@ -383,7 +383,7 @@ const CompleteHeroSection: React.FC = () => {
                     }
                   }}
                   className={`px-6 md:px-8 py-3 md:py-3.5 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${index === 0
-                      ? "bg-[#1B0073] text-white hover:bg-[#1B0073] shadow-lg hover:shadow-xl"
+                      ? "bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white"
                       : "bg-white/10 backdrop-blur-[2px] border-2 border-[#00A5E0] text-white hover:bg-white/20 hover:border-[#00A5E0]"
                     }`}
                   style={{
