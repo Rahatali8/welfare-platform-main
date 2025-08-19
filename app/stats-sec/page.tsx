@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { MapPin, Phone, Users, Home, BookOpen } from 'lucide-react';
 import { BarChart as DayBarChart, Bar as DayBar, XAxis as DayXAxis, YAxis as DayYAxis, Tooltip as DayTooltip, ResponsiveContainer as DayResponsiveContainer, Legend as DayLegend, LineChart as SignupLineChart, Line as SignupLine } from 'recharts';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import CallToAction from '@/components/CTA-section';
 
 
 const COLORS = ['#38bdf8', '#06b6d4', '#fbbf24', '#f472b6', '#a3e635', '#f87171'];
@@ -15,10 +16,15 @@ const statusColors: Record<string, string> = {
 };
 
 const data = [
-  { name: "Jan", requests: 400 },
-  { name: "Feb", requests: 800 },
-  { name: "Mar", requests: 1200 },
-  { name: "Apr", requests: 1000 },
+  { name: "W 1", requests: 100 },
+  { name: "W 2", requests: 120 },
+  { name: "W 3", requests: 240 },
+  { name: "W 4", requests: 260 },
+  { name: "W 5", requests: 310 },
+  { name: "W 6", requests: 360 },
+  { name: "W 7", requests: 380 },
+  { name: "W 8", requests: 430 },
+  { name: "W 9", requests: 475 },
 ];
 
 export default function DashboardAnalytics() {
@@ -288,7 +294,7 @@ export default function DashboardAnalytics() {
               <div className="h-0.5 bg-gradient-to-l from-blue-600 via-cyan-500 to-transparent"></div>
             </div>
             <div className="text-center px-8">
-              <h2 className="text-3xl md:text-4xl font-extrabold text-[#1B0073]">Platform <span className="text-[#00A5E0]">Highlights</span></h2>
+              <h2 className="text-3xl md:text-5xl font-extrabold text-[#1B0073]">Platform <span className="text-[#00A5E0]">Highlights</span></h2>
             </div>
             <div className="hidden lg:block flex-1 ml-8">
               <div className="h-0.5 bg-gradient-to-r from-blue-600 via-cyan-500 to-transparent"></div>
@@ -410,6 +416,8 @@ export default function DashboardAnalytics() {
             </div>
           </div>
         </div>
+            <CallToAction/>
+
       </div>
     </>
   );

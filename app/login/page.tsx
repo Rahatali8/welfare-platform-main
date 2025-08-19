@@ -64,117 +64,120 @@ export default function LoginPage() {
   }
 
   return (
-<<<<<<< HEAD
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white rounded-full flex items-center justify-center mx-auto mb-4">
-            <Heart className="h-8 w-8 text-white" />
+    <div className="min-h-screen flex flex-col lg:flex-row">
+      {/* Left VIP Side */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0ea5e9] text-white relative overflow-hidden rounded-lg  items-center justify-center m-10 p-12">
+        <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-10"></div>
+        <div className="relative z-10 max-w-lg space-y-8">
+          <div className="w-16 h-16 bg-white/10 backdrop-blur rounded-full flex items-center justify-center shadow-lg">
+            <Heart className="h-8 w-8 text-cyan-400" />
           </div>
-          <h2 className="mb-2 sm:mb-6 text-xl sm:text-2xl lg:text-4xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">
-            Welcome  <span className="text-[#00A5E0]">  Back</span>
-          </h2>
-          <p className="mt-2 text-gray-600">Sign in to your Khair Welfare account</p>
-=======
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 flex items-center justify-center px-6 py-12">
-      <div className="w-full max-w-lg">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-r from-blue-700 to-cyan-500 rounded-full flex items-center justify-center mx-auto shadow-lg">
-            <Heart className="h-8 w-8 text-white" />
+          <h1 className="text-5xl font-extrabold leading-tight">Himayyat By Idara Al-khair</h1>
+          <p className="text-lg text-gray-200">
+            Empowering communities with transparent welfare support and donor-driven initiatives.
+          </p>
+          <div className="grid grid-cols-2 gap-6 pt-6">
+            <div className="p-6 bg-white/10 rounded-2xl backdrop-blur shadow-lg">
+              <h2 className="text-3xl font-bold">10K+</h2>
+              <p className="text-gray-300">Applications</p>
+            </div>
+            <div className="p-6 bg-white/10 rounded-2xl backdrop-blur shadow-lg">
+              <h2 className="text-3xl font-bold">95%</h2>
+              <p className="text-gray-300">Satisfaction</p>
+            </div>
           </div>
-          <h2 className="mt-4 text-3xl font-extrabold text-gray-800">Welcome Back</h2>
-          <p className="mt-2 text-gray-600">Sign in to continue supporting <span className="font-semibold text-blue-700">Khair Welfare</span></p>
->>>>>>> 6bcb690ccb1452cec37be8c7c390fb87f741076e
         </div>
+      </div>
 
-        {/* Card */}
-        <Card className="rounded-2xl shadow-xl border border-gray-100 backdrop-blur bg-white/90">
-          <CardHeader>
-            <CardTitle className="text-center text-xl text-blue-700">Sign In</CardTitle>
-            <CardDescription className="text-center text-gray-500">Access your donor dashboard</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* CNIC */}
-              <div className="space-y-2">
-                <Label htmlFor="cnic">CNIC Number</Label>
-                <Input
-                  id="cnic"
-                  type="text"
-                  autoComplete="off"
-                  placeholder="12345-1234567-1"
-                  value={cnic}
-                  onChange={handleCnicChange}
-                  required
-                  className="text-center text-lg tracking-wider border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-400"
-                />
-              </div>
-
-              {/* Password */}
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
+      {/* Right Side - Form */}
+      <div className="flex w-full lg:w-1/2 items-center justify-center p-8">
+        <div className="w-full max-w-md">
+          {/* Card */}
+          <Card className="rounded-2xl shadow-xl border border-gray-100 backdrop-blur bg-white/90">
+            <CardHeader>
+              <CardTitle className="text-center text-xl text-blue-700">Sign In</CardTitle>
+              <CardDescription className="text-center text-gray-500">
+                Access your dashboard And Get Assistance
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* CNIC */}
+                <div className="space-y-2">
+                  <Label htmlFor="cnic">CNIC Number</Label>
                   <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    id="cnic"
+                    type="text"
+                    autoComplete="off"
+                    placeholder="12345-1234567-1"
+                    value={cnic}
+                    onChange={handleCnicChange}
                     required
-                    className="pr-10 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-400"
+                    className="text-center text-lg tracking-wider border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-400"
                   />
-                  <button
-                    type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center "
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-5 w-5 text-gray-400" />
-                    ) : (
-                      <Eye className="h-5 w-5 text-gray-400" />
-                    )}
-                  </button>
                 </div>
-              </div>
 
-              {/* Forgot password */}
-              <div className="flex items-center justify-end">
-                <Link href="/forgot-password" className="text-sm text-blue-700 hover:underline">
-                  Forgot password?
+                {/* Password */}
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter your password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      className="pr-10 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-400"
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-5 w-5 text-gray-400" />
+                      ) : (
+                        <Eye className="h-5 w-5 text-gray-400" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Forgot password */}
+                <div className="flex items-center justify-end">
+                  <Link href="/forgot-password" className="text-sm text-blue-700 hover:underline">
+                    Forgot password?
+                  </Link>
+                </div>
+
+                {/* Error */}
+                {error && (
+                  <Alert className="border-red-200 bg-red-50">
+                    <AlertDescription className="text-red-800">{error}</AlertDescription>
+                  </Alert>
+                )}
+
+                {/* Button */}
+                <Button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-blue-700 to-cyan-500 hover:from-cyan-500 hover:to-blue-700 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  disabled={isLoading || cnic.replace(/\D/g, "").length !== 13}
+                >
+                  {isLoading ? "Signing in..." : "Sign In"}
+                </Button>
+              </form>
+
+              {/* Signup link */}
+              <div className="mt-6 text-center text-gray-600">
+                Don&apos;t have an account? {" "}
+                <Link href="/signup" className="text-blue-700 hover:underline font-medium">
+                  Sign up here
                 </Link>
               </div>
-
-              {/* Error */}
-              {error && (
-                <Alert className="border-red-200 bg-red-50">
-                  <AlertDescription className="text-red-800">{error}</AlertDescription>
-                </Alert>
-              )}
-
-              {/* Button */}
-              <Button
-                type="submit"
-<<<<<<< HEAD
-                className="w-full bg-gradient-to-r from-[#1B0073] to-[#00A5E0] hover:opacity-90 text-white"
-=======
-                className="w-full bg-gradient-to-r from-blue-700 to-cyan-500 hover:from-cyan-500 hover:to-blue-700 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
->>>>>>> 6bcb690ccb1452cec37be8c7c390fb87f741076e
-                disabled={isLoading || cnic.replace(/\D/g, "").length !== 13}
-              >
-                {isLoading ? "Signing in..." : "Sign In"}
-              </Button>
-            </form>
-
-            {/* Signup link */}
-            <div className="mt-6 text-center text-gray-600">
-              Don't have an account?{" "}
-              <Link href="/signup" className="text-blue-700 hover:underline font-medium">
-                Sign up here
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   )
