@@ -202,11 +202,12 @@ export default function SuccessStoriesPage() {
 
       {/* Impact Stats */}
       <section className="py-16 px-4 bg-gray-50 m-5">
+        <h1 className="text-center font-bold text-5xl text-[#1B0073] pb-10">Our Impect <span className="text-[#00A5E0]">In Numbers</span></h1>
         <div className="container mx-auto">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { value: "10,000+", label: "Success Stories", color: "text-green-600" },
-              { value: "PKR 50M+", label: "Lives Transformed", color: "text-blue-600" },
+              { value: "1000+", label: "Success Stories", color: "text-green-600" },
+              { value: "PKR 5M+", label: "Lives Transformed", color: "text-blue-600" },
               { value: "95%", label: "Success Rate", color: "text-purple-600" },
               { value: "150+", label: "Cities Covered", color: "text-orange-600" },
             ].map((stat, i) => (

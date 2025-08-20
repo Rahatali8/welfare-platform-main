@@ -53,7 +53,7 @@ export default function HomePage() {
       icon: DollarSign,
       title: "Financial Assistance",
       description:
-        "We provide emergency loans and microfinance solutions designed to uplift small businesses, support low-income families, and empower individuals to achieve financial stability. Our assistance ensures that people facing sudden financial crises can continue their livelihood with dignity and confidence.",
+        "We provide emergency loans and microfinance support to uplift small businesses, assist low-income families, and help individuals overcome sudden financial crises with dignity and confidence.",
       color: "bg-green-100 text-green-600",
       cases: "2,400+ Cases",
       image: "/hero1.jpg",
@@ -63,7 +63,7 @@ export default function HomePage() {
       icon: Stethoscope,
       title: "Medical Support",
       description:
-        "From covering hospital expenses to providing life-saving medicines, we ensure that patients receive timely healthcare assistance and financial support. Whether it is emergency surgery, chronic illness, or maternal care, our medical support programs bring relief to thousands of struggling families.",
+        "From covering hospital expenses to providing essential medicines, we ensure patients receive timely healthcare services and struggling families get much-needed relief during medical emergencies.",
       color: "bg-red-100 text-red-600",
       cases: "3,400+ Patients",
       image: "/disaster_relief_clean.jpg",
@@ -73,7 +73,7 @@ export default function HomePage() {
       icon: GraduationCap,
       title: "Education Support",
       description:
-        "We believe education is the key to breaking the cycle of poverty. Our scholarships, school supplies, and financial aid programs help deserving students continue their studies without interruptions. By investing in education, we open doors to brighter futures, better careers, and stronger communities.",
+        "Scholarships, school supplies, and financial aid programs help deserving students continue their studies, achieve academic excellence, and build brighter futures without interruptions or obstacles.",
       color: "bg-blue-100 text-blue-600",
       cases: "1,200+ Students",
       image: "/hero2.jpg",
@@ -83,7 +83,7 @@ export default function HomePage() {
       icon: Home,
       title: "Marriage Support",
       description:
-        "Through financial aid, household setup support, and dowry assistance, we help underprivileged families manage marriage expenses with dignity and ease. Our marriage support programs reduce financial stress and help young couples begin their new journey with hope and stability.",
+        "We ease marriage expenses through financial aid, dowry assistance, and household setup support, helping underprivileged families start new journeys with hope, dignity, and lasting stability.",
       color: "bg-purple-100 text-purple-600",
       cases: "800+ Homes",
       image: "/welfare-work.png",
@@ -93,7 +93,7 @@ export default function HomePage() {
       icon: Utensils,
       title: "Business Development",
       description:
-        "We assist aspiring entrepreneurs by providing seed capital, guidance, and resources to help them start or expand small businesses. By promoting self-reliance and sustainable livelihoods, our business development programs create opportunities for long-term income growth and community development.",
+        "We provide seed capital, expert guidance, and essential resources to help aspiring entrepreneurs start or expand small businesses, promoting self-reliance, growth, and sustainable livelihoods.",
       color: "bg-orange-100 text-orange-600",
       cases: "5,600+ Families",
       image: "/placeholder.jpg",
@@ -101,15 +101,18 @@ export default function HomePage() {
     },
     {
       icon: BookOpen,
-      title: "Skill Development",
+      title: "Livelihood Support",
       description:
-        "Our vocational training programs and workshops equip individuals with practical skills, enabling them to secure better jobs and earn independently. From technical skills to craftwork, we empower people with knowledge that helps them build sustainable careers and uplift their families.",
+        "Providing tools, sewing machines, carts, and small resources to deserving families so they can start earning with dignity, support their children’s education, and build a stable future.",
       color: "bg-cyan-100 text-cyan-600",
-      cases: "900+ Trained",
+      cases: "1200+ Families Supported",
       image: "/user-female.jpg",
       href: "/services",
     },
-  ]
+
+  ];
+
+
 
 
   const achievements = [
@@ -162,7 +165,7 @@ export default function HomePage() {
                     <achievement.icon className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
                   </div>
                   <div className="text-2xl sm:text-4xl font-extrabold tracking-tight text-blue-900 mb-1">{achievement.number}</div>
-                  <div className="text-xs sm:text-sm font-medium text-gray-600">{achievement.label}</div>
+                  <div className="text-xs sm:text-md font-medium text-gray-600">{achievement.label}</div>
                   <div className="absolute inset-0 rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
                     <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-tr from-transparent via-white/40 to-transparent animate-pulse [mask-image:linear-gradient(90deg,transparent,black,transparent)]"></div>
                   </div>
@@ -177,7 +180,7 @@ export default function HomePage() {
               {/* Image slides right */}
               <div className="absolute inset-0 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-full">
                 <img
-                  src="/welfare-work.png"
+                  src="/verify.png"
                   alt="Verified Applications"
                   className="w-full h-full object-cover"
                 />
@@ -187,7 +190,7 @@ export default function HomePage() {
               {/* Text slides left */}
               <div className="absolute inset-0 p-6 flex flex-col justify-center items-start translate-x-[-100%] opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]">
                 <h3 className="text-xl font-semibold text-blue-900 mb-2">100% Verified</h3>
-                <p className="text-sm text-gray-700 leading-relaxed">
+                <p className="text-md text-gray-600 leading-relaxed">
                   Every application undergoes rigorous verification by our dedicated team.
                   We review documents, conduct field validations, and cross-check references
                   to ensure authenticity.
@@ -195,7 +198,7 @@ export default function HomePage() {
               </div>
 
               {/* Label */}
-              <div className="absolute bottom-3 left-3 bg-black/50 text-white text-xs px-3 py-1 rounded-md">
+               <div className="absolute bottom-3 left-3 bg-black/50 text-white text-xs px-3 py-1 rounded-md drop-shadow-[0_0_8px_rgba(0,102,255,0.8)] animate-pulse">
                 100% Verified
               </div>
             </Card>
@@ -205,7 +208,7 @@ export default function HomePage() {
               {/* Image slides right */}
               <div className="absolute inset-0 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-full">
                 <img
-                  src="/user-female.jpg"
+                  src="/fast-p.png"
                   alt="Fast Processing"
                   className="w-full h-full object-cover"
                 />
@@ -214,7 +217,7 @@ export default function HomePage() {
               {/* Text slides left */}
               <div className="absolute inset-0 p-6 flex flex-col justify-center items-start translate-x-[-100%] opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]">
                 <h3 className="text-xl font-semibold text-blue-900 mb-2">Fast Processing</h3>
-                <p className="text-sm text-gray-700 leading-relaxed">
+                <p className="text-md text-gray-500 leading-relaxed">
                   Priority triage ensures urgent cases are processed first. Emergency requests
                   are handled within 24 hours, and standard applications within 48 hours.
                   Automation plus expert review makes it quick and reliable.
@@ -222,8 +225,8 @@ export default function HomePage() {
               </div>
 
               {/* Label */}
-              <div className="absolute bottom-3 left-3 bg-black/50 text-white text-xs px-3 py-1 rounded-md">
-                Fast Processing
+               <div className="absolute bottom-3 left-3 bg-black/50 text-white text-xs px-3 py-1 rounded-md drop-shadow-[0_0_8px_rgba(0,102,255,0.8)] animate-pulse">
+                Fast Process
               </div>
             </Card>
 
@@ -232,7 +235,7 @@ export default function HomePage() {
               {/* Image slides right */}
               <div className="absolute inset-0 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-full">
                 <img
-                  src="/user-male.png"
+                  src="/nation-w.png"
                   alt="Nationwide Network"
                   className="w-full h-full object-cover"
                 />
@@ -241,7 +244,7 @@ export default function HomePage() {
               {/* Text slides left */}
               <div className="absolute inset-0 p-6 flex flex-col justify-center items-start translate-x-[-100%] opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]">
                 <h3 className="text-xl font-semibold text-blue-900 mb-2">Nationwide Network</h3>
-                <p className="text-sm text-gray-700 leading-relaxed">
+                <p className="text-md text-gray-500 leading-relaxed">
                   With 50+ offices and 200+ field coordinators, we maintain a strong presence
                   across all provinces. Local teams understand local needs—enabling faster
                   verification and smoother assistance delivery.
@@ -249,7 +252,7 @@ export default function HomePage() {
               </div>
 
               {/* Label */}
-              <div className="absolute bottom-3 left-3 bg-black/50 text-white text-xs px-3 py-1 rounded-md">
+              <div className="absolute bottom-3 left-3 bg-black/50 text-white text-xs px-3 py-1 rounded-md drop-shadow-[0_0_8px_rgba(0,102,255,0.8)] animate-pulse">
                 Nationwide Network
               </div>
             </Card>
@@ -303,7 +306,7 @@ export default function HomePage() {
                 </div>
                 <div className="absolute inset-x-0 bottom-0 h-1/2 translate-y-full group-hover:translate-y-0 transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] opacity-0 group-hover:opacity-100">
                   <div className="bg-blue-50/95 backdrop-blur-sm p-5 h-full rounded-t-2xl border-t border-blue-100/80">
-                    <p className="text-sm text-gray-700">{service.description}</p>
+                    <p className="text-md text-light text-gray-500">{service.description}</p>
                   </div>
                 </div>
               </Link>
@@ -342,7 +345,7 @@ export default function HomePage() {
                     <div className="rounded-2xl bg-white/80 backdrop-blur-xl p-6 h-full transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01]">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 text-white flex items-center justify-center text-sm font-semibold shadow-sm">
+                          <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 text-white flex items-center justify-center text-md font-semibold shadow-sm">
                             {item.step}
                           </div>
                           <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shadow-sm">
@@ -352,7 +355,7 @@ export default function HomePage() {
                         <div className="hidden md:block w-10 h-10 rounded-full bg-gradient-to-tr from-white to-white/40 shadow-inner" />
                       </div>
                       <h3 className="text-lg font-semibold text-blue-900 mb-2">{item.title}</h3>
-                      <p className="text-sm text-gray-600 leading-relaxed">{item.desc}</p>
+                      <p className="text-md text-gray-600 leading-relaxed">{item.desc}</p>
                     </div>
                   </div>
                 </div>

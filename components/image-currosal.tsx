@@ -14,7 +14,7 @@ const carouselImages = [
   {
     src: "/welfare-work.png",
     alt: "Medical camp providing healthcare",
-    title: "Rozgar Se Mily Khudmukhtari",
+    title: "Rozgar Se Mily Gi Sabko Khudmukhtari",
     description: "Financial independence aur self-respect ka safar yahin se shuru hota hai.",
   },
   {
