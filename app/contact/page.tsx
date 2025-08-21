@@ -19,7 +19,7 @@ export default function ContactPage() {
       icon: Mail,
       title: "Email Support",
       description: "Send us your queries via email",
-      contact: "support@welfareplatform.org",
+      contact: "@welfareplatform.org",
       availability: "Response within 2 hours",
     },
     {
