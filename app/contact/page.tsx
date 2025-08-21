@@ -75,28 +75,50 @@ export default function ContactPage() {
       {/* Contact Methods */}
       <section className="py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          {/* Contact Methods Section */}
           <div className="text-center mb-16">
-            <h2 className="mb-4 sm:mb-6 text-5xl sm:text-5xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">
+            <h2 className="mb-4 sm:mb-6 text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">
               Multiple Ways<span className="text-[#00A5E0]"> to Reach Us</span>
             </h2>
-            <p className="text-xl text-gray-600">Choose the most convenient way to get in touch with our team</p>
+            <p className="text-base sm:text-xl text-gray-600">
+              Choose the most convenient way to get in touch with our team
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-20 items-stretch">
             {contactMethods.map((method, index) => (
-              <Card key={index} className="rounded-2xl bg-white shadow-md border h-full transition-transform duration-300 hover:-translate-y-1">
-                <CardHeader>
-                  <method.icon className="h-8 w-8 text-blue-700 mb-2" />
-                  <CardTitle className="text-lg text-[#1B0073]">{method.title}</CardTitle>
+              <Card
+                key={index}
+                className="group relative rounded-2xl p-[1px] bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-indigo-600/60 
+        shadow-[0_10px_30px_rgba(17,24,39,0.08)] hover:shadow-[0_20px_40px_rgba(17,24,39,0.12)] 
+        transition-shadow h-full"
+              >
+                <CardHeader
+                  className="relative rounded-2xl bg-white/80 backdrop-blur-xl p-4 sm:p-6 text-center 
+          transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-[1.01] 
+          ring-1 ring-transparent group-hover:ring-blue-200/60 h-full flex flex-col justify-between"
+                >
+                  {/* Icon top-right corner */}
+                  <div className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 w-10 h-10 sm:w-12 sm:h-12 
+          rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center shadow-sm">
+                    <method.icon className="h-6 w-6 sm:h-7 sm:w-7 text-[#00A5E0]" />
+                  </div>
+
+                  <div>
+                    <CardTitle className="text-lg sm:text-xl font-extrabold tracking-tight text-blue-900 mb-2">
+                      {method.title}
+                    </CardTitle>
+                    <CardContent className="text-center">
+                      <p className="text-gray-600 text-xs sm:text-sm">{method.description}</p>
+                      <p className="font-semibold text-blue-900 mt-2">{method.contact}</p>
+                      <Badge variant="secondary" className="text-xs mt-2">{method.availability}</Badge>
+                    </CardContent>
+                  </div>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 text-sm">{method.description}</p>
-                  <p className="font-semibold text-blue-900 mt-2">{method.contact}</p>
-                  <Badge variant="secondary" className="text-xs mt-2">{method.availability}</Badge>
-                </CardContent>
               </Card>
             ))}
           </div>
+
 
           {/* Left: Image with Hover Effect | Right: Info Card */}
           <div className="grid lg:grid-cols-2 gap-12">
@@ -154,7 +176,7 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
-      <CallToAction/>
+      <CallToAction />
     </div>
   )
 }
