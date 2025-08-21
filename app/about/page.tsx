@@ -325,7 +325,7 @@ export default function AboutPage() {
         <div className="container mx-auto">
           <div className="text-center mb-12">
             <h2 className="mb-6 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">
-              Meet <span className="text-[#00A5E0]">Our Team</span>
+              Meet Our <span className="text-[#00A5E0]">Visionary Leaders</span>
             </h2>
             <p className="text-xl text-gray-600">
               Dedicated professionals working to make a difference
