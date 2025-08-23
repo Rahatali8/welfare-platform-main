@@ -3,6 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
+import { useVoiceFormAgent, VoiceField } from "@/hooks/useVoiceFormAgent"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -25,6 +26,22 @@ export default function SignupPage() {
     confirmPassword: "",
     role: "user",
   })
+
+  // Voice agent fields config
+  // Only include allowed fields for the voice agent, and only once each
+  const voiceFields: VoiceField[] = [
+    { name: "name", label: "Full Name", defaultValue: "Test User" },
+    { name: "cnic", label: "CNIC Number", defaultValue: "12345-1234567-1" },
+  { name: "email", label: "Email", defaultValue: "test@example.com" },
+    { name: "phone", label: "Phone Number", defaultValue: "0300-1234567" },
+    { name: "city", label: "City", defaultValue: "Karachi" },
+    { name: "address", label: "Complete Address", defaultValue: "Test Address" },
+  ];
+
+  const voiceAgent = useVoiceFormAgent(voiceFields, (name, value) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  });
+  const [voiceEnabled, setVoiceEnabled] = useState(false);
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -144,6 +161,23 @@ export default function SignupPage() {
           <p className="text-gray-600">Create your account to access our services</p>
         </div>
 
+        <div className="flex justify-end mb-4">
+          <Button
+            type="button"
+            variant={voiceEnabled ? "destructive" : "secondary"}
+            onClick={() => {
+              const next = !voiceEnabled;
+              setVoiceEnabled(next);
+              if (!next) {
+                // disable voice: stop any listening
+                voiceAgent.stopFieldAgent();
+              }
+            }}
+          >
+            {voiceEnabled ? "Disable Voice Agent" : "Enable Voice Agent"}
+          </Button>
+        </div>
+
         <Card className="border-0 shadow-lg">
           <CardHeader>
             <CardTitle className="text-center text-[#1B0073]">Create Account</CardTitle>
@@ -151,71 +185,184 @@ export default function SignupPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
+
+
+
+
+
+
+
+
+              {/* Voice agent UI for the active field */}
+              {voiceAgent.currentField && (
+                <div className="mb-6 flex flex-col items-center">
+                  <div className="mt-3 px-4 py-2 rounded-lg bg-blue-50 border border-blue-200 text-blue-900 font-medium shadow animate-fadeIn flex flex-col items-start gap-2">
+                    <div><span className="font-semibold">Speak:</span> {voiceAgent.currentField.label}</div>
+                    {voiceAgent.transcript && (
+                      <div className="text-xs text-gray-700 italic mt-1">You said: <span className="font-bold text-blue-700">"{voiceAgent.transcript}"</span></div>
+                    )}
+                    <Button type="button" size="sm" className="mt-2" variant="secondary" onClick={voiceAgent.handleResult} disabled={!voiceAgent.transcript}>
+                      Set Field
+                    </Button>
+                    <div className="text-xs text-gray-500 mt-1">Say <span className="font-semibold">"set"</span> or click the button to confirm this field.</div>
+                  </div>
+                </div>
+              )}
+              
+              
+              
+              
+              
+
+
+
+              
+              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Full Name *</Label>
-                  <Input
-                    id="name"
-                    type="text"
-                    autoComplete="off"
-                    placeholder="Enter your full name"
-                    value={formData.name}
-                    onChange={(e) => handleInputChange("name", e.target.value)}
-                    required
-                  />
+                <div className="space-y-2 flex items-end gap-2">
+                  <div className="flex-1">
+                    <Label htmlFor="name">Full Name *</Label>
+                    <Input
+                      id="name"
+                      type="text"
+                      autoComplete="off"
+                      placeholder="Enter your full name"
+                      value={formData.name}
+                      onChange={(e) => handleInputChange("name", e.target.value)}
+                      required
+                    />
+                  </div>
+                  {voiceEnabled && (
+                    <Button type="button" size="icon" variant="secondary" aria-label="Voice fill name" onClick={() => voiceAgent.startFieldAgent("name")}
+                      disabled={(!!voiceAgent.currentField && voiceAgent.currentField.name !== "name")}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6 text-blue-600">
+                        <path d="M12 18c1.66 0 3-1.34 3-3V7a3 3 0 10-6 0v8c0 1.66 1.34 3 3 3zm5-3a1 1 0 112 0c0 3.07-2.13 5.64-5 6.32V22a1 1 0 11-2 0v-0.68C7.13 20.64 5 18.07 5 15a1 1 0 112 0c0 2.21 1.79 4 4 4s4-1.79 4-4z" />
+                      </svg>
+                    </Button>
+                  )}
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="cnic">CNIC Number *</Label>
-                  <Input
-                    id="cnic"
-                    type="text"
-                    autoComplete="off"
-                    placeholder="12345-1234567-1"
-                    value={formData.cnic}
-                    onChange={(e) => handleInputChange("cnic", e.target.value)}
-                    required
-                    className="text-center tracking-wider"
-                  />
+                <div className="space-y-2 flex items-end gap-2">
+                  <div className="flex-1">
+                    <Label htmlFor="cnic">CNIC Number *</Label>
+                    <Input
+                      id="cnic"
+                      type="text"
+                      autoComplete="off"
+                      placeholder="12345-1234567-1"
+                      value={formData.cnic}
+                      onChange={(e) => handleInputChange("cnic", e.target.value)}
+                      required
+                      className="text-center tracking-wider"
+                    />
+                  </div>
+                  {voiceEnabled && (
+                    <Button type="button" size="icon" variant="secondary" aria-label="Voice fill cnic" onClick={() => voiceAgent.startFieldAgent("cnic")}
+                      disabled={(!!voiceAgent.currentField && voiceAgent.currentField.name !== "cnic")}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6 text-blue-600">
+                        <path d="M12 18c1.66 0 3-1.34 3-3V7a3 3 0 10-6 0v8c0 1.66 1.34 3 3 3zm5-3a1 1 0 112 0c0 3.07-2.13 5.64-5 6.32V22a1 1 0 11-2 0v-0.68C7.13 20.64 5 18.07 5 15a1 1 0 112 0c0 2.21 1.79 4 4 4s4-1.79 4-4z" />
+                      </svg>
+                    </Button>
+                  )}
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number *</Label>
-                  <Input
-                    id="phone"
-                    type="text"
-                    autoComplete="off"
-                    placeholder="0300-1234567"
-                    value={formData.phone}
-                    onChange={(e) => handleInputChange("phone", e.target.value)}
-                    required
-                  />
+                <div className="space-y-2 flex items-end gap-2">
+                  <div className="flex-1">
+                    <Label htmlFor="email">Email *</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      autoComplete="off"
+                      placeholder="you@example.com"
+                      value={formData.email}
+                      onChange={(e) => handleInputChange("email", e.target.value)}
+                      required
+                    />
+                  </div>
+                  {voiceEnabled && (
+                    <Button type="button" size="icon" variant="secondary" aria-label="Voice fill email" onClick={() => voiceAgent.startFieldAgent("email")}
+                      disabled={(!!voiceAgent.currentField && voiceAgent.currentField.name !== "email")}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6 text-blue-600">
+                        <path d="M12 18c1.66 0 3-1.34 3-3V7a3 3 0 10-6 0v8c0 1.66 1.34 3 3 3zm5-3a1 1 0 112 0c0 3.07-2.13 5.64-5 6.32V22a1 1 0 11-2 0v-0.68C7.13 20.64 5 18.07 5 15a1 1 0 112 0c0 2.21 1.79 4 4 4s4-1.79 4-4z" />
+                      </svg>
+                    </Button>
+                  )}
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    autoComplete="off"
-                    placeholder="your.email@example.com"
-                    value={formData.email}
-                    onChange={(e) => handleInputChange("email", e.target.value)}
-                    required // ✅ ADD THIS
-                  />
+                <div className="space-y-2 flex items-end gap-2">
+                  <div className="flex-1">
+                    <Label htmlFor="phone">Phone Number *</Label>
+                    <Input
+                      id="phone"
+                      type="text"
+                      autoComplete="off"
+                      placeholder="0300-1234567"
+                      value={formData.phone}
+                      onChange={(e) => handleInputChange("phone", e.target.value)}
+                      required
+                    />
+                  </div>
+                  {voiceEnabled && (
+                    <Button type="button" size="icon" variant="secondary" aria-label="Voice fill phone" onClick={() => voiceAgent.startFieldAgent("phone")}
+                      disabled={(!!voiceAgent.currentField && voiceAgent.currentField.name !== "phone")}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6 text-blue-600">
+                        <path d="M12 18c1.66 0 3-1.34 3-3V7a3 3 0 10-6 0v8c0 1.66 1.34 3 3 3zm5-3a1 1 0 112 0c0 3.07-2.13 5.64-5 6.32V22a1 1 0 11-2 0v-0.68C7.13 20.64 5 18.07 5 15a1 1 0 112 0c0 2.21 1.79 4 4 4s4-1.79 4-4z" />
+                      </svg>
+                    </Button>
+                  )}
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="city">City *</Label>
-                  <Input
-                    id="city"
-                    type="text"
-                    autoComplete="off"
-                    placeholder="Enter your city"
-                    value={formData.city}
-                    onChange={(e) => handleInputChange("city", e.target.value)}
-                    required
-                  />
+                <div className="space-y-2 flex items-end gap-2">
+                  <div className="flex-1">
+                    <Label htmlFor="city">City *</Label>
+                    <Input
+                      id="city"
+                      type="text"
+                      autoComplete="off"
+                      placeholder="Enter your city"
+                      value={formData.city}
+                      onChange={(e) => handleInputChange("city", e.target.value)}
+                      required
+                    />
+                  </div>
+                  {voiceEnabled && (
+                    <Button type="button" size="icon" variant="secondary" aria-label="Voice fill city" onClick={() => voiceAgent.startFieldAgent("city")}
+                      disabled={(!!voiceAgent.currentField && voiceAgent.currentField.name !== "city")}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6 text-blue-600">
+                        <path d="M12 18c1.66 0 3-1.34 3-3V7a3 3 0 10-6 0v8c0 1.66 1.34 3 3 3zm5-3a1 1 0 112 0c0 3.07-2.13 5.64-5 6.32V22a1 1 0 11-2 0v-0.68C7.13 20.64 5 18.07 5 15a1 1 0 112 0c0 2.21 1.79 4 4 4s4-1.79 4-4z" />
+                      </svg>
+                    </Button>
+                  )}
+                </div>
+
+                <div className="space-y-2 flex items-end gap-2">
+                  <div className="flex-1">
+                    <Label htmlFor="address">Complete Address *</Label>
+                    <Input
+                      id="address"
+                      type="text"
+                      autoComplete="off"
+                      placeholder="Enter your complete address"
+                      value={formData.address}
+                      onChange={(e) => handleInputChange("address", e.target.value)}
+                      required
+                    />
+                  </div>
+                  {voiceEnabled && (
+                    <Button type="button" size="icon" variant="secondary" aria-label="Voice fill address" onClick={() => voiceAgent.startFieldAgent("address")}
+                      disabled={(!!voiceAgent.currentField && voiceAgent.currentField.name !== "address")}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6 text-blue-600">
+                        <path d="M12 18c1.66 0 3-1.34 3-3V7a3 3 0 10-6 0v8c0 1.66 1.34 3 3 3zm5-3a1 1 0 112 0c0 3.07-2.13 5.64-5 6.32V22a1 1 0 11-2 0v-0.68C7.13 20.64 5 18.07 5 15a1 1 0 112 0c0 2.21 1.79 4 4 4s4-1.79 4-4z" />
+                      </svg>
+                    </Button>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -230,19 +377,6 @@ export default function SignupPage() {
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="address">Complete Address *</Label>
-                <Input
-                  id="address"
-                  type="text"
-                  autoComplete="off"
-                  placeholder="Enter your complete address"
-                  value={formData.address}
-                  onChange={(e) => handleInputChange("address", e.target.value)}
-                  required
-                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
