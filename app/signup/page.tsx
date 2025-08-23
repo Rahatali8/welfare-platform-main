@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Label } from "@/components/ui/label" 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Eye, EyeOff, Heart, CheckCircle } from "lucide-react"
@@ -139,11 +139,10 @@ export default function SignupPage() {
             <Heart className="h-8 w-8 text-white" />
           </div>
           <h2 className="mb-2 sm:mb-6 text-xl sm:text-2xl lg:text-4xl font-bold tracking-tight text-[#1B0073] drop-shadow-2xl">
-        Join Al Khair  <span className="text-[#00A5E0]">  Welfare</span>
+            Join Al Khair  <span className="text-[#00A5E0]">  Welfare</span>
           </h2>
           <p className="text-gray-600">Create your account to access our services</p>
         </div>
-
         <Card className="border-0 shadow-lg">
           <CardHeader>
             <CardTitle className="text-center text-[#1B0073]">Create Account</CardTitle>
@@ -320,6 +319,8 @@ export default function SignupPage() {
             </div>
           </CardContent>
         </Card>
+       
+
       </div>
     </div>
   )
