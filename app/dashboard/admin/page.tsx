@@ -105,6 +105,7 @@ export default function AdminDashboard() {
   const [donors, setDonors] = useState<Donor[]>([])
   const [isLoadingDonors, setIsLoadingDonors] = useState(false)
   const [acceptedByDonors, setAcceptedByDonors] = useState<AcceptedByDonorItem[]>([])
+  const [readDonorRequests, setReadDonorRequests] = useState<number[]>([])
   const { toast } = useToast()
   const router = useRouter()
 
@@ -116,6 +117,8 @@ export default function AdminDashboard() {
     try {
       const raw = typeof window !== 'undefined' ? localStorage.getItem('acceptedByDonors') : null
       if (raw) setAcceptedByDonors(JSON.parse(raw))
+      const readRaw = typeof window !== 'undefined' ? localStorage.getItem('readDonorAcceptedRequests') : null
+      if (readRaw) setReadDonorRequests(JSON.parse(readRaw))
     } catch {}
   }, [])
 
@@ -239,6 +242,17 @@ export default function AdminDashboard() {
       }
     } catch (e) {
       toast({ title: "Error", description: "Failed to update donor", variant: "destructive" })
+    }
+  }
+
+  const handleMarkAsRead = (itemId: number) => {
+    if (readDonorRequests.includes(itemId)) return
+    const updatedReadRequests = [...readDonorRequests, itemId]
+    setReadDonorRequests(updatedReadRequests)
+    try {
+      localStorage.setItem("readDonorAcceptedRequests", JSON.stringify(updatedReadRequests))
+    } catch (error) {
+      console.error("Failed to save read requests to localStorage", error)
     }
   }
 
@@ -368,12 +382,12 @@ export default function AdminDashboard() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Amount</CardTitle>
+                <CardTitle className="text-sm font-medium">Rejected</CardTitle>
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">PKR {analytics.totalAmount.toLocaleString()}</div>
-                <p className="text-xs text-muted-foreground">Requested amount</p>
+                <div className="text-2xl font-bold">{analytics.rejectedRequests .toLocaleString()}</div>
+                <p className="text-xs text-muted-foreground">Rejected requests</p>
               </CardContent>
             </Card>
           </div>
@@ -381,12 +395,24 @@ export default function AdminDashboard() {
 
         <Tabs defaultValue="pending" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger value="pending">Pending</TabsTrigger>
-            <TabsTrigger value="approved">Accepted</TabsTrigger>
-            <TabsTrigger value="rejected">Rejected</TabsTrigger>
-            <TabsTrigger value="all-requests">All Requests</TabsTrigger>
-            <TabsTrigger value="accepted-by-donors">Accepted by Donors</TabsTrigger>
-            <TabsTrigger value="donors">Donors</TabsTrigger>
+            <TabsTrigger value="all-requests">
+              All Requests <Badge className="ml-2">{filteredRequests.length}</Badge>
+            </TabsTrigger>
+            <TabsTrigger value="pending">
+              Pending <Badge className="ml-2">{requests.filter((r) => r.status === "pending").length}</Badge>
+            </TabsTrigger>
+            <TabsTrigger value="approved">
+              Accepted <Badge className="ml-2">{requests.filter((r) => r.status === "approved").length}</Badge>
+            </TabsTrigger>
+            <TabsTrigger value="rejected">
+              Rejected <Badge className="ml-2">{requests.filter((r) => r.status === "rejected").length}</Badge>
+            </TabsTrigger>
+            <TabsTrigger value="accepted-by-donors">
+              Accepted by Donors <Badge className="ml-2">{acceptedByDonors.length}</Badge>
+            </TabsTrigger>
+            <TabsTrigger value="donors">
+              Donors <Badge className="ml-2">{donors.length}</Badge>
+            </TabsTrigger>
           </TabsList>
 
           {/* Pending */}
@@ -474,7 +500,7 @@ export default function AdminDashboard() {
                                         </div>
                                         {selectedRequest.amount && (
                                           <div>
-                                            <Label className="font-medium">Amount</Label>
+                                            <Label className="font-medium">Monthly Salery</Label>
                                             <p>PKR {selectedRequest.amount.toLocaleString()}</p>
                                           </div>
                                         )}
@@ -589,21 +615,28 @@ export default function AdminDashboard() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {acceptedByDonors.map((item) => (
-                      <div key={item.id} className={`border rounded-lg p-4 ${getStatusTintClass('approved')}`}>
-                        <div className="flex justify-between items-start mb-2">
-                          <div className="flex-1">
-                            <div className="flex items-center space-x-2 mb-1">
-                              <h3 className="font-semibold text-lg">{item.request.user.fullName}</h3>
-                              <Badge variant="outline">{formatCNIC(item.request.user.cnic)}</Badge>
-                            </div>
+                    {acceptedByDonors.map((item) => {
+                      const isNew = !readDonorRequests.includes(item.request.id)
+                      return (
+                        <div key={item.id} className={`border rounded-lg p-4 ${getStatusTintClass("approved")}`}>
+                          <div className="flex justify-between items-start mb-2">
+                            <div className="flex-1">
+                              <div className="flex items-center space-x-2 mb-1">
+                                <h3 className="font-semibold text-lg">{item.request.user.fullName}</h3>
+                                <Badge variant="outline">{formatCNIC(item.request.user.cnic)}</Badge>
+                                {isNew && (
+                                  <Badge variant="destructive" className="animate-pulse">
+                                    New
+                                  </Badge>
+                                )}
+                              </div>
                             <p className="text-gray-600 capitalize">{item.request.type} Request</p>
                             <p className="text-sm text-gray-500">{item.request.reason}</p>
                             {item.request.amount && (
                               <p className="text-sm text-gray-600">Requested: PKR {item.request.amount.toLocaleString()}</p>
                             )}
                             <p className="text-sm font-medium text-green-700">
-                              Donor pledged: {item.isFullfill ? `Full amount (PKR ${item.amount.toLocaleString()})` : `PKR ${item.amount.toLocaleString()}`}
+                              Donor pledged: {item.isFullfill ? `(PKR ${item.amount.toLocaleString()})` : `PKR ${item.amount.toLocaleString()}`}
                             </p>
                             <p className="text-xs text-gray-500 mt-1">Accepted at: {new Date(item.acceptedAt).toLocaleString()}</p>
                             <p className="text-xs text-gray-600">
@@ -613,111 +646,127 @@ export default function AdminDashboard() {
                               {item.donor?.contact_number ? ` • ${item.donor.contact_number}` : ''}
                             </p>
                           </div>
-                        </div>
-
-                        <div className="flex justify-between items-center mt-4">
-                          <div className="text-sm text-gray-500">
-                            <p>Submitted: {item.request.submittedAt ? new Date(item.request.submittedAt).toLocaleDateString() : ''}</p>
-                            <p>Address: {item.request.currentAddress}</p>
                           </div>
 
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button variant="outline" size="sm" onClick={() => setSelectedRequest(item.request)}>
-                                <Eye className="h-4 w-4 mr-1" />
-                                View Details
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                              <DialogHeader>
-                                <DialogTitle>Request Details</DialogTitle>
-                                <DialogDescription>
-                                  Complete information for {selectedRequest?.user.fullName}'s application
-                                </DialogDescription>
-                              </DialogHeader>
-                              {selectedRequest && (
-                                <div className="space-y-4">
-                                  <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                      <Label className="font-medium">Applicant Name</Label>
-                                      <p>{selectedRequest.user.fullName}</p>
-                                    </div>
-                                    <div>
-                                      <Label className="font-medium">CNIC</Label>
-                                      <p>{formatCNIC(selectedRequest.user.cnic)}</p>
-                                    </div>
-                                    <div>
-                                      <Label className="font-medium">Request Type</Label>
-                                      <p className="capitalize">{selectedRequest.type}</p>
-                                    </div>
-                                    <div>
-                                      <Label className="font-medium">Status</Label>
-                                      <Badge className={getStatusColor(selectedRequest.status)}>
-                                        {selectedRequest.status}
-                                      </Badge>
-                                    </div>
-                                    {selectedRequest.amount && (
+                          <div className="flex justify-between items-center mt-4">
+                            {/* <div className="text-sm text-gray-500">
+                              <p>
+                                Submitted:{" "}
+                                {item.request.submittedAt ? new Date(item.request.submittedAt).toLocaleDateString() : ""}
+                              </p>
+                              <p>Address: {item.request.currentAddress}</p>
+                            </div> */}
+
+                            <div className="flex items-center space-x-2">
+                              {isNew && (
+                                <Button variant="secondary" size="sm" onClick={() => handleMarkAsRead(item.request.id)}>
+                                  Mark as Read
+                                </Button>
+                              )}
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button variant="outline" size="sm" onClick={() => setSelectedRequest(item.request)}>
+                                    <Eye className="h-4 w-4 mr-1" />
+                                    View Details
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                                  <DialogHeader>
+                                    <DialogTitle>Request Details</DialogTitle>
+                                    <DialogDescription>
+                                      Complete information for {selectedRequest?.user.fullName}'s application
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  {selectedRequest && (
+                                    <div className="space-y-4">
+                                      <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                          <Label className="font-medium">Applicant Name</Label>
+                                          <p>{selectedRequest.user.fullName}</p>
+                                        </div>
+                                        <div>
+                                          <Label className="font-medium">CNIC</Label>
+                                          <p>{formatCNIC(selectedRequest.user.cnic)}</p>
+                                        </div>
+                                        <div>
+                                          <Label className="font-medium">Request Type</Label>
+                                          <p className="capitalize">{selectedRequest.type}</p>
+                                        </div>
+                                        <div>
+                                          <Label className="font-medium">Status</Label>
+                                          <Badge className={getStatusColor(selectedRequest.status)}>
+                                            {selectedRequest.status}
+                                          </Badge>
+                                        </div>
+                                        {selectedRequest.amount && (
+                                          <div>
+                                            <Label className="font-medium">Amount</Label>
+                                            <p>PKR {selectedRequest.amount.toLocaleString()}</p>
+                                          </div>
+                                        )}
+                                        <div>
+                                          <Label className="font-medium">Submitted</Label>
+                                          <p>{new Date(selectedRequest.submittedAt).toLocaleDateString()}</p>
+                                        </div>
+                                      </div>
+
                                       <div>
-                                        <Label className="font-medium">Amount</Label>
-                                        <p>PKR {selectedRequest.amount.toLocaleString()}</p>
+                                        <Label className="font-medium">Registered Address</Label>
+                                        <p>{selectedRequest.user.address}</p>
                                       </div>
-                                    )}
-                                    <div>
-                                      <Label className="font-medium">Submitted</Label>
-                                      <p>{new Date(selectedRequest.submittedAt).toLocaleDateString()}</p>
-                                    </div>
-                                  </div>
 
-                                  <div>
-                                    <Label className="font-medium">Registered Address</Label>
-                                    <p>{selectedRequest.user.address}</p>
-                                  </div>
-
-                                  <div>
-                                    <Label className="font-medium">Current Address</Label>
-                                    <p>{selectedRequest.currentAddress}</p>
-                                  </div>
-
-                                  <div>
-                                    <Label className="font-medium">Reason</Label>
-                                    <p>{selectedRequest.reason}</p>
-                                  </div>
-
-                                  {selectedRequest.additionalData && (
-                                    <div>
-                                      <Label className="font-medium">Additional Information</Label>
-                                      <div className="grid grid-cols-2 gap-3 bg-gray-50 p-3 rounded-md">
-                                        {Object.entries(selectedRequest.additionalData)
-                                          .filter(([_, v]) => v !== null && v !== undefined && v !== '')
-                                          .map(([k, v]) => {
-                                            const isLinkKey = ['cnic_front', 'cnic_back', 'document'].includes(k)
-                                            const label = k.replace(/_/g, ' ')
-                                            if (isLinkKey) {
-                                              return (
-                                                <div key={k} className="text-sm col-span-2">
-                                                  <a className="text-blue-600 hover:underline" href={String(v)} target="_blank" rel="noreferrer">
-                                                    View {label}
-                                                  </a>
-                                                </div>
-                                              )
-                                            }
-                                            return (
-                                              <div key={k} className="text-sm">
-                                                <span className="font-medium capitalize mr-2">{label}</span>
-                                                <span className="text-gray-700">{String(v)}</span>
-                                              </div>
-                                            )
-                                          })}
+                                      <div>
+                                        <Label className="font-medium">Current Address</Label>
+                                        <p>{selectedRequest.currentAddress}</p>
                                       </div>
+
+                                      <div>
+                                        <Label className="font-medium">Reason</Label>
+                                        <p>{selectedRequest.reason}</p>
+                                      </div>
+
+                                      {selectedRequest.additionalData && (
+                                        <div>
+                                          <Label className="font-medium">Additional Information</Label>
+                                          <div className="grid grid-cols-2 gap-3 bg-gray-50 p-3 rounded-md">
+                                            {Object.entries(selectedRequest.additionalData)
+                                              .filter(([_, v]) => v !== null && v !== undefined && v !== "")
+                                              .map(([k, v]) => {
+                                                const isLinkKey = ["cnic_front", "cnic_back", "document"].includes(k)
+                                                const label = k.replace(/_/g, " ")
+                                                if (isLinkKey) {
+                                                  return (
+                                                    <div key={k} className="text-sm col-span-2">
+                                                      <a
+                                                        className="text-blue-600 hover:underline"
+                                                        href={String(v)}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                      >
+                                                        View {label}
+                                                      </a>
+                                                    </div>
+                                                  )
+                                                }
+                                                return (
+                                                  <div key={k} className="text-sm">
+                                                    <span className="font-medium capitalize mr-2">{label}</span>
+                                                    <span className="text-gray-700">{String(v)}</span>
+                                                  </div>
+                                                )
+                                              })}
+                                          </div>
+                                        </div>
+                                      )}
                                     </div>
                                   )}
-                                </div>
-                              )}
-                            </DialogContent>
-                          </Dialog>
+                                </DialogContent>
+                              </Dialog>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      )
+                    })}
                   </div>
                 )}
               </CardContent>
@@ -1063,21 +1112,6 @@ export default function AdminDashboard() {
                       </SelectContent>
                     </Select>
                   </div>
-
-                  <div>
-                    <Label htmlFor="type-filter">Type</Label>
-                    <Select value={typeFilter} onValueChange={setTypeFilter}>
-                      <SelectTrigger className="w-[150px]">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Types</SelectItem>
-                        <SelectItem value="loan">Loan</SelectItem>
-                        <SelectItem value="microfinance">Microfinance</SelectItem>
-                        <SelectItem value="general">General</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
                 </div>
               </CardHeader>
               <CardContent>
@@ -1327,8 +1361,6 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
           </TabsContent>
-
-          {/* Removed loan/microfinance/general tabs as requested */}
         </Tabs>
       </div>
     </div>

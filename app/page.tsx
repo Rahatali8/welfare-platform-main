@@ -7,10 +7,7 @@ import Link from "next/link"
 import { DollarSign, BookOpen, Home, Stethoscope, GraduationCap, Utensils, Phone, MapPin, Clock, Target } from "lucide-react"
 import CallToAction from "@/components/CTA-section"
 import CompleteHeroSection from "@/components/complete-herosection";
-
-
-
-
+import FloatingBot from "@/components/FloatingBot"
 
 export default function HomePage() {
   const [, setDailyRequests] = useState<{ date: string, count: number }[]>([]);
@@ -366,6 +363,8 @@ export default function HomePage() {
       </section>
 
       <CallToAction />
+      {/* Floating ChatBot Icon */}
+      <FloatingBot />
     </div>
   )
 }
