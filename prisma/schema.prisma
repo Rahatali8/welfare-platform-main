@@ -22,6 +22,7 @@ model User {
   requests       Request[]
   passwordResets PasswordReset[]
   donations      Donation[]
+  surveys        Survey[]
 
   @@map("users")
 }
@@ -79,7 +80,9 @@ model Request {
   reason         String?
   repayment_time String?
   rejection_reason String?
+  verification_complete Boolean @default(false)
   user           User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  surveys        Survey[]
 
   @@map("requests")
 }
@@ -112,6 +115,29 @@ enum Role {
   user
   donor
   admin
+   SURVEY_OFFICER
+}
+
+model Survey {
+  id            Int          @id @default(autoincrement())
+  application   Request      @relation(fields: [applicationId], references: [id])
+  applicationId Int
+  officer       User?        @relation(fields: [officerId], references: [id])
+  officerId     Int?
+  status        String       // Pending, In-Progress, Completed
+  recommendation String?     // Eligible, Not Eligible, Needs Info
+  report        String?      // Detailed notes
+  attachments   SurveyAttachment[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+model SurveyAttachment {
+  id        Int     @id @default(autoincrement())
+  url       String
+  survey    Survey  @relation(fields: [surveyId], references: [id])
+  surveyId  Int
+  uploadedAt DateTime @default(now())
 }
 
 enum RequestType {

@@ -9,28 +9,8 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from "@/hooks/use-toast"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import {
-  Users,
-  DollarSign,
-  Heart,
-  CreditCard,
-  Search,
-  Eye,
-  CheckCircle,
-  XCircle,
-  Clock,
-  TrendingUp,
-  FileText,
-  LogOut,
-} from "lucide-react"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, } from "@/components/ui/dialog"
+import { Users, DollarSign, Heart, CreditCard, Search, Eye, CheckCircle, XCircle, Clock, TrendingUp, FileText, LogOut, } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 interface Request {
@@ -46,6 +26,7 @@ interface Request {
   cnicImage?: string
   additionalData: any
   updated_at?: string
+  verification_complete?: boolean
   user: {
     full_name: ReactNode
     fullName: string
@@ -106,8 +87,20 @@ export default function AdminDashboard() {
   const [isLoadingDonors, setIsLoadingDonors] = useState(false)
   const [acceptedByDonors, setAcceptedByDonors] = useState<AcceptedByDonorItem[]>([])
   const [readDonorRequests, setReadDonorRequests] = useState<number[]>([])
+  const [surveyRequests, setSurveyRequests] = useState<Request[]>([])
+  const [readSurveyRequests, setReadSurveyRequests] = useState<number[]>([])
+  // show counts for pagination-like 'show more' behavior
+  const [showPendingCount, setShowPendingCount] = useState(6)
+  const [showApprovedCount, setShowApprovedCount] = useState(6)
+  const [showRejectedCount, setShowRejectedCount] = useState(6)
+  const [showSurveyCount, setShowSurveyCount] = useState(6)
+  const [showAcceptedByDonorsCount, setShowAcceptedByDonorsCount] = useState(6)
+  const [showAllCount, setShowAllCount] = useState(6)
+  const [showDonorsCount, setShowDonorsCount] = useState(6)
   const { toast } = useToast()
   const router = useRouter()
+
+  // AssignDialog removed: admin no longer assigns to individual survey officers.
 
   useEffect(() => {
     fetchRequests()
@@ -119,7 +112,9 @@ export default function AdminDashboard() {
       if (raw) setAcceptedByDonors(JSON.parse(raw))
       const readRaw = typeof window !== 'undefined' ? localStorage.getItem('readDonorAcceptedRequests') : null
       if (readRaw) setReadDonorRequests(JSON.parse(readRaw))
-    } catch {}
+      const readSurveyRaw = typeof window !== 'undefined' ? localStorage.getItem('readSurveyRequests') : null
+      if (readSurveyRaw) setReadSurveyRequests(JSON.parse(readSurveyRaw))
+    } catch { }
   }, [])
 
   useEffect(() => {
@@ -132,6 +127,38 @@ export default function AdminDashboard() {
       if (response.ok) {
         const data = await response.json()
         setRequests(data.requests)
+        // Also fetch persisted survey entries so Survey Requests tab shows forwarded items after reload
+        try {
+          const sres = await fetch('/api/survey')
+          if (sres.ok) {
+            const sd = await sres.json()
+            // map surveys -> application objects expected by UI
+            const surveys = (sd.surveys || []).map((s: any) => {
+              const app = s.application || {}
+              return {
+                id: app.id,
+                userId: app.user_id ?? app.user?.id ?? 0,
+                user: {
+                  // include both names used in UI/types
+                  full_name: app.full_name || app.user?.name || '',
+                  fullName: app.full_name || app.user?.name || '',
+                  cnic: app.cnic_number || app.user?.cnic || '',
+                  address: app.user?.address || app.user_address || ''
+                },
+                type: app.type || '',
+                reason: app.reason || '',
+                status: (app.status || '').toLowerCase(),
+                submittedAt: app.created_at || app.submittedAt,
+                currentAddress: app.user?.address || app.user_address || '',
+                additionalData: app,
+                verification_complete: app.verification_complete || false,
+              }
+            })
+            setSurveyRequests(surveys)
+          }
+        } catch (e) {
+          console.error('Failed to load surveys', e)
+        }
       } else if (response.status === 401) {
         router.push("/login")
       }
@@ -265,6 +292,98 @@ export default function AdminDashboard() {
     }
   }
 
+  // Assign request to survey officer
+  const assignToSurvey = async (applicationId: number, officerId: number | null) => {
+    if (!officerId) {
+      toast({ title: "Select Officer", description: "Please select a survey officer to assign." })
+      return
+    }
+    try {
+      const res = await fetch('/api/survey/assign', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ applicationId, officerId }),
+      })
+      if (res.ok) {
+        toast({ title: 'Assigned', description: 'Request forwarded to survey team.' })
+        fetchRequests()
+        fetchAnalytics()
+      } else {
+        toast({ title: 'Failed', description: 'Could not assign request', variant: 'destructive' })
+      }
+    } catch (e) {
+      console.error('Assign error', e)
+      toast({ title: 'Error', description: 'Failed to assign request', variant: 'destructive' })
+    }
+  }
+
+  // Forward to survey team without selecting a specific officer (officerId = null)
+  const forwardToSurveyTeam = async (applicationId: number) => {
+    try {
+      const res = await fetch('/api/survey/assign', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ applicationId, officerId: null }),
+      })
+      if (res.ok) {
+        const payload = await res.json()
+        toast({ title: 'Forwarded', description: 'Request forwarded to survey team.' })
+        // Prefer server's returned application object (survey.application)
+        const app = payload?.survey?.application
+        if (app) {
+          const mapped = {
+            id: app.id,
+            userId: app.user_id ?? app.user?.id ?? 0,
+            user: { full_name: app.full_name || app.user?.name || '', fullName: app.full_name || app.user?.name || '', cnic: app.cnic_number || app.user?.cnic || '', address: app.user?.address || '' },
+            type: app.type || '',
+            reason: app.reason || '',
+            status: (app.status || '').toLowerCase(),
+            submittedAt: app.created_at,
+            currentAddress: app.user?.address || app.user_address || '',
+            additionalData: app,
+            verification_complete: app.verification_complete || false,
+          }
+          setSurveyRequests((prev) => [mapped, ...prev])
+          setRequests((prev) => prev.filter((r) => r.id !== applicationId))
+          // Also remove from acceptedByDonors if present and persist
+          setAcceptedByDonors((prev) => {
+            const next = prev.filter((it) => it.request.id !== applicationId)
+            try { localStorage.setItem('acceptedByDonors', JSON.stringify(next)) } catch {}
+            return next
+          })
+        } else {
+          // fallback to previous client-side move
+          setRequests((prev) => prev.filter((r) => r.id !== applicationId))
+          const forwarded = requests.find((r) => r.id === applicationId)
+          if (forwarded) setSurveyRequests((prev) => [forwarded, ...prev])
+        }
+        // mark as unread (new)
+        setReadSurveyRequests((prev) => {
+          const next = prev.filter((id) => id !== applicationId)
+          // ensure it's not marked read
+          try { localStorage.setItem('readSurveyRequests', JSON.stringify(next)) } catch { }
+          return next
+        })
+        fetchAnalytics()
+        setActiveTab('survey-requests')
+      } else {
+        toast({ title: 'Failed', description: 'Could not forward request', variant: 'destructive' })
+      }
+    } catch (e) {
+      console.error('Forward error', e)
+      toast({ title: 'Error', description: 'Failed to forward request', variant: 'destructive' })
+    }
+  }
+
+  const markSurveyRequestRead = (id: number) => {
+    setReadSurveyRequests((prev) => {
+      if (prev.includes(id)) return prev
+      const next = [id, ...prev]
+      try { localStorage.setItem('readSurveyRequests', JSON.stringify(next)) } catch { }
+      return next
+    })
+  }
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "pending":
@@ -325,7 +444,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white shadow-sm border-b z-30 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
@@ -335,6 +454,7 @@ export default function AdminDashboard() {
                 <p className="text-sm text-gray-600">Manage all welfare requests and applications</p>
               </div>
             </div>
+
             <Button variant="outline" onClick={handleLogout}>
               <LogOut className="h-4 w-4 mr-2" />
               Logout
@@ -386,34 +506,87 @@ export default function AdminDashboard() {
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{analytics.rejectedRequests .toLocaleString()}</div>
+                <div className="text-2xl font-bold">{analytics.rejectedRequests.toLocaleString()}</div>
                 <p className="text-xs text-muted-foreground">Rejected requests</p>
               </CardContent>
             </Card>
           </div>
         )}
 
-        <Tabs defaultValue="pending" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger value="all-requests">
-              All Requests <Badge className="ml-2">{filteredRequests.length}</Badge>
-            </TabsTrigger>
-            <TabsTrigger value="pending">
-              Pending <Badge className="ml-2">{requests.filter((r) => r.status === "pending").length}</Badge>
-            </TabsTrigger>
-            <TabsTrigger value="approved">
-              Accepted <Badge className="ml-2">{requests.filter((r) => r.status === "approved").length}</Badge>
-            </TabsTrigger>
-            <TabsTrigger value="rejected">
-              Rejected <Badge className="ml-2">{requests.filter((r) => r.status === "rejected").length}</Badge>
-            </TabsTrigger>
-            <TabsTrigger value="accepted-by-donors">
-              Accepted by Donors <Badge className="ml-2">{acceptedByDonors.length}</Badge>
-            </TabsTrigger>
-            <TabsTrigger value="donors">
-              Donors <Badge className="ml-2">{donors.length}</Badge>
-            </TabsTrigger>
-          </TabsList>
+        <Tabs defaultValue="pending" value={activeTab} onValueChange={setActiveTab}>
+          <div className="flex flex-col md:flex-row gap-6 md:mt-6">
+            {/* Left-side vertical tab list (desktop) */}
+<aside className="w-full md:w-72 mt-4 md:mt-40 self-start">
+              <div className="bg-white p-2 rounded-md shadow-sm">
+                <TabsList className="flex flex-col">
+                  <TabsTrigger value="pending" className="w-full flex items-center justify-between py-3 px-3 rounded-md text-sm hover:bg-gray-50">
+                    <span className="text-sm font-medium text-gray-700">Pending</span>
+                    <Badge className="bg-slate-900 text-white text-xs px-2 py-0.5 rounded-full">{requests.filter((r) => r.status === "pending").length}</Badge>
+                  </TabsTrigger>
+
+                  <TabsTrigger value="approved" className="w-full flex items-center justify-between py-3 px-3 rounded-md text-sm hover:bg-gray-50">
+                    <span className="text-sm font-medium text-gray-700">Accepted</span>
+                    <Badge className="bg-slate-900 text-white text-xs px-2 py-0.5 rounded-full">{requests.filter((r) => r.status === "approved").length}</Badge>
+                  </TabsTrigger>
+
+                  <TabsTrigger value="rejected" className="w-full flex items-center justify-between py-3 px-3 rounded-md text-sm hover:bg-gray-50">
+                    <span className="text-sm font-medium text-gray-700">Rejected</span>
+                    <Badge className="bg-slate-900 text-white text-xs px-2 py-0.5 rounded-full">{requests.filter((r) => r.status === "rejected").length}</Badge>
+                  </TabsTrigger>
+
+                  <TabsTrigger value="accepted-by-donors" className="w-full flex items-center justify-between py-3 px-3 rounded-md text-sm hover:bg-gray-50">
+                    <span className="text-sm font-medium text-gray-700">Accepted by Donors</span>
+                    <Badge className="bg-slate-900 text-white text-xs px-2 py-0.5 rounded-full">{acceptedByDonors.length}</Badge>
+                  </TabsTrigger>
+
+                  <div className="my-1 border-t" />
+
+                  <TabsTrigger value="survey-requests" className="w-full flex items-center justify-between py-3 px-3 rounded-md text-sm hover:bg-gray-50">
+                    <span className="text-sm font-medium text-gray-700">Survey Requests</span>
+                    <Badge className="bg-slate-900 text-white text-xs px-2 py-0.5 rounded-full">{surveyRequests.length}</Badge>
+                  </TabsTrigger>
+
+                  <TabsTrigger value="donors" className="w-full flex items-center justify-between py-3 px-3 rounded-md text-sm hover:bg-gray-50">
+                    <span className="text-sm font-medium text-gray-700">Donors</span>
+                    <Badge className="bg-slate-900 text-white text-xs px-2 py-0.5 rounded-full">{donors.length}</Badge>
+                  </TabsTrigger>
+
+                  <TabsTrigger value="all-requests" className="w-full flex items-center justify-between py-3 px-3 rounded-md text-sm hover:bg-gray-50">
+                    <span className="text-sm font-medium text-gray-700">All Requests</span>
+                    <Badge className="bg-slate-900 text-white text-xs px-2 py-0.5 rounded-full">{filteredRequests.length}</Badge>
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+            </aside>
+
+            {/* Right-side content panel */}
+            <div className="flex-1">
+              {/* Mobile: compact tab grid shown above content */}
+              <div className="md:hidden">
+                <TabsList className="grid grid-cols-2 gap-2">
+                  <TabsTrigger value="pending" className="w-full text-left py-2 px-3 rounded-md text-sm bg-white">
+                    Pending <Badge className="ml-2">{requests.filter((r) => r.status === "pending").length}</Badge>
+                  </TabsTrigger>
+                  <TabsTrigger value="approved" className="w-full text-left py-2 px-3 rounded-md text-sm bg-white">
+                    Accepted <Badge className="ml-2">{requests.filter((r) => r.status === "approved").length}</Badge>
+                  </TabsTrigger>
+                  <TabsTrigger value="rejected" className="w-full text-left py-2 px-3 rounded-md text-sm bg-white">
+                    Rejected <Badge className="ml-2">{requests.filter((r) => r.status === "rejected").length}</Badge>
+                  </TabsTrigger>
+                  <TabsTrigger value="accepted-by-donors" className="w-full text-left py-2 px-3 rounded-md text-sm bg-white">
+                    Accepted by Donors <Badge className="ml-2">{acceptedByDonors.length}</Badge>
+                  </TabsTrigger>
+                  <TabsTrigger value="survey-requests" className="w-full text-left py-2 px-3 rounded-md text-sm bg-white">
+                    Survey Requests <Badge className="ml-2">{surveyRequests.length}</Badge>
+                  </TabsTrigger>
+                  <TabsTrigger value="donors" className="w-full text-left py-2 px-3 rounded-md text-sm bg-white">
+                    Donors <Badge className="ml-2">{donors.length}</Badge>
+                  </TabsTrigger>
+                  <TabsTrigger value="all-requests" className="w-full text-left py-2 px-3 rounded-md text-sm bg-white">
+                    All Requests <Badge className="ml-2">{filteredRequests.length}</Badge>
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
           {/* Pending */}
           <TabsContent value="pending">
@@ -432,9 +605,10 @@ export default function AdminDashboard() {
                   <div className="space-y-4">
                     {requests
                       .filter((r) => r.status === "pending")
+                      .slice(0, showPendingCount)
                       .map((request) => (
                         <div key={request.id} className={`border rounded-lg p-4 hover:shadow-md transition-shadow ${getStatusTintClass(request.status)}`}>
-                          <div className="flex justify-between items-start mb-2">
+                          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2">
                             <div className="flex-1">
                               <div className="flex items-center space-x-2 mb-1">
                                 <h3 className="font-semibold text-lg">{request.user.fullName}</h3>
@@ -453,6 +627,9 @@ export default function AdminDashboard() {
                                   <span className="capitalize">{request.status}</span>
                                 </div>
                               </Badge>
+                              {request.verification_complete && (
+                                <Badge className="bg-green-100 text-green-800">Verified</Badge>
+                              )}
                             </div>
                           </div>
 
@@ -569,6 +746,7 @@ export default function AdminDashboard() {
                                 </DialogContent>
                               </Dialog>
 
+                              {/* AssignDialog removed */}
                               <Button
                                 size="sm"
                                 onClick={() => updateRequestStatus(request.id, "approved")}
@@ -600,6 +778,133 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
+          {/* Survey Requests */}
+          <TabsContent value="survey-requests">
+            <Card>
+              <CardHeader>
+                <CardTitle>Survey Requests</CardTitle>
+                <CardDescription>Requests forwarded to the survey team</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {surveyRequests.length === 0 ? (
+                  <div className="text-center py-8">
+                    <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-600">No survey requests</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {surveyRequests.slice(0, showSurveyCount).map((request) => (
+                      <div key={request.id} className={`border rounded-lg p-4 ${getStatusTintClass(request.status)}`}>
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2">
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-2 mb-1">
+                              <h3 className="font-semibold text-lg">{request.user.fullName}</h3>
+                              <Badge variant="outline">{formatCNIC(request.user.cnic)}</Badge>
+                              {!readSurveyRequests.includes(request.id) && (
+                                <Badge className="bg-red-600 text-white text-xs px-2 py-0.5 rounded-full animate-pulse">New</Badge>
+                              )}
+                            </div>
+                            <p className="text-gray-600 capitalize">{request.type} Request</p>
+                            <p className="text-sm text-gray-500">{request.reason}</p>
+                          </div>
+                          <div className="flex items-center space-x-2 mt-2 md:mt-0">
+                            <Badge className={getStatusColor(request.status)}>
+                              <div className="flex items-center space-x-1">
+                                {getStatusIcon(request.status)}
+                                <span className="capitalize">{request.status}</span>
+                              </div>
+                            </Badge>
+                          </div>
+                        </div>
+
+                          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-4">
+                            <div className="text-sm text-gray-500 mb-3 md:mb-0">
+                            <p>Submitted: {new Date(request.submittedAt).toLocaleDateString()}</p>
+                            <p>Address: {request.currentAddress}</p>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button size="sm" variant="outline" onClick={() => { markSurveyRequestRead(request.id); setSelectedRequest(request); }}>
+                                  <Eye className="h-4 w-4 mr-1" />
+                                  View Details
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                                <DialogHeader>
+                                  <DialogTitle>Survey Request</DialogTitle>
+                                  <DialogDescription>
+                                    Details for {selectedRequest?.user.fullName}
+                                  </DialogDescription>
+                                </DialogHeader>
+                                {selectedRequest && (
+                                  <div className="space-y-4">
+                                    <div className="grid grid-cols-2 gap-4">
+                                      <div>
+                                        <Label className="font-medium">Applicant Name</Label>
+                                        <p>{selectedRequest.user.fullName}</p>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">CNIC</Label>
+                                        <p>{formatCNIC(selectedRequest.user.cnic)}</p>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">Request Type</Label>
+                                        <p className="capitalize">{selectedRequest.type}</p>
+                                      </div>
+                                      <div>
+                                        <Label className="font-medium">Status</Label>
+                                        <Badge className={getStatusColor(selectedRequest.status)}>
+                                          {selectedRequest.status}
+                                        </Badge>
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <Label className="font-medium">Reason</Label>
+                                      <p>{selectedRequest.reason}</p>
+                                    </div>
+                                  </div>
+                                )}
+                                <DialogFooter>
+                                  <Button onClick={() => markSurveyRequestRead(request.id)}>Mark as Read</Button>
+                                </DialogFooter>
+                              </DialogContent>
+                            </Dialog>
+
+                            <Button size="sm" variant="outline" onClick={() => {
+                              // allow admin to return request to approved tab if needed
+                              setSurveyRequests((prev) => prev.filter((r) => r.id !== request.id))
+                              setRequests((prev) => [request, ...prev])
+                              setActiveTab('approved')
+                            }}>
+                              Return
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    {surveyRequests.length > showSurveyCount && (
+                      <div className="flex items-center justify-center gap-2 pt-2">
+                        <Button variant="ghost" onClick={() => setShowSurveyCount((c) => c + 6)}>Show more</Button>
+                        {showSurveyCount > 6 && (
+                          <Button variant="outline" onClick={() => setShowSurveyCount((c) => Math.max(6, c - 6))}>Show less</Button>
+                        )}
+                      </div>
+                    )}
+                    {requests.filter((r) => r.status === "pending").length > showPendingCount && (
+                      <div className="flex items-center justify-center gap-2 pt-2">
+                        <Button variant="ghost" onClick={() => setShowPendingCount((c) => c + 6)}>Show more</Button>
+                        {showPendingCount > 6 && (
+                          <Button variant="outline" onClick={() => setShowPendingCount((c) => Math.max(6, c - 6))}>Show less</Button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           {/* Accepted by Donors (client-only via localStorage) */}
           <TabsContent value="accepted-by-donors">
             <Card>
@@ -615,11 +920,11 @@ export default function AdminDashboard() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {acceptedByDonors.map((item) => {
+                    {acceptedByDonors.slice(0, showAcceptedByDonorsCount).map((item) => {
                       const isNew = !readDonorRequests.includes(item.request.id)
                       return (
                         <div key={item.id} className={`border rounded-lg p-4 ${getStatusTintClass("approved")}`}>
-                          <div className="flex justify-between items-start mb-2">
+                          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2">
                             <div className="flex-1">
                               <div className="flex items-center space-x-2 mb-1">
                                 <h3 className="font-semibold text-lg">{item.request.user.fullName}</h3>
@@ -630,22 +935,22 @@ export default function AdminDashboard() {
                                   </Badge>
                                 )}
                               </div>
-                            <p className="text-gray-600 capitalize">{item.request.type} Request</p>
-                            <p className="text-sm text-gray-500">{item.request.reason}</p>
-                            {item.request.amount && (
-                              <p className="text-sm text-gray-600">Requested: PKR {item.request.amount.toLocaleString()}</p>
-                            )}
-                            <p className="text-sm font-medium text-green-700">
-                              Donor pledged: {item.isFullfill ? `(PKR ${item.amount.toLocaleString()})` : `PKR ${item.amount.toLocaleString()}`}
-                            </p>
-                            <p className="text-xs text-gray-500 mt-1">Accepted at: {new Date(item.acceptedAt).toLocaleString()}</p>
-                            <p className="text-xs text-gray-600">
-                              Donor: {item.donor?.name || '—'}
-                              {item.donor?.email ? ` • ${item.donor.email}` : ''}
-                              {item.donor?.cnic ? ` • ${item.donor.cnic}` : ''}
-                              {item.donor?.contact_number ? ` • ${item.donor.contact_number}` : ''}
-                            </p>
-                          </div>
+                              <p className="text-gray-600 capitalize">{item.request.type} Request</p>
+                              <p className="text-sm text-gray-500">{item.request.reason}</p>
+                              {item.request.amount && (
+                                <p className="text-sm text-gray-600">Requested: PKR {item.request.amount.toLocaleString()}</p>
+                              )}
+                              <p className="text-sm font-medium text-green-700">
+                                Donor pledged: {item.isFullfill ? `(PKR ${item.amount.toLocaleString()})` : `PKR ${item.amount.toLocaleString()}`}
+                              </p>
+                              <p className="text-xs text-gray-500 mt-1">Accepted at: {new Date(item.acceptedAt).toLocaleString()}</p>
+                              <p className="text-xs text-gray-600">
+                                Donor: {item.donor?.name || '—'}
+                                {item.donor?.email ? ` • ${item.donor.email}` : ''}
+                                {item.donor?.cnic ? ` • ${item.donor.cnic}` : ''}
+                                {item.donor?.contact_number ? ` • ${item.donor.contact_number}` : ''}
+                              </p>
+                            </div>
                           </div>
 
                           <div className="flex justify-between items-center mt-4">
@@ -663,6 +968,7 @@ export default function AdminDashboard() {
                                   Mark as Read
                                 </Button>
                               )}
+                              {/* AssignDialog removed */}
                               <Dialog>
                                 <DialogTrigger asChild>
                                   <Button variant="outline" size="sm" onClick={() => setSelectedRequest(item.request)}>
@@ -762,11 +1068,26 @@ export default function AdminDashboard() {
                                   )}
                                 </DialogContent>
                               </Dialog>
+                              {!surveyRequests.some((r) => r.id === item.request.id) ? (
+                                <Button size="sm" className="bg-blue-600 hover:bg-blue-700" onClick={() => forwardToSurveyTeam(item.request.id)}>
+                                  Forward to Survey Team
+                                </Button>
+                              ) : (
+                                <Badge className="bg-green-600 text-white text-xs px-2 py-0.5 rounded-full">Forwarded</Badge>
+                              )}
                             </div>
                           </div>
                         </div>
                       )
                     })}
+                    {acceptedByDonors.length > showAcceptedByDonorsCount && (
+                      <div className="flex items-center justify-center gap-2 pt-2">
+                        <Button variant="ghost" onClick={() => setShowAcceptedByDonorsCount((c) => c + 6)}>Show more</Button>
+                        {showAcceptedByDonorsCount > 6 && (
+                          <Button variant="outline" onClick={() => setShowAcceptedByDonorsCount((c) => Math.max(6, c - 6))}>Show less</Button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
               </CardContent>
@@ -776,7 +1097,7 @@ export default function AdminDashboard() {
           <TabsContent value="approved">
             <Card>
               <CardHeader>
-                <CardTitle>Accepted by Donors</CardTitle>
+                <CardTitle>Accepted Requests</CardTitle>
                 <CardDescription>Requests accepted by donors with full details</CardDescription>
               </CardHeader>
               <CardContent>
@@ -787,9 +1108,9 @@ export default function AdminDashboard() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {requests.filter((r) => r.status === "approved").map((request) => (
+                    {requests.filter((r) => r.status === "approved").slice(0, showApprovedCount).map((request) => (
                       <div key={request.id} className={`border rounded-lg p-4 ${getStatusTintClass(request.status)}`}>
-                        <div className="flex justify-between items-start mb-2">
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2">
                           <div className="flex-1">
                             <div className="flex items-center space-x-2 mb-1">
                               <h3 className="font-semibold text-lg">{request.user.fullName}</h3>
@@ -802,13 +1123,16 @@ export default function AdminDashboard() {
                             )}
                             <p className="text-xs text-gray-500 mt-1">Approved at: {request.updated_at ? new Date(request.updated_at).toLocaleString() : "—"}</p>
                           </div>
-                          <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-2 mt-2 md:mt-0">
                             <Badge className={getStatusColor(request.status)}>
                               <div className="flex items-center space-x-1">
                                 {getStatusIcon(request.status)}
                                 <span className="capitalize">{request.status}</span>
                               </div>
                             </Badge>
+                            {request.verification_complete && (
+                              <Badge className="bg-green-100 text-green-800">Verified</Badge>
+                            )}
                           </div>
                         </div>
 
@@ -916,9 +1240,20 @@ export default function AdminDashboard() {
                               )}
                             </DialogContent>
                           </Dialog>
+                          <Button size="sm" className="bg-blue-600 hover:bg-blue-700" onClick={() => forwardToSurveyTeam(request.id)}>
+                            Forward to Survey Team
+                          </Button>
                         </div>
                       </div>
                     ))}
+                    {requests.filter((r) => r.status === "approved").length > showApprovedCount && (
+                      <div className="flex items-center justify-center gap-2 pt-2">
+                        <Button variant="ghost" onClick={() => setShowApprovedCount((c) => c + 6)}>Show more</Button>
+                        {showApprovedCount > 6 && (
+                          <Button variant="outline" onClick={() => setShowApprovedCount((c) => Math.max(6, c - 6))}>Show less</Button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
               </CardContent>
@@ -940,9 +1275,9 @@ export default function AdminDashboard() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {requests.filter((r) => r.status === "rejected").map((request) => (
+                    {requests.filter((r) => r.status === "rejected").slice(0, showRejectedCount).map((request) => (
                       <div key={request.id} className={`border rounded-lg p-4 ${getStatusTintClass(request.status)}`}>
-                        <div className="flex justify-between items-start mb-2">
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2">
                           <div className="flex-1">
                             <div className="flex items-center space-x-2 mb-1">
                               <h3 className="font-semibold text-lg">{request.user.fullName}</h3>
@@ -963,7 +1298,7 @@ export default function AdminDashboard() {
                           </div>
                         </div>
 
-                        <div className="flex justify-between items-center mt-4">
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-4">
                           <div className="text-sm text-gray-500">
                             <p>Submitted: {new Date(request.submittedAt).toLocaleDateString()}</p>
                             <p>Address: {request.currentAddress}</p>
@@ -1070,6 +1405,14 @@ export default function AdminDashboard() {
                         </div>
                       </div>
                     ))}
+                    {requests.filter((r) => r.status === "rejected").length > showRejectedCount && (
+                      <div className="flex items-center justify-center gap-2 pt-2">
+                        <Button variant="ghost" onClick={() => setShowRejectedCount((c) => c + 6)}>Show more</Button>
+                        {showRejectedCount > 6 && (
+                          <Button variant="outline" onClick={() => setShowRejectedCount((c) => Math.max(6, c - 6))}>Show less</Button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
               </CardContent>
@@ -1122,7 +1465,7 @@ export default function AdminDashboard() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {filteredRequests.map((request) => (
+                    {filteredRequests.slice(0, showAllCount).map((request) => (
                       <div key={request.id} className={`border rounded-lg p-4 hover:shadow-md transition-shadow ${getStatusTintClass(request.status)}`}>
                         <div className="flex justify-between items-start mb-2">
                           <div className="flex-1">
@@ -1154,7 +1497,7 @@ export default function AdminDashboard() {
                             <p>Address: {request.currentAddress}</p>
                           </div>
 
-                          <div className="flex space-x-2">
+                            <div className="flex flex-wrap gap-2">
                             <Dialog>
                               <DialogTrigger asChild>
                                 <Button variant="outline" size="sm" onClick={() => setSelectedRequest(request)}>
@@ -1220,33 +1563,33 @@ export default function AdminDashboard() {
                                     {selectedRequest.additionalData && (
                                       <div>
                                         <Label className="font-medium">Additional Information</Label>
-                                          <div className="grid grid-cols-2 gap-3 bg-gray-50 p-3 rounded-md">
-                                            {Object.entries(selectedRequest.additionalData)
-                                              .filter(([_, v]) => v !== null && v !== undefined && v !== "")
-                                              .map(([k, v]) => {
-                                                const isLinkKey = ["cnic_front", "cnic_back", "document"].includes(k)
-                                                const label = k.replace(/_/g, " ")
-                                                if (isLinkKey) {
-                                                  return (
-                                                    <div key={k} className="text-sm col-span-2">
-                                                      <a className="text-blue-600 hover:underline" href={String(v)} target="_blank" rel="noreferrer">
-                                                        View {label}
-                                                      </a>
-                                        </div>
-                                                  )
-                                                }
+                                        <div className="grid grid-cols-2 gap-3 bg-gray-50 p-3 rounded-md">
+                                          {Object.entries(selectedRequest.additionalData)
+                                            .filter(([_, v]) => v !== null && v !== undefined && v !== "")
+                                            .map(([k, v]) => {
+                                              const isLinkKey = ["cnic_front", "cnic_back", "document"].includes(k)
+                                              const label = k.replace(/_/g, " ")
+                                              if (isLinkKey) {
                                                 return (
-                                                  <div key={k} className="text-sm">
-                                                    <span className="font-medium capitalize mr-2">{label}</span>
-                                                    <span className="text-gray-700">{String(v)}</span>
-                                      </div>
+                                                  <div key={k} className="text-sm col-span-2">
+                                                    <a className="text-blue-600 hover:underline" href={String(v)} target="_blank" rel="noreferrer">
+                                                      View {label}
+                                                    </a>
+                                                  </div>
                                                 )
-                                              })}
-                                          </div>
+                                              }
+                                              return (
+                                                <div key={k} className="text-sm">
+                                                  <span className="font-medium capitalize mr-2">{label}</span>
+                                                  <span className="text-gray-700">{String(v)}</span>
+                                                </div>
+                                              )
+                                            })}
+                                        </div>
                                       </div>
                                     )}
 
-                                      {/* Removed large CNIC image preview; using links above instead */}
+                                    {/* Removed large CNIC image preview; using links above instead */}
 
                                     {selectedRequest.status === "pending" && (
                                       <div className="flex space-x-2 pt-4">
@@ -1273,6 +1616,7 @@ export default function AdminDashboard() {
 
                             {request.status === "pending" && (
                               <>
+                                {/* AssignDialog removed */}
                                 <Button
                                   size="sm"
                                   onClick={() => updateRequestStatus(request.id, "approved")}
@@ -1295,6 +1639,14 @@ export default function AdminDashboard() {
                         </div>
                       </div>
                     ))}
+                    {filteredRequests.length > showAllCount && (
+                      <div className="flex items-center justify-center gap-2 pt-2">
+                        <Button variant="ghost" onClick={() => setShowAllCount((c) => c + 6)}>Show more</Button>
+                        {showAllCount > 6 && (
+                          <Button variant="outline" onClick={() => setShowAllCount((c) => Math.max(6, c - 6))}>Show less</Button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
               </CardContent>
@@ -1312,17 +1664,17 @@ export default function AdminDashboard() {
                   <div className="text-center py-8">
                     <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto" />
                     <p className="text-gray-600 mt-3">Loading donors...</p>
-                          </div>
+                  </div>
                 ) : donors.length === 0 ? (
                   <div className="text-center py-8">
                     <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-600">No donors found</p>
-                        </div>
+                  </div>
                 ) : (
-                <div className="space-y-4">
-                    {donors.map((d) => (
-                      <div key={d.id} className="border rounded-lg p-4 flex justify-between items-start">
-                          <div>
+                  <div className="space-y-4">
+                    {donors.slice(0, showDonorsCount).map((d) => (
+                      <div key={d.id} className="border rounded-lg p-4 flex flex-col md:flex-row justify-between items-start md:items-center">
+                        <div>
                           <div className="flex items-center gap-2">
                             <h3 className="font-semibold text-lg">{d.name}</h3>
                             <Badge variant="outline">{d.cnic}</Badge>
@@ -1333,11 +1685,11 @@ export default function AdminDashboard() {
                           )}
                           <p className="text-xs text-gray-500 mt-1">Joined: {new Date(d.created_at).toLocaleDateString()}</p>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2 mt-3 md:mt-0">
                           <Badge className={
                             d.status === "PENDING" ? "bg-yellow-100 text-yellow-800" :
-                            d.status === "ACTIVE" ? "bg-green-100 text-green-800" :
-                            "bg-red-100 text-red-800"
+                              d.status === "ACTIVE" ? "bg-green-100 text-green-800" :
+                                "bg-red-100 text-red-800"
                           }>
                             {d.status}
                           </Badge>
@@ -1356,11 +1708,21 @@ export default function AdminDashboard() {
                         </div>
                       </div>
                     ))}
-                </div>
+                    {donors.length > showDonorsCount && (
+                      <div className="flex items-center justify-center gap-2 pt-2">
+                        <Button variant="ghost" onClick={() => setShowDonorsCount((c) => c + 6)}>Show more</Button>
+                        {showDonorsCount > 6 && (
+                          <Button variant="outline" onClick={() => setShowDonorsCount((c) => Math.max(6, c - 6))}>Show less</Button>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 )}
               </CardContent>
             </Card>
           </TabsContent>
+            </div>
+          </div>
         </Tabs>
       </div>
     </div>
