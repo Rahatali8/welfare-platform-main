@@ -3,8 +3,8 @@
 import jwt from 'jsonwebtoken';
 
 type VerifyAuthResult = {
-  fullName: any;
-  role: string;
+  fullName?: any;
+  role?: string;
   success: boolean
   user?: any
 };
