@@ -5,17 +5,6 @@ import { verifyAuth } from "@/lib/auth";
 export async function GET(request: Request) {
   // Authenticate user
   const auth = await verifyAuth(request);
-  // DEBUG: log auth result and cookies to help diagnose 401s
-  // try {
-  //   console.log('[DEBUG] GET /api/survey verifyAuth ->', JSON.stringify(auth))
-  //   console.log('[DEBUG] GET /api/survey cookie header ->', request?.headers?.get?.('cookie'))
-  // } catch (e) {
-  //   console.log('[DEBUG] GET /api/survey logging failed', e)
-  // }
-  // if (!auth.success || !auth.user || (auth.user.role !== "SURVEY_OFFICER" && auth.user.role !== "admin")) {
-  //   return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-  // }
-
   // Fetch surveys assigned to this officer or unassigned (team queue)
   const officerId = auth.user.id;
   const surveys = await db.survey.findMany({

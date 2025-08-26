@@ -32,6 +32,8 @@ export default function HomePage() {
     emergencyRelief: 2800,
   })
 
+
+
   useEffect(() => {
     const interval = setInterval(() => {
       setStats((prev) => ({
@@ -43,6 +45,8 @@ export default function HomePage() {
 
     return () => clearInterval(interval)
   }, [])
+
+
 
 
   const services = [
@@ -170,6 +174,8 @@ export default function HomePage() {
               </div>
             ))}
           </div>
+
+
 
           <div className="grid md:grid-cols-3 gap-8">
             {/* Card 1 */}
@@ -362,9 +368,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      <CallToAction />
-      {/* Floating ChatBot Icon */}
-      <FloatingBot />
+    <CallToAction />
+
+    <FloatingBot />
     </div>
   )
 }
