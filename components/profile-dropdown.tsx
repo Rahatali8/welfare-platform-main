@@ -44,12 +44,12 @@ export function ProfileDropdown() {
       {/* Sliding Card */}
 
       <div
-        className={`fixed top-0 right-0 h-full w-80 z-[9999] bg-gray-100 transform transition-transform duration-300 ease-in-out ${open ? "translate-x-0" : "translate-x-full"}`}
-        style={{ boxShadow: "-4px 0 24px 0 rgba(0,0,0,0.08)" }}
+        className={`fixed inset-0 z-[9999] flex items-start justify-end pr-6 pt-20 ${open ? '' : 'pointer-events-none'}`}
+        aria-hidden={!open}
       >
-        <div className="relative flex flex-col items-center p-0 h-full">
-          {/* VIP Card Content */}
-          <div className="w-full max-w-xs rounded-2xl shadow-lg mt-10 mb-4 flex flex-col items-center overflow-visible relative" style={{paddingTop: 0, background: 'transparent'}}>
+        <div className={`transform origin-top-right transition-all duration-300 ease-in-out ${open ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
+          {/* VIP Card Content (bottom-right modal) */}
+          <div className="w-[22rem] max-w-lg rounded-2xl shadow-lg mt-0 flex flex-col items-center overflow-visible relative bg-white" style={{ paddingTop: 0 }}>
             {/* Close button inside card */}
             <button
               onClick={() => setOpen(false)}
@@ -59,7 +59,7 @@ export function ProfileDropdown() {
               &times;
             </button>
             {/* Blue Top Section */}
-            <div className="w-full h-24 bg-blue-600 rounded-t-2xl flex justify-center items-center relative">
+            <div className="w-full h-24 rounded-t-2xl flex justify-center items-center relative bg-gradient-to-r from-[#1B0073] to-[#00A5E0]">
               {/* Avatar Overlapping */}
               <div className="absolute left-1/2 top-full -translate-x-1/2 -translate-y-1/2 z-10">
                 <Avatar className="h-20 w-20 border-4 border-white shadow-lg">
@@ -75,7 +75,7 @@ export function ProfileDropdown() {
             {/* Details Section */}
             <div className="flex flex-col pt-14 pb-6 px-4 w-full">
               <div className="font-bold text-2xl text-gray-900 mb-1 flex items-center gap-2">
-                <UserCircle className="w-6 h-6 text-blue-600" />
+                <UserCircle className="w-6 h-6 text-[#1B0073]" />
                 {user.fullName}
               </div>
               <div className="text-sm text-gray-500 mb-2 capitalize flex items-center gap-2">
@@ -85,7 +85,7 @@ export function ProfileDropdown() {
               <div className="w-full border-b border-gray-200 my-2"></div>
               <div className="w-full flex flex-col gap-4">
                 <div className="flex items-center gap-3 text-base text-gray-700">
-                  <IdCard className="w-5 h-5 text-blue-500" />
+                  <IdCard className="w-5 h-5 text-[#00A5E0]" />
                   <div>
                     <div className="text-xs text-gray-500">CNIC Number</div>
                     <div className="font-mono font-semibold tracking-wider">{cnic}</div>
@@ -122,7 +122,7 @@ export function ProfileDropdown() {
               {user.role === "DONOR" && (
                 <Link
                   href="/dashboard/donor/profile"
-                  className="mt-6 w-full bg-gray-200 text-blue-900 py-2 rounded-lg font-semibold hover:bg-blue-100 transition text-lg shadow text-center block"
+                  className="mt-6 w-full bg-white border border-[#e6e6f0] text-[#1B0073] py-2 rounded-lg font-semibold hover:bg-[#f6f7fb] transition text-lg shadow text-center block"
                   onClick={() => setOpen(false)}
                 >
                   View Profile
@@ -134,7 +134,7 @@ export function ProfileDropdown() {
                   setOpen(false);
                   router.push("/");
                 }}
-                className="mt-3 w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition text-lg shadow"
+                className="mt-3 w-full bg-gradient-to-r from-[#1B0073] to-[#00A5E0] text-white py-2 rounded-lg font-semibold hover:opacity-95 transition text-lg shadow"
               >
                 Sign Out
               </button>
@@ -143,13 +143,11 @@ export function ProfileDropdown() {
         </div>
       </div>
 
-      {/* Overlay for closing */}
-      {open && (
-        <div
-          className="fixed inset-0 z-[9998] bg-black/20 backdrop-blur-sm"
-          onClick={() => setOpen(false)}
-        />
-      )}
+      {/* Overlay for closing (behind modal) */}
+      <div
+        className={`fixed inset-0 z-[9998] bg-black/20 backdrop-blur-sm transition-opacity ${open ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        onClick={() => setOpen(false)}
+      />
     </>
   );
 }
