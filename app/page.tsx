@@ -57,7 +57,7 @@ export default function HomePage() {
         "We provide emergency loans and microfinance support to uplift small businesses, assist low-income families, and help individuals overcome sudden financial crises with dignity and confidence.",
       color: "bg-green-100 text-green-600",
       cases: "2,400+ Cases",
-      image: "/hero1.jpg",
+      image: "/help1.jpg",
       href: "/services",
     },
     {
@@ -67,7 +67,7 @@ export default function HomePage() {
         "From covering hospital expenses to providing essential medicines, we ensure patients receive timely healthcare services and struggling families get much-needed relief during medical emergencies.",
       color: "bg-red-100 text-red-600",
       cases: "3,400+ Patients",
-      image: "/disaster_relief_clean.jpg",
+      image: "/help2.jpg",
       href: "/services",
     },
     {
@@ -77,7 +77,7 @@ export default function HomePage() {
         "Scholarships, school supplies, and financial aid programs help deserving students continue their studies, achieve academic excellence, and build brighter futures without interruptions or obstacles.",
       color: "bg-blue-100 text-blue-600",
       cases: "1,200+ Students",
-      image: "/hero2.jpg",
+      image: "/help3.jpg",
       href: "/services",
     },
     {
@@ -87,7 +87,7 @@ export default function HomePage() {
         "We ease marriage expenses through financial aid, dowry assistance, and household setup support, helping underprivileged families start new journeys with hope, dignity, and lasting stability.",
       color: "bg-purple-100 text-purple-600",
       cases: "800+ Homes",
-      image: "/welfare-work.png",
+      image: "/help4.jpg",
       href: "/services",
     },
     {
@@ -97,7 +97,7 @@ export default function HomePage() {
         "We provide seed capital, expert guidance, and essential resources to help aspiring entrepreneurs start or expand small businesses, promoting self-reliance, growth, and sustainable livelihoods.",
       color: "bg-orange-100 text-orange-600",
       cases: "5,600+ Families",
-      image: "/placeholder.jpg",
+      image: "/help5.jpg",
       href: "/services",
     },
     {
@@ -107,7 +107,7 @@ export default function HomePage() {
         "Providing tools, sewing machines, carts, and small resources to deserving families so they can start earning with dignity, support their children’s education, and build a stable future.",
       color: "bg-cyan-100 text-cyan-600",
       cases: "1200+ Families Supported",
-      image: "/user-female.jpg",
+      image: "/help6.jpg",
       href: "/services",
     },
 
@@ -292,7 +292,7 @@ export default function HomePage() {
             {services.map((service, index) => (
               <Link key={index} href={service.href} aria-label={service.title} className="group block relative h-80 rounded-2xl overflow-hidden shadow-lg cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
                 <div className="absolute inset-0">
-                  <img src={service.image} alt={service.title} className="w-full h-full object-contain transition-[filter] duration-700 ease-out group-hover:blur-sm bg-white" />
+                  <img src={service.image} alt={service.title} className="w-full h-full object-cover transition-[filter] duration-700 ease-out group-hover:blur-sm bg-white" />
                   <div className="absolute inset-0 bg-gradient-to-t from-blue-900/30 via-blue-900/10 to-transparent" />
                 </div>
                 <div className="relative z-10 h-full flex flex-col">
